@@ -2,6 +2,8 @@ package project.DxWorks.blockchain.controller;
 
 
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.DxWorks.blockchain.service.ContractDeployService;
@@ -18,6 +20,15 @@ public class ContractDeployController {
             return contractDeployService.deployContract();
         } catch (Exception e) {
             return "Deploy failed: " + e.getMessage();
+        }
+    }
+
+    @GetMapping("/test/{ctAdd}")
+    public String get(@PathVariable String ctAdd) {
+        try {
+            return contractDeployService.callMessage(ctAdd);
+        } catch (Exception e) {
+            return "Read Block failed: " + e.getMessage();
         }
     }
 }
