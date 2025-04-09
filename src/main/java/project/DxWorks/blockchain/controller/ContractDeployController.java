@@ -3,8 +3,12 @@ package project.DxWorks.blockchain.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import project.DxWorks.blockchain.dto.InbodyDto;
 import project.DxWorks.blockchain.dto.PostInbodyRequestDto;
 import project.DxWorks.blockchain.service.ContractDeployService;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -33,5 +37,10 @@ public class ContractDeployController {
     @PostMapping("/test/inbody")
     public String addInbody(@RequestBody PostInbodyRequestDto requestDto) throws Exception {
         return contractDeployService.addInbody(requestDto);
+    }
+
+    @GetMapping("test/inbody")
+    public List<InbodyDto> getInbody() throws IOException {
+        return contractDeployService.getInbody();
     }
 }
