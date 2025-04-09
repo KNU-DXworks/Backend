@@ -2,10 +2,8 @@ package project.DxWorks.blockchain.controller;
 
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import project.DxWorks.blockchain.dto.PostInbodyRequestDto;
 import project.DxWorks.blockchain.service.ContractDeployService;
 
 @RestController
@@ -30,5 +28,10 @@ public class ContractDeployController {
         } catch (Exception e) {
             return "Read Block failed: " + e.getMessage();
         }
+    }
+
+    @PostMapping("/test/inbody")
+    public String addInbody(@RequestBody PostInbodyRequestDto requestDto) throws Exception {
+        return contractDeployService.addInbody(requestDto);
     }
 }

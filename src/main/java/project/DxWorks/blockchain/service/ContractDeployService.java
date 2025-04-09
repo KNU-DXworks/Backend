@@ -2,6 +2,7 @@ package project.DxWorks.blockchain.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.web3j.abi.FunctionEncoder;
@@ -21,6 +22,7 @@ import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 import project.DxWorks.blockchain.contract.SmartContract;
+import project.DxWorks.blockchain.dto.PostInbodyRequestDto;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -35,10 +37,15 @@ public class ContractDeployService {
 
     private final Web3j web3j;
 
+    @Value("${web3.private-key}")
+    private String privateKey;
+
+    @Value("${web3.contract.address}")
+    private String contractAddress;
+
 
     // 스마트컨트랙트 배포
     public String deployContract() throws Exception {
-        String privateKey = "0xcf2ce6095228f7bafcd8ae1f9c90ad0fe99d03079cb2cd18232cb25fe3b1f678";
         Credentials credentials = Credentials.create(privateKey);
 
         // Gas설정
@@ -48,8 +55,8 @@ public class ContractDeployService {
         );
 
         // ABI & BIN 파일 읽기
-        String abi = readResourceFile("Hello.abi");
-        String bin = readResourceFile("Hello.bin");
+        String abi = readResourceFile("inbody.abi");
+        String bin = readResourceFile("inbody.bin");
 
         // 트랜잭션 매니저
         RawTransactionManager txManager = new RawTransactionManager(web3j, credentials);
@@ -77,7 +84,6 @@ public class ContractDeployService {
 
     // 스마트 컨트랙트 내용 가져오기
     public String callMessage(String contractAddress) throws Exception {
-        String privateKey = "0xcf2ce6095228f7bafcd8ae1f9c90ad0fe99d03079cb2cd18232cb25fe3b1f678";
         Credentials credentials = Credentials.create(privateKey);
 
         Function function = new Function(
@@ -86,16 +92,6 @@ public class ContractDeployService {
                 Collections.singletonList(new TypeReference<Utf8String>() {
                 }) // 반환값 String
         );
-
-//        SmartContract smartContract = SmartContract.load(
-//                contractAddress,
-//                web3j,
-//                credentials,
-//                new StaticGasProvider(
-//                        BigInteger.valueOf(0),
-//                        BigInteger.valueOf(0)
-//                )
-//        );
 
 
         // 스마트 컨트랙트는 String으로 이해할 수 없음.
@@ -111,13 +107,6 @@ public class ContractDeployService {
                 DefaultBlockParameterName.LATEST // 가장 최신의 블록을 조회
         ).send();
 
-//        EthGetCode code = web3j.ethGetCode(contractAddress, DefaultBlockParameterName.LATEST).send();
-//        System.out.println("▶️ getCode: " + code.getCode());
-//
-//        System.out.println(response.getValue());
-//
-//        List<Type> decoded = FunctionReturnDecoder.decode(response.getValue(), function.getOutputParameters());
-//        return decoded.get(0).getValue().toString();
         System.out.println("▶️ Raw Response: " + response.getValue());
         System.out.println("▶️ hasError: " + response.hasError());
         if (response.hasError()) {
@@ -132,6 +121,31 @@ public class ContractDeployService {
         }
         return "hhhh";
     }
+
+    public String addInbody(PostInbodyRequestDto requestDto) throws Exception {
+        // Gas설정
+        ContractGasProvider gasProvider = new StaticGasProvider(
+                BigInteger.valueOf(20_000_000_000L),
+                BigInteger.valueOf(6721975)
+        );
+
+        System.out.println(requestDto);
+        Credentials credentials = Credentials.create(privateKey);
+        SmartContract contract = SmartContract.load(contractAddress, web3j, credentials, gasProvider);
+
+        return contract.addInbody(
+                BigInteger.valueOf(requestDto.getId()),
+                requestDto.getCreatedAt(),
+                BigInteger.valueOf((long)(requestDto.getWeight() * 10)),
+                BigInteger.valueOf((long)(requestDto.getMuscleMass() * 10)),
+                BigInteger.valueOf((long)(requestDto.getFatMass() * 10)),
+                BigInteger.valueOf((long)(requestDto.getBmi() * 10)),
+                requestDto.getArmMuscle(),
+                requestDto.getTrunkMuscle(),
+                requestDto.getLegMuscle()
+        ).send().getTransactionHash();
+    }
+
 
     private String readResourceFile(String filename) throws IOException {
         return new String(
