@@ -4,6 +4,7 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.ens.EnsResolver;
 import org.web3j.protocol.Web3j;
@@ -27,6 +28,47 @@ public class SmartContract extends Contract {
     public static SmartContract load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider gasProvider) {
         return new SmartContract(contractAddress, web3j, credentials, gasProvider);
     }
+
+    // 인바디 정보 등록
+    public RemoteFunctionCall<TransactionReceipt> addInbody(
+            BigInteger id,
+            String createdAt,
+            BigInteger weight,
+            BigInteger muscleMass,
+            BigInteger fatMass,
+            BigInteger bmi,
+            String armMuscle,
+            String trunkMuscle,
+            String legMuscle
+    ) {
+        final Function function = new Function(
+                "addInbody",
+                Arrays.<Type>asList(
+                        new Uint256(id),
+                        new Utf8String(createdAt),
+                        new Uint256(weight),
+                        new Uint256(muscleMass),
+                        new Uint256(fatMass),
+                        new Uint256(bmi),
+                        new Utf8String(armMuscle),
+                        new Utf8String(trunkMuscle),
+                        new Utf8String(legMuscle)
+                ),
+                Collections.<TypeReference<?>>emptyList()
+        );
+        return executeRemoteCallTransaction(function);
+    }
+
+    // 인바디 정보 가져오기
+    public RemoteFunctionCall<String> getMyRecords() {
+        final Function function = new Function(
+                "getMyRecords",
+                Collections.emptyList(),
+                Collections.singletonList(new TypeReference<Utf8String>() {}) // 임시로 String으로 받음
+        );
+        return executeRemoteCallSingleValueReturn(function, String.class);
+    }
+
 
     public RemoteFunctionCall<TransactionReceipt> myFunction(String arg1) {
         final Function function = new Function(
