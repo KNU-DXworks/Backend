@@ -22,6 +22,7 @@ import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 import project.DxWorks.blockchain.contract.SmartContract;
+import project.DxWorks.blockchain.dto.InbodyDto;
 import project.DxWorks.blockchain.dto.PostInbodyRequestDto;
 
 import java.io.IOException;
@@ -129,7 +130,6 @@ public class ContractDeployService {
                 BigInteger.valueOf(6721975)
         );
 
-        System.out.println(requestDto);
         Credentials credentials = Credentials.create(privateKey);
         SmartContract contract = SmartContract.load(contractAddress, web3j, credentials, gasProvider);
 
@@ -146,6 +146,17 @@ public class ContractDeployService {
         ).send().getTransactionHash();
     }
 
+    public List<InbodyDto> getInbody() throws IOException {
+        ContractGasProvider gasProvider = new StaticGasProvider(
+                BigInteger.valueOf(20_000_000_000L),
+                BigInteger.valueOf(6721975)
+        );
+
+        Credentials credentials = Credentials.create(privateKey);
+        SmartContract contract = SmartContract.load(contractAddress, web3j, credentials, gasProvider);
+
+        return contract.getMyRecords(web3j,credentials,contractAddress);
+    }
 
     private String readResourceFile(String filename) throws IOException {
         return new String(
