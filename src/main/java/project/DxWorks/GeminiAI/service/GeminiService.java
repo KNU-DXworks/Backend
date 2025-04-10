@@ -55,8 +55,9 @@ import java.util.Map;
             imagePart.put("inlineData", inlineData);
             //test part
             Map<String, Object> textPart = new HashMap<>();
-            textPart.put("text", "인바디 결과지에서 성별, 몸무게,골격근량,체지방,BMI,팔근육,몸통근육,다리근육을 추출해서 JSON으로 반환해줘  키 값은 영어로 다음과 같이 해줘 그리고 성별은 남자면 male 여자면 female로 받아와줘! " +
-                    "gender, weight, muscleMass, fatMass, bmi, armMuscle, trunkMuscle, legMuscle.");
+            textPart.put("text", "인바디 결과지에서 성별, 몸무게,골격근량,체지방량,몸무게의 표준여부,골격근량의 표준여부,체지방량의 표준여부," +
+                    "BMI,팔근육의 표준여부,몸통근육의 표준여부,다리근육의 표준여부을 추출해서 JSON으로 반환해줘  키 값은 영어로 다음과 같이 해줘 그리고 성별은 남자면 male 여자면 female로 받아와줘! 그리고 gender를 제외하고 표준여부들은 영어라면 한국어로 가져와줘! " +
+                    "gender, weight, muscleMass, fatMass, bmi, armMuscle, trunkMuscle, legMuscle, weightType ,muscleMassType ,fatMassType");
 
             List<Map<String, Object>> parts = List.of(imagePart, textPart);
 

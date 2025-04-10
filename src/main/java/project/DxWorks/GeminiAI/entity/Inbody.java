@@ -24,6 +24,10 @@ public class Inbody {
     private double fatMass; // 체지방량
     private double bmi;             // BMI
 
+    private String weightType; //몸무게가 표준인지 표준이하인지
+    private String muscleMassType; //골격근량 표준인지 표준이하인지
+    private String fatMassType;  // 체지방량 표준인지 표준이하인지
+
     private String armMuscle;       // 팔근육
     private String trunkMuscle;     // 몸통근육
     private String legMuscle;       // 다리근육

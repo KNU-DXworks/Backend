@@ -37,7 +37,7 @@ dependencies {
 
 	// database
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	implementation 'mysql:mysql-connector-java:8.0.40'
+	implementation  'mysql:mysql-connector-java:8.0.33'
 
 	//file handle
 	implementation 'org.apache.commons:commons-io:1.3.2'
