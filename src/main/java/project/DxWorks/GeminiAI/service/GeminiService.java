@@ -3,6 +3,7 @@ package project.DxWorks.GeminiAI.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,6 +24,8 @@ import java.util.Map;
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
+    @Value("${gemini.api-key}")
+    private String geminiApiKey;
 
     public GeminiService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -34,10 +37,10 @@ import java.util.Map;
             //실제 구현 시 HTTP POST로 이미지 보내고 JSON 받아서 파싱 필요
             // TODO : Gemini API 연동 및 파싱
 
-
+ge
             //0. API 키 발급 -> 2.0 flash 사용 , 버젼마다 json 변환하는 모양 다름 주의!
             // TODO : API 키 값 application.properties에 따로 저장!
-            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyC-EFqeF_ZOpMGTq3dhl83dnjgs1OWNIHA";
+            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
 
             //1. 파일 ->Base64 인코딩
             byte[] imageBytes = file.getBytes();
@@ -55,11 +58,54 @@ import java.util.Map;
             imagePart.put("inlineData", inlineData);
             //test part
             Map<String, Object> textPart = new HashMap<>();
-            textPart.put("text", "인바디 결과지에서 성별, 몸무게,골격근량,체지방량,몸무게의 표준여부,골격근량의 표준여부,체지방량의 표준여부," +
-                    "BMI,팔근육의 표준여부,몸통근육의 표준여부,다리근육의 표준여부을 추출해서 JSON으로 반환해줘  키 값은 영어로 다음과 같이 해줘 그리고 성별은 남자면 male 여자면 female로 받아와줘! 그리고 gender를 제외하고 표준여부들은 영어라면 한국어로 가져와줘! " +
-                    "gender, weight, muscleMass, fatMass, bmi, armMuscle, trunkMuscle, legMuscle, weightType ,muscleMassType ,fatMassType");
+            textPart.put("text", "인바디 결과지에서 다음 값들을 추출해줘: \n" +
+                "성별(남자면 male 여자면 female)\n" +
+                "몸무게 (kg)\n" +
+                "골격근량 (kg)\n" +
+                "체지방량 (kg)\n" +
+                "BMI\n" +
+                "**다음 항목들의 '표준여부'는 모두 한국어로 추출해줘:**\\n" +
+                "골격근량의 표준여부\n" +
+                "체지방량의 표준여부\n" +
+                "BMI의 표준여부\n" +
+                "팔근육의 표준여부\n" +
+                "몸통근육의 표준여부\n" +
+                "다리근육의 표준여부\n\n" +
+                "그리고 다음 수치를 계산해:\n" +
+                "근육량 비율 = (골격근량 / 체중) * 100 (소수점 첫 번째 자리까지만)\n\n" +
+                "체지방률 = (체지방량 / 체중) * 100 (소수점 첫 번째 자리까지만)\n\n" +
+                // 체형 분류 요청
+                "남성과 여성을 각각 다음 기준에 따라 남성과 여성 각각 다음 기준에 따라 근육량 비율과 체지방률을 기준으로 체형 유형을 판단해줘.\n" +
+                "각각의 체형은 다음 8가지 중 하나: 마른체형, 마른근육형, 표준형, 감량형, 근육형, 과체중형, 비만형, 비만근육형\n" +
+                "1. 남성:\n" +
+                "- 체지방률 ≤ 10% → low\n" +
+                "- 체지방률 10~20% → normal\n" +
+                "- 체지방률 ≥ 20% → high\n" +
+                "- 근육량 비율 ≤ 32% → low\n" +
+                "- 근육량 비율 32~38% → normal\n" +
+                "- 근육량 비율 ≥ 38% → high\n" +
+                "\n" +
+                "2. 여성:\n" +
+                "- 체지방률 ≤ 18% → low\n" +
+                "- 체지방률 18~28% → normal\n" +
+                "- 체지방률 ≥ 28% → high\n" +
+                "- 근육량 비율 기준은 동일 (남녀 모두)\n" +
+                "\n" +
+                "[체형 유형 분류]\n" +
+                "\n" +
+                "- fat: low, muscle: low → 마른체형\n" +
+                "- fat: low, muscle: high → 마른근육형\n" +
+                "- fat: normal, muscle: normal → 표준형\n" +
+                "- fat: high, muscle: low → 감량형\n" +
+                "- fat: normal, muscle: high → 근육형\n" +
+                "- fat: high, muscle: normal → 과체중형\n" +
+                "- fat: high, muscle: low → 비만형\n" +
+                "- fat: high, muscle: high → 비만근육형\n" +
+                "최종결과는 JSON으로 반환해주고 value 중 표준여부 관련 값들은 모두 한국어로 반환해주고 key 값은 영어로 다음과 같이 해줘\n " +
+                "gender, weight, muscleMass, fatMass,muscleMassRatio,fatRatio bmi, armMuscleType, trunkMuscleType, legMuscleType." +
+                "muscleMassType, fatMassType,bmiType, userCase");
 
-            List<Map<String, Object>> parts = List.of(imagePart, textPart);
+        List<Map<String, Object>> parts = List.of(imagePart, textPart);
 
             Map<String, Object> content = new HashMap<>();
             content.put("parts", parts);

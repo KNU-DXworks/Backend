@@ -23,14 +23,18 @@ public class Inbody {
     private double muscleMass; //골격근량
     private double fatMass; // 체지방량
     private double bmi;             // BMI
+    private double muscleMassRatio; // 골격근량 / 체중 * 100 -> 체형분류할때 사용됨.
+    private double fatRatio; //체지방률! 체지방률 / 체중 * 100 -> 체형분류
 
-    private String weightType; //몸무게가 표준인지 표준이하인지
     private String muscleMassType; //골격근량 표준인지 표준이하인지
     private String fatMassType;  // 체지방량 표준인지 표준이하인지
+    private String bmiType;
 
-    private String armMuscle;       // 팔근육
-    private String trunkMuscle;     // 몸통근육
-    private String legMuscle;       // 다리근육
+    private String userCase; //사용자의 체형 유형
+
+    private String armMuscleType;       // 팔근육 유형
+    private String trunkMuscleType;     // 몸통근육 유형
+    private String legMuscleType;       // 다리근육 유형
 
 
 }
