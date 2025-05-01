@@ -37,7 +37,7 @@ import java.util.Map;
             //실제 구현 시 HTTP POST로 이미지 보내고 JSON 받아서 파싱 필요
             // TODO : Gemini API 연동 및 파싱
 
-ge
+
             //0. API 키 발급 -> 2.0 flash 사용 , 버젼마다 json 변환하는 모양 다름 주의!
             // TODO : API 키 값 application.properties에 따로 저장!
             String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
