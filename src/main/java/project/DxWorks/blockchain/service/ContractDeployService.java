@@ -146,17 +146,22 @@ public class ContractDeployService {
         ).send().getTransactionHash();
     }
 
-    public List<InbodyDto> getInbody() throws IOException {
+
+    // 인바디 정보 가져오기
+    public List<InbodyDto> getInbody(String userPrivateKey) throws IOException {
+        // 가스 설정
         ContractGasProvider gasProvider = new StaticGasProvider(
                 BigInteger.valueOf(20_000_000_000L),
                 BigInteger.valueOf(6721975)
         );
 
-        Credentials credentials = Credentials.create(privateKey);
+        // 인증서 생성 및 스마트 컨트랙트 load
+        Credentials credentials = Credentials.create(userPrivateKey);
         SmartContract contract = SmartContract.load(contractAddress, web3j, credentials, gasProvider);
 
         return contract.getMyRecords(web3j,credentials,contractAddress);
     }
+
 
     private String readResourceFile(String filename) throws IOException {
         return new String(

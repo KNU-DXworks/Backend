@@ -70,6 +70,7 @@ public class SmartContract extends Contract {
 
     // 인바디 정보 가져오기
     public List<InbodyDto> getMyRecords(Web3j web3j, Credentials credentials, String contractAddress) throws IOException {
+        // 스마트 컨트랙트 Web3j 함수 설정
         Function function = new Function(
                 "getMyRecords",
                 Collections.emptyList(),
@@ -78,6 +79,7 @@ public class SmartContract extends Contract {
 
         String encoded = FunctionEncoder.encode(function);
 
+        // 저수준 스마트컨트랙트 읽기
         EthCall response = web3j.ethCall(
                 Transaction.createEthCallTransaction(credentials.getAddress(), contractAddress, encoded),
                 DefaultBlockParameterName.LATEST
@@ -85,6 +87,7 @@ public class SmartContract extends Contract {
 
         List<Type> decoded = FunctionReturnDecoder.decode(response.getValue(), function.getOutputParameters());
 
+        // 반환 리스트
         List<InbodyDto> result = new ArrayList<>();
 
         if (!decoded.isEmpty()) {
@@ -111,7 +114,6 @@ public class SmartContract extends Contract {
 
         return result;
     }
-
 
 
     public RemoteFunctionCall<TransactionReceipt> myFunction(String arg1) {
