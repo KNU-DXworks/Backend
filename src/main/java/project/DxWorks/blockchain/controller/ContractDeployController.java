@@ -39,8 +39,8 @@ public class ContractDeployController {
         return contractDeployService.addInbody(requestDto);
     }
 
-    @GetMapping("test/inbody")
-    public List<InbodyDto> getInbody() throws IOException {
-        return contractDeployService.getInbody();
+    @GetMapping("test/inbody/{privateKey}")
+    public List<InbodyDto> getInbody(@PathVariable String userPrivateKey) throws IOException {
+        return contractDeployService.getInbody(userPrivateKey);
     }
 }
