@@ -1,9 +1,6 @@
 package project.DxWorks.goal.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,27 +19,24 @@ public class Goal {
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
-    @Column(nullable = false)
     private Double weight;
 
-    @Column(nullable = false)
     private Double muscle;
 
-    @Column(nullable = false)
     private Double fat;
 
-    @Column(nullable = false)
     private Double bmi;
 
-    @Column(nullable = false)
     private Double arm;
 
-    @Column(nullable = false)
     private Double body;
 
-    @Column(nullable = false)
     private Double leg;
 
-    @Column(name = "goal_group", nullable = false)
+    @Column(name = "goal_group")
     private Double goalGroup;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
