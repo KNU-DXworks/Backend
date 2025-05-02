@@ -20,7 +20,7 @@ public class BodyTypeController {
     @PostMapping
     public ResponseEntity<String> classify(@RequestBody String userInput) {
         String result = openAiService.classifyBodyType(userInput);
-        System.out.println("OpenAI에서 받은 응답으로 " + result + "번 군집입니다!");
+//        System.out.println("OpenAI에서 받은 응답으로 " + result + "번 군집입니다!");
 
         return ResponseEntity.ok(result);
     }
