@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import project.DxWorks.common.repository.TimeBaseEntity;
 
 @Entity
@@ -14,6 +15,7 @@ import project.DxWorks.common.repository.TimeBaseEntity;
 @AllArgsConstructor
 @Data
 @DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 public class UserEntity extends TimeBaseEntity {
 
     @Id
