@@ -1,5 +1,8 @@
 package project.DxWorks.domain.profile.dto;
 
+import lombok.Data;
+
+
 public class BodyTypeAfterResponseDto {
     private String bodyTypeAfter;
 

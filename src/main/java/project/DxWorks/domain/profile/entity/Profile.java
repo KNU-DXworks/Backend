@@ -15,7 +15,7 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // profile id
 
-    // TODO : User 와 OnetoOne Mapping??
+    // TODO : User 와 one to one mapping
 
 
     @Column(length = 1000)
@@ -32,8 +32,7 @@ public class Profile {
     // private String walletAddress;
 
     // TODO : 인바디 수치 (inbody domain 에서 받아와야함)
-    // TODO : 그럼 여기 밑의 정보도 저장할 필요 없음? ... (보류)
-//    private LocalDateTime lastUpdated; //마지막 인바디 분석 일시 ( 참조용 )
+//    private LocalDateTime lastUpdated; //마지막 인바디 분석 일시
 //
 //    private LocalDateTime created; // 생성 시간
 //    private LocalDateTime updated; // 수정 시간
