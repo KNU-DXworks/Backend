@@ -1,0 +1,28 @@
+spring:
+
+  config:
+    import: optional:file:.env[.properties]
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/daehakjumak
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+web3:
+  client-address: http://127.0.0.1:8545 # Ganache / Besu / Infura RPC 주소
+  private-key: ${PRIVATE_KEY}
+  contract:
+    address: ${CONTRACT_ADDRESS}
+  gas:
+    price: 20000000000       # 20 Gwei
+    limit: 6721975
