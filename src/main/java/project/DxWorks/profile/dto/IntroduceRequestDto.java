@@ -1,4 +1,4 @@
-package project.DxWorks.domain.profile.dto;
+package project.DxWorks.profile.dto;
 
 
 import lombok.AllArgsConstructor;

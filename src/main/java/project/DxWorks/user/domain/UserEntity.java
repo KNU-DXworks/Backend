@@ -2,20 +2,18 @@ package project.DxWorks.user.domain;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import project.DxWorks.common.repository.TimeBaseEntity;
+import project.DxWorks.goal.entity.Goal;
 
 @Entity
 @Builder
 @Table(name="com_user")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
 public class UserEntity extends TimeBaseEntity {
@@ -28,5 +26,16 @@ public class UserEntity extends TimeBaseEntity {
 
     private String email;
 
+    @OneToOne
+    @JoinColumn(name = "goal_id")
+    private Goal goal;
+
+    public void modifyEmail(String email){
+        this.email = email;
+    }
+
+    public void createGoal(Goal goal) {
+        this.goal = goal;
+    }
 
 }

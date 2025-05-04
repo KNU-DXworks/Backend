@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.DxWorks.goal.entity.Goal;
-import project.DxWorks.goal.entity.User;
 import project.DxWorks.goal.repository.GoalRepository;
-import project.DxWorks.goal.repository.UserRepository;
+import project.DxWorks.user.domain.UserEntity;
+import project.DxWorks.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -24,10 +24,11 @@ public class GoalService {
      */
     @Transactional
     public Long createGoal(Goal goal, Long userId) {
-        User user = userRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found, userId: "+userId));
 
-        goal.setUser(user);
+        user.createGoal(goal);
+
         goal.setCreatedDate(LocalDateTime.now());
         goalRepository.save(goal);
 
@@ -38,8 +39,9 @@ public class GoalService {
      * 목표 조회 (userId로 조회)
      */
     public Goal findGoalByUserId(Long userId) {
-        return goalRepository.findByUserUserId(userId)
-                .orElseThrow(() -> new NoSuchElementException("Goal not found, userId: "+userId));
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("Goal not found, userId: "+userId))
+                .getGoal();
     }
 
     /**
@@ -54,9 +56,9 @@ public class GoalService {
      * 목표 수정
      */
     @Transactional
-    public void updateGoal(Goal goalData, Long userId) {
-        Goal goal = goalRepository.findByUserUserId(userId)
-                .orElseThrow(() -> new NoSuchElementException("Goal not found, userId: "+userId));
+    public void updateGoal(Goal goalData, Long goalId) {
+        Goal goal = goalRepository.findById(goalId)
+                .orElseThrow(() -> new NoSuchElementException("Goal not found, userId: "+goalId));
 
         if (goalData.getWeight() != null)
             goal.setWeight(goalData.getWeight());

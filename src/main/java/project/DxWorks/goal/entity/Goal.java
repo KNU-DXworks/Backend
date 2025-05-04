@@ -3,6 +3,7 @@ package project.DxWorks.goal.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import project.DxWorks.user.domain.UserEntity;
 
 import java.time.LocalDateTime;
 
@@ -36,7 +37,5 @@ public class Goal {
     @Column(name = "goal_group")
     private Double goalGroup;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+
 }

@@ -1,9 +1,9 @@
-package project.DxWorks.domain.profile.service;
+package project.DxWorks.profile.service;
 
 
 import org.springframework.stereotype.Service;
-import project.DxWorks.domain.profile.entity.Profile;
-import project.DxWorks.domain.profile.repository.ProfileRepository;
+import project.DxWorks.profile.entity.Profile;
+import project.DxWorks.profile.repository.ProfileRepository;
 
 // TODO : 자기소개 등록 / 수정 기능 구현
 @Service
