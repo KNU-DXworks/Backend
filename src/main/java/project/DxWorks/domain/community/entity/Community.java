@@ -20,7 +20,6 @@ public class Community {
     @Enumerated(EnumType.STRING)
     private CommunityCategory communityCategory;
 
-    @OneToMany(mappedBy = "community")
-    private List<Post> posts = new ArrayList<>();
+
 }
 
