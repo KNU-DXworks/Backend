@@ -7,6 +7,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import project.DxWorks.common.repository.TimeBaseEntity;
 import project.DxWorks.goal.entity.Goal;
+import project.DxWorks.profile.entity.Profile;
 
 @Entity
 @Builder
@@ -29,6 +30,10 @@ public class UserEntity extends TimeBaseEntity {
     @OneToOne
     @JoinColumn(name = "goal_id")
     private Goal goal;
+
+    @OneToOne
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 
     public void modifyEmail(String email){
         this.email = email;
