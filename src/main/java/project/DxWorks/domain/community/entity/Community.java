@@ -17,8 +17,8 @@ public class Community {
     @Column(name = "community_id")
     private Long communityId;
 
-    @Column(name = "community_category")
-    private String communityCategory;
+    @Enumerated(EnumType.STRING)
+    private CommunityCategory communityCategory;
 
     @OneToMany(mappedBy = "community")
     private List<Post> posts = new ArrayList<>();
