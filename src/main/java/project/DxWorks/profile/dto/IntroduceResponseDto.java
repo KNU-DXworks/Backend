@@ -1,6 +1,6 @@
-package project.DxWorks.domain.profile.dto;
+package project.DxWorks.profile.dto;
 
-import project.DxWorks.domain.profile.entity.Profile;
+import project.DxWorks.profile.entity.Profile;
 
 public class IntroduceResponseDto {
     private String introduce; //조회 응답용.

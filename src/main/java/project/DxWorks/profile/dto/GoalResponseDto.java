@@ -1,4 +1,4 @@
-package project.DxWorks.domain.profile.dto;
+package project.DxWorks.profile.dto;
 
 public class GoalResponseDto {
 

@@ -1,9 +1,7 @@
-package project.DxWorks.domain.profile.repository;
+package project.DxWorks.profile.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import project.DxWorks.domain.profile.entity.Profile;
-
-import java.util.Optional;
+import project.DxWorks.profile.entity.Profile;
 
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
 

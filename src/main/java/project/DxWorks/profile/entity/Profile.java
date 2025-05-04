@@ -1,4 +1,4 @@
-package project.DxWorks.domain.profile.entity;
+package project.DxWorks.profile.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
