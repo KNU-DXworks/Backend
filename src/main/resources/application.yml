@@ -1,5 +1,4 @@
 spring:
-
   config:
     import: optional:file:.env[.properties]
 
@@ -26,3 +25,4 @@ web3:
   gas:
     price: 20000000000       # 20 Gwei
     limit: 6721975
+
