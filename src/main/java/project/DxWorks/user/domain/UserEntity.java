@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import project.DxWorks.common.repository.TimeBaseEntity;
+import project.DxWorks.goal.entity.Goal;
 
 @Entity
 @Builder
@@ -25,8 +26,12 @@ public class UserEntity extends TimeBaseEntity {
 
     private String email;
 
-    public void modifyEmail(String email){
+    @OneToOne
+    @JoinColumn(name = "goal_id")
+    private Goal goal;
 
+    public void modifyEmail(String email){
+        this.email = email;
     }
 
 }
