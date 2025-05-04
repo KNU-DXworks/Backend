@@ -26,3 +26,8 @@ web3:
     price: 20000000000       # 20 Gwei
     limit: 6721975
 
+# openAI
+openai:
+  model: ${OPENAI_MODEL}
+  secret-key: ${OPENAI_SECRET_KEY}
+
