@@ -47,10 +47,10 @@ public class GoalController {
     /**
      * 목표 수정
      */
-    @PutMapping("/user/{userId}")
-    public ResponseEntity<Void> updateGoal(@PathVariable Long userId, @RequestBody GoalRequestDto requestDto) {
+    @PutMapping("/user/{goalId}")
+    public ResponseEntity<Void> updateGoal(@PathVariable Long goalId, @RequestBody GoalRequestDto requestDto) {
         Goal goal = convertToGoal(requestDto);
-        goalService.updateGoal(goal, userId);
+        goalService.updateGoal(goal, goalId);
         return ResponseEntity.ok().build();
     }
 

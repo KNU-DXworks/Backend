@@ -37,7 +37,5 @@ public class Goal {
     @Column(name = "goal_group")
     private Double goalGroup;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+
 }
