@@ -1,0 +1,198 @@
+[
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "InbodyRecorded",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_createdAt",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_weight",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_muscleMass",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_fatMass",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_bmi",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_armMuscle",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_trunkMuscle",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_legMuscle",
+				"type": "string"
+			}
+		],
+		"name": "addInbody",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getMyRecords",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "createdAt",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "weight",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "muscleMass",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "fatMass",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "bmi",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "armMuscle",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "trunkMuscle",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "legMuscle",
+						"type": "string"
+					}
+				],
+				"internalType": "struct Inbody.InbodyData[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "records",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "createdAt",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "weight",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "muscleMass",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "fatMass",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "bmi",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "armMuscle",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "trunkMuscle",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "legMuscle",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
