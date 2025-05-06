@@ -20,7 +20,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
-import project.DxWorks.inbody.contract.SmartContract;
+import project.DxWorks.inbody.contract.InbodySmartContract;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.dto.PostInbodyRequestDto;
 
@@ -130,7 +130,7 @@ public class ContractDeployService {
         );
 
         Credentials credentials = Credentials.create(privateKey);
-        SmartContract contract = SmartContract.load(contractAddress, web3j, credentials, gasProvider);
+        InbodySmartContract contract = InbodySmartContract.load(contractAddress, web3j, credentials, gasProvider);
 
         return contract.addInbody(
                 BigInteger.valueOf(requestDto.getId()),
@@ -156,7 +156,7 @@ public class ContractDeployService {
 
         // 인증서 생성 및 스마트 컨트랙트 load
         Credentials credentials = Credentials.create(userPrivateKey);
-        SmartContract contract = SmartContract.load(contractAddress, web3j, credentials, gasProvider);
+        InbodySmartContract contract = InbodySmartContract.load(contractAddress, web3j, credentials, gasProvider);
 
         return contract.getMyRecords(web3j,credentials,contractAddress);
     }
