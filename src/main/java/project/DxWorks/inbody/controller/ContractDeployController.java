@@ -1,11 +1,11 @@
-package project.DxWorks.blockchain.controller;
+package project.DxWorks.inbody.controller;
 
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import project.DxWorks.blockchain.dto.InbodyDto;
-import project.DxWorks.blockchain.dto.PostInbodyRequestDto;
-import project.DxWorks.blockchain.service.ContractDeployService;
+import project.DxWorks.inbody.dto.InbodyDto;
+import project.DxWorks.inbody.dto.PostInbodyRequestDto;
+import project.DxWorks.inbody.service.ContractDeployService;
 
 import java.io.IOException;
 import java.util.List;
