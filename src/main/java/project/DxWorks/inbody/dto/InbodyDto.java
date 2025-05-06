@@ -1,4 +1,4 @@
-package project.DxWorks.blockchain.dto;
+package project.DxWorks.inbody.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
