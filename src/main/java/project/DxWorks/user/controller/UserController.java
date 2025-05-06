@@ -6,8 +6,11 @@ import org.springframework.web.bind.annotation.*;
 import project.DxWorks.common.ui.Response;
 import project.DxWorks.user.dto.request.InterestUserDto;
 import project.DxWorks.user.dto.request.ModifyUserInfRequestDto;
+import project.DxWorks.user.dto.response.InterestUserListResponseDto;
 import project.DxWorks.user.dto.response.UserInfResponseDto;
 import project.DxWorks.user.service.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -29,5 +32,17 @@ public class UserController {
     @PostMapping("/interest/{userId}")
     public Response<String> interestUser(@PathVariable Long userId, @RequestBody InterestUserDto dto) {
         return userService.interestUser(userId, dto.toUser());
+    }
+
+    @GetMapping("/interest/to/{userId}")
+    public Response<List<InterestUserListResponseDto>> getInterestToUser(@PathVariable Long userId){
+
+        return userService.getInterestUser(userId, true);
+    }
+
+    @GetMapping("/interest/from/{userId}")
+    public Response<List<InterestUserListResponseDto>> getInterestFromUser(@PathVariable Long userId){
+
+        return userService.getInterestUser(userId, false);
     }
 }
