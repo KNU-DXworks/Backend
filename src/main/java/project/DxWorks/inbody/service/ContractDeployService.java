@@ -1,4 +1,4 @@
-package project.DxWorks.blockchain.service;
+package project.DxWorks.inbody.service;
 
 
 import lombok.RequiredArgsConstructor;
@@ -16,14 +16,13 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthCall;
-import org.web3j.protocol.core.methods.response.EthGetCode;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
-import project.DxWorks.blockchain.contract.SmartContract;
-import project.DxWorks.blockchain.dto.InbodyDto;
-import project.DxWorks.blockchain.dto.PostInbodyRequestDto;
+import project.DxWorks.inbody.contract.SmartContract;
+import project.DxWorks.inbody.dto.InbodyDto;
+import project.DxWorks.inbody.dto.PostInbodyRequestDto;
 
 import java.io.IOException;
 import java.math.BigInteger;
