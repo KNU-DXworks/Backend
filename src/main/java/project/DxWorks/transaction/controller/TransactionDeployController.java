@@ -15,6 +15,17 @@ public class TransactionDeployController {
 
     private final TransactionDeployService transactionDeployService;
 
+    @PostMapping("/deploy")
+    public String deploy(
+            @RequestHeader("X-PRIVATE-KEY") String privateKey
+    ) {
+        try {
+            return transactionDeployService.deployContract(privateKey);
+        } catch (Exception e) {
+            return "Deploy failed: " + e.getMessage();
+        }
+    }
+
     // ---------- 거래 생성 ----------
     @PostMapping
     public String addTransaction(
