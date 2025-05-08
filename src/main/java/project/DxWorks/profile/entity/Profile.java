@@ -16,8 +16,7 @@ import java.time.LocalDateTime;
 public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "profile_id") // user 가 profile_id를 참조함.
-    private Long profileId; // profile id
+    private Long Id; // profile id
 
     @Column(length = 1000)
     private String introduce; //자기소개
