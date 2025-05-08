@@ -34,12 +34,12 @@ public class ContractDeployController {
         }
     }
 
-    @PostMapping("/test/inbody")
+    @PostMapping("/api/inbody")
     public String addInbody(@RequestBody PostInbodyRequestDto requestDto) throws Exception {
         return contractDeployService.addInbody(requestDto);
     }
 
-    @GetMapping("/test/inbody/{privateKey}")
+    @GetMapping("/api/inbody/{privateKey}")
     public List<InbodyDto> getInbody(@PathVariable String privateKey) throws IOException {
         return contractDeployService.getInbody(privateKey);
     }
