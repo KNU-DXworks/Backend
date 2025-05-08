@@ -60,7 +60,7 @@ public class IntroduceService {
 
     private IntroduceResponseDto toDto(Profile profile) {
         return IntroduceResponseDto.builder()
-                .profileId(profile.getProfileId())
+                .profileId(profile.getId())
                 .introduce(profile.getIntroduce())
                 //.communityId(profile.getCommunityId())
                 .build();
