@@ -1,4 +1,4 @@
-package project.DxWorks.blockchain.struct;
+package project.DxWorks.inbody.struct;
 
 import org.web3j.abi.datatypes.DynamicStruct;
 import org.web3j.abi.datatypes.Utf8String;

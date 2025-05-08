@@ -1,4 +1,4 @@
-package project.DxWorks.blockchain.contract;
+package project.DxWorks.inbody.contract;
 
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.FunctionReturnDecoder;
@@ -6,19 +6,16 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
-import org.web3j.ens.EnsResolver;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.RemoteFunctionCall;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthCall;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
-import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
-import project.DxWorks.blockchain.dto.InbodyDto;
-import project.DxWorks.blockchain.struct.InbodyStruct;
+import project.DxWorks.inbody.dto.InbodyDto;
+import project.DxWorks.inbody.struct.InbodyStruct;
 
 import java.io.IOException;
 import java.math.BigInteger;
