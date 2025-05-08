@@ -22,6 +22,7 @@ web3:
   private-key: ${PRIVATE_KEY}
   contract:
     address: ${CONTRACT_ADDRESS}
+    transactionAddress: ${TRANSACTION_CONTRACT_ADDRESS}
   gas:
     price: 20000000000       # 20 Gwei
     limit: 6721975

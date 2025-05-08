@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").permitAll() // 카카오 로그인 API는 인증 없이 접근 가능
+                        .requestMatchers("/api/**", "/test/**").permitAll() // 카카오 로그인 API는 인증 없이 접근 가능
                         .anyRequest().authenticated() // 그 외 모든 요청은 JWT 인증 필요
                 );
 
