@@ -157,7 +157,7 @@ public class ContractDeployService {
         );
 
         // 인증서 생성 및 스마트 컨트랙트 load
-        Credentials credentials = Credentials.create(userPrivateKey);
+        Credentials credentials = Credentials.create(privateKey);
         InbodySmartContract contract = InbodySmartContract.load(contractAddress, web3j, credentials, gasProvider);
 
 
