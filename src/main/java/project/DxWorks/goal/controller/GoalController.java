@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.DxWorks.goal.dto.GoalRequestDto;
 import project.DxWorks.goal.dto.GoalResponseDto;
+import project.DxWorks.goal.entity.BodyTypeLevel;
 import project.DxWorks.goal.entity.Goal;
 import project.DxWorks.goal.service.GoalService;
 
@@ -71,13 +72,16 @@ public class GoalController {
      */
     private Goal convertToGoal(GoalRequestDto requestDto) {
         Goal goal = new Goal();
+
         goal.setWeight(requestDto.getWeight());
         goal.setMuscle(requestDto.getMuscle());
         goal.setFat(requestDto.getFat());
         goal.setBmi(requestDto.getBmi());
-        goal.setArm(requestDto.getArm());
-        goal.setBody(requestDto.getBody());
-        goal.setLeg(requestDto.getLeg());
+
+        goal.setArm(BodyTypeLevel.fromString(requestDto.getArm()));
+        goal.setBody(BodyTypeLevel.fromString(requestDto.getBody()));
+        goal.setLeg(BodyTypeLevel.fromString(requestDto.getLeg()));
+
         goal.setGoalGroup(requestDto.getGoalGroup());
         return goal;
     }
@@ -87,14 +91,17 @@ public class GoalController {
      */
     private GoalResponseDto convertToDto(Goal goal) {
         GoalResponseDto responseDto = new GoalResponseDto();
+
         responseDto.setCreatedDate(goal.getCreatedDate());
         responseDto.setWeight(goal.getWeight());
         responseDto.setMuscle(goal.getMuscle());
         responseDto.setFat(goal.getFat());
         responseDto.setBmi(goal.getBmi());
-        responseDto.setArm(goal.getArm());
-        responseDto.setBody(goal.getBody());
-        responseDto.setLeg(goal.getLeg());
+
+        responseDto.setArm(String.valueOf(goal.getArm()));
+        responseDto.setBody(String.valueOf(goal.getBody()));
+        responseDto.setLeg(String.valueOf(goal.getLeg()));
+
         responseDto.setGoalGroup(goal.getGoalGroup());
         return responseDto;
     }

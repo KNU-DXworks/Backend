@@ -28,11 +28,15 @@ public class Goal {
 
     private Double bmi;
 
-    private Double arm;
+    //TODO : 팔, 몸통, 다리 근육 Enum 형식으로 설정.
+    @Enumerated(EnumType.STRING)
+    private BodyTypeLevel arm;
 
-    private Double body;
+    @Enumerated(EnumType.STRING)
+    private BodyTypeLevel body;
 
-    private Double leg;
+    @Enumerated(EnumType.STRING)
+    private BodyTypeLevel leg;
 
     @Column(name = "goal_group")
     private Double goalGroup;
