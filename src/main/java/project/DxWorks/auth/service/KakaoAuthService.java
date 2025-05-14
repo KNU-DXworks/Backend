@@ -1,18 +1,19 @@
 package project.DxWorks.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import project.DxWorks.auth.domain.Entity.UserAuthEntity;
 import project.DxWorks.auth.domain.JwtTokenProvider;
 import project.DxWorks.auth.domain.KakaoUserInfo;
+import project.DxWorks.auth.dto.KakaoTokenResponseDto;
 import project.DxWorks.auth.dto.UserAccessTokenResponseDto;
 import project.DxWorks.auth.interfacese.UserAuthInterface;
 
@@ -25,6 +26,12 @@ public class KakaoAuthService {
     private final RestTemplate restTemplate;
     private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
+
+    @Value("${kakao.client_id}")
+    private String clientId;
+
+    @Value("${kakao.client_secret}")
+    private String clientSecret;
 
     @Transactional
     public UserAccessTokenResponseDto processKakaoLogin(String kakaoAccessToken) {
@@ -48,6 +55,33 @@ public class KakaoAuthService {
         String refreshToken = jwtTokenProvider.createRefreshToken(userAuthEntity.getUserId());
 
         return new UserAccessTokenResponseDto(accessToken, refreshToken, jwtTokenProvider.getTokenValidTime());
+    }
+
+    @Transactional
+    public KakaoTokenResponseDto kakaoTokenRequest(String authCode){
+        try{
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("grant_type", "authorization_code");
+            params.add("client_id", clientId);
+            params.add("redirect_uri", "https://oauth.pstmn.io/v1/callback");
+            params.add("code", authCode);
+            params.add("client_secret", clientSecret);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+            ResponseEntity<KakaoTokenResponseDto> response = restTemplate.postForEntity(
+                    "https://kauth.kakao.com/oauth/token",
+                    request,
+                    KakaoTokenResponseDto.class
+            );
+
+            return response.getBody();
+        } catch(Exception e){
+            throw new RuntimeException("카카오 토큰을 불러오는데 실패했습니다.", e);
+        }
     }
 
 
