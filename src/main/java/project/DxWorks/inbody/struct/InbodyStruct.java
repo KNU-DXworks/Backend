@@ -1,32 +1,51 @@
 package project.DxWorks.inbody.struct;
 
 import org.web3j.abi.datatypes.DynamicStruct;
+import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
 
-public class InbodyStruct extends DynamicStruct {
-    public Uint256 id;
-    public Utf8String createdAt;
-    public Uint256 weight;
-    public Uint256 muscleMass;
-    public Uint256 fatMass;
-    public Uint256 bmi;
-    public Utf8String armMuscle;
-    public Utf8String trunkMuscle;
-    public Utf8String legMuscle;
+import java.util.List;
 
-    public InbodyStruct(Uint256 id, Utf8String createdAt, Uint256 weight, Uint256 muscleMass,
-                        Uint256 fatMass, Uint256 bmi, Utf8String armMuscle,
-                        Utf8String trunkMuscle, Utf8String legMuscle) {
-        super(id, createdAt, weight, muscleMass, fatMass, bmi, armMuscle, trunkMuscle, legMuscle);
-        this.id = id;
+public class InbodyStruct extends DynamicStruct {
+    public final Utf8String createdAt;
+    public final Utf8String gender;
+    public final Uint256 weight;
+    public final Uint256 muscleMass;
+    public final Uint256 fatRatio;
+    public final Utf8String muscleMassType;
+    public final Utf8String fatMassType;
+    public final Utf8String userCase;
+    public final Utf8String armMuscleType;
+    public final Utf8String trunkMuscleType;
+    public final Utf8String legMuscleType;
+
+    public InbodyStruct(
+            Utf8String createdAt,
+            Utf8String gender,
+            Uint256 weight,
+            Uint256 muscleMass,
+            Uint256 fatRatio,
+            Utf8String muscleMassType,
+            Utf8String fatMassType,
+            Utf8String userCase,
+            Utf8String armMuscleType,
+            Utf8String trunkMuscleType,
+            Utf8String legMuscleType
+    ) {
+        super(createdAt, gender, weight, muscleMass, fatRatio,
+                muscleMassType, fatMassType, userCase,
+                armMuscleType, trunkMuscleType, legMuscleType);
         this.createdAt = createdAt;
+        this.gender = gender;
         this.weight = weight;
         this.muscleMass = muscleMass;
-        this.fatMass = fatMass;
-        this.bmi = bmi;
-        this.armMuscle = armMuscle;
-        this.trunkMuscle = trunkMuscle;
-        this.legMuscle = legMuscle;
+        this.fatRatio = fatRatio;
+        this.muscleMassType = muscleMassType;
+        this.fatMassType = fatMassType;
+        this.userCase = userCase;
+        this.armMuscleType = armMuscleType;
+        this.trunkMuscleType = trunkMuscleType;
+        this.legMuscleType = legMuscleType;
     }
 }
