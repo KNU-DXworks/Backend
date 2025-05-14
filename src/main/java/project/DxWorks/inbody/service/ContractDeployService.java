@@ -133,21 +133,23 @@ public class ContractDeployService {
         InbodySmartContract contract = InbodySmartContract.load(contractAddress, web3j, credentials, gasProvider);
 
         return contract.addInbody(
-                BigInteger.valueOf(requestDto.getId()),
-                requestDto.getCreatedAt(),
-                BigInteger.valueOf((long)(requestDto.getWeight() * 10)),
-                BigInteger.valueOf((long)(requestDto.getMuscleMass() * 10)),
-                BigInteger.valueOf((long)(requestDto.getFatMass() * 10)),
-                BigInteger.valueOf((long)(requestDto.getBmi() * 10)),
-                requestDto.getArmMuscle(),
-                requestDto.getTrunkMuscle(),
-                requestDto.getLegMuscle()
+                requestDto.createdAt(),
+                requestDto.gender(),
+                BigInteger.valueOf((long)(requestDto.weight() * 10)),           // uint256
+                BigInteger.valueOf((long)(requestDto.muscleMass() * 10)),       // uint256
+                BigInteger.valueOf((long)(requestDto.fatRatio() * 10)),         // uint256
+                requestDto.muscleMassType(),
+                requestDto.fatMassType(),
+                requestDto.userCase(),
+                requestDto.armMuscleType(),
+                requestDto.trunkMuscleType(),
+                requestDto.legMuscleType()
         ).send().getTransactionHash();
     }
 
 
     // 인바디 정보 가져오기
-    public List<InbodyDto> getInbody(String userPrivateKey) throws IOException {
+    public List<PostInbodyRequestDto> getInbody(String userPrivateKey) throws IOException {
         // 가스 설정
         ContractGasProvider gasProvider = new StaticGasProvider(
                 BigInteger.valueOf(20_000_000_000L),
@@ -157,6 +159,7 @@ public class ContractDeployService {
         // 인증서 생성 및 스마트 컨트랙트 load
         Credentials credentials = Credentials.create(userPrivateKey);
         InbodySmartContract contract = InbodySmartContract.load(contractAddress, web3j, credentials, gasProvider);
+
 
         return contract.getMyRecords(web3j,credentials,contractAddress);
     }
