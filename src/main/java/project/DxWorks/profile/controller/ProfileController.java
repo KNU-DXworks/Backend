@@ -9,6 +9,8 @@ import project.DxWorks.profile.dto.IntroduceResponseDto;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.profile.service.IntroduceService;
 
+import java.io.IOException;
+
 
 @RestController
 @RequestMapping("/api/profile")
@@ -26,7 +28,7 @@ public class ProfileController {
 
     //조회
     @GetMapping("/{profileId}")
-    public ResponseEntity<IntroduceResponseDto> get(@PathVariable long profileId){
+    public ResponseEntity<IntroduceResponseDto> get(@PathVariable long profileId) throws IOException {
         IntroduceResponseDto introduce = introduceService.getIntroduce(profileId);
         return ResponseEntity.ok(introduce);
     }

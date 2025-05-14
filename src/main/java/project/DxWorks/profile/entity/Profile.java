@@ -21,6 +21,8 @@ public class Profile {
     @Column(length = 1000)
     private String introduce; //자기소개
 
+    private String walletAddress;
+
     private long communityId;
 
 }
