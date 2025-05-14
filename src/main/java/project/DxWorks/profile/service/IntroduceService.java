@@ -6,11 +6,20 @@ import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import project.DxWorks.GeminiAI.service.InbodyService;
+import project.DxWorks.inbody.dto.PostInbodyRequestDto;
+import project.DxWorks.inbody.service.ContractDeployService;
+import project.DxWorks.inbody.struct.InbodyStruct;
+import project.DxWorks.profile.dto.HistoryDto;
 import project.DxWorks.profile.dto.IntroduceRequestDto;
 import project.DxWorks.profile.dto.IntroduceResponseDto;
 import project.DxWorks.profile.entity.Profile;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.repository.UserRepository;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 //TODO : communityId와 아직 연동 x
 @Service
@@ -18,6 +27,7 @@ import project.DxWorks.user.repository.UserRepository;
 public class IntroduceService {
 
     private final ProfileRepository profileRepository;
+    private final ContractDeployService contractDeployService;
 
     //자기소개 등록
     @Transactional
@@ -33,11 +43,25 @@ public class IntroduceService {
 
     //조회
     @Transactional
-    public IntroduceResponseDto getIntroduce(Long profileId) {
+    public IntroduceResponseDto getIntroduce(Long profileId) throws IOException {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 프로필ID가 존재하지 않습니다.: " + profileId));
 
-        return toDto(profile);
+        // getInbody 인자에 지갑주소 들어갈 예정
+       List<PostInbodyRequestDto> inbodySet = contractDeployService.getInbody("a");
+
+        List<HistoryDto> history = inbodySet.stream()
+                .map(dto -> new HistoryDto(dto.createdAt(), dto.userCase()))
+                .toList();
+
+
+        IntroduceResponseDto dto = new IntroduceResponseDto(
+                profileId,
+                profile.getIntroduce(),
+                profile.getCommunityId(),
+                history,
+                inbodySet.get(inbodySet.size()-1));
+        return dto;
     }
 
     //수정
