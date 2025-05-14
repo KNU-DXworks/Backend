@@ -7,12 +7,6 @@
 				"internalType": "address",
 				"name": "user",
 				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
 			}
 		],
 		"name": "InbodyRecorded",
@@ -21,13 +15,13 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "_id",
-				"type": "uint256"
+				"internalType": "string",
+				"name": "_createdAt",
+				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "_createdAt",
+				"name": "_gender",
 				"type": "string"
 			},
 			{
@@ -42,27 +36,37 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "_fatMass",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_bmi",
+				"name": "_fatRatio",
 				"type": "uint256"
 			},
 			{
 				"internalType": "string",
-				"name": "_armMuscle",
+				"name": "_muscleMassType",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "_trunkMuscle",
+				"name": "_fatMassType",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "_legMuscle",
+				"name": "_userCase",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_armMuscleType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_trunkMuscleType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_legMuscleType",
 				"type": "string"
 			}
 		],
@@ -78,13 +82,13 @@
 			{
 				"components": [
 					{
-						"internalType": "uint256",
-						"name": "id",
-						"type": "uint256"
+						"internalType": "string",
+						"name": "createdAt",
+						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "createdAt",
+						"name": "gender",
 						"type": "string"
 					},
 					{
@@ -99,27 +103,37 @@
 					},
 					{
 						"internalType": "uint256",
-						"name": "fatMass",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "bmi",
+						"name": "fatRatio",
 						"type": "uint256"
 					},
 					{
 						"internalType": "string",
-						"name": "armMuscle",
+						"name": "muscleMassType",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "trunkMuscle",
+						"name": "fatMassType",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "legMuscle",
+						"name": "userCase",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "armMuscleType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "trunkMuscleType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "legMuscleType",
 						"type": "string"
 					}
 				],
@@ -147,13 +161,13 @@
 		"name": "records",
 		"outputs": [
 			{
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
+				"internalType": "string",
+				"name": "createdAt",
+				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "createdAt",
+				"name": "gender",
 				"type": "string"
 			},
 			{
@@ -168,27 +182,37 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "fatMass",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "bmi",
+				"name": "fatRatio",
 				"type": "uint256"
 			},
 			{
 				"internalType": "string",
-				"name": "armMuscle",
+				"name": "muscleMassType",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "trunkMuscle",
+				"name": "fatMassType",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "legMuscle",
+				"name": "userCase",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "armMuscleType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "trunkMuscleType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "legMuscleType",
 				"type": "string"
 			}
 		],
