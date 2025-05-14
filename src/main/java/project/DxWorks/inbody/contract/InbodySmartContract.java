@@ -71,7 +71,7 @@ public class InbodySmartContract extends Contract {
     }
 
     // 인바디 정보 가져오기
-    public List<PostInbodyRequestDto> getMyRecords(Web3j web3j, Credentials credentials, String contractAddress) throws IOException {
+    public List<PostInbodyRequestDto> getMyRecords(Web3j web3j, String walletAddress, String contractAddress) throws IOException {
         // 스마트 컨트랙트 Web3j 함수 설정
         Function function = new Function(
                 "getMyRecords",
@@ -85,7 +85,7 @@ public class InbodySmartContract extends Contract {
 
         // 저수준 스마트컨트랙트 읽기
         EthCall response = web3j.ethCall(
-                Transaction.createEthCallTransaction(credentials.getAddress(), contractAddress, encoded),
+                Transaction.createEthCallTransaction(walletAddress, contractAddress, encoded),
                 DefaultBlockParameterName.LATEST
         ).send();
 

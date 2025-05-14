@@ -48,7 +48,7 @@ public class IntroduceService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 프로필ID가 존재하지 않습니다.: " + profileId));
 
         // getInbody 인자에 지갑주소 들어갈 예정
-       List<PostInbodyRequestDto> inbodySet = contractDeployService.getInbody("a");
+       List<PostInbodyRequestDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
 
         List<HistoryDto> history = inbodySet.stream()
                 .map(dto -> new HistoryDto(dto.createdAt(), dto.userCase()))
