@@ -149,7 +149,7 @@ public class ContractDeployService {
 
 
     // 인바디 정보 가져오기
-    public List<PostInbodyRequestDto> getInbody(String userPrivateKey) throws IOException {
+    public List<PostInbodyRequestDto> getInbody(String walletAddress) throws IOException {
         // 가스 설정
         ContractGasProvider gasProvider = new StaticGasProvider(
                 BigInteger.valueOf(20_000_000_000L),
@@ -161,7 +161,7 @@ public class ContractDeployService {
         InbodySmartContract contract = InbodySmartContract.load(contractAddress, web3j, credentials, gasProvider);
 
 
-        return contract.getMyRecords(web3j,credentials,contractAddress);
+        return contract.getMyRecords(web3j,walletAddress,contractAddress);
     }
 
 
