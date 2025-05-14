@@ -31,8 +31,8 @@ public class ContractDeployController {
         return contractDeployService.addInbody(requestDto);
     }
 
-    @GetMapping("/api/inbody/{privateKey}")
-    public List<PostInbodyRequestDto> getInbody(@PathVariable String privateKey) throws IOException {
-        return contractDeployService.getInbody(privateKey);
+    @GetMapping("/api/inbody/{walletAddress}")
+    public List<PostInbodyRequestDto> getInbody(@PathVariable String walletAddress) throws IOException {
+        return contractDeployService.getInbody(walletAddress);
     }
 }
