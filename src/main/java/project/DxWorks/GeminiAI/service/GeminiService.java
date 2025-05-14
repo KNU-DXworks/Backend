@@ -67,7 +67,6 @@ import java.util.Map;
                 "**다음 항목들의 '표준여부'는 모두 한국어로 추출해줘:**\\n" +
                 "골격근량의 표준여부\n" +
                 "체지방량의 표준여부\n" +
-                "BMI의 표준여부\n" +
                 "팔근육의 표준여부\n" +
                 "몸통근육의 표준여부\n" +
                 "다리근육의 표준여부\n\n" +
@@ -103,7 +102,7 @@ import java.util.Map;
                 "- fat: high, muscle: high → 비만근육형\n" +
                 "최종결과는 JSON으로 반환해주고 value 중 표준여부 관련 값들은 모두 한국어로 반환해주고 key 값은 영어로 다음과 같이 해줘\n " +
                 "gender, weight, muscleMass, fatMass,muscleMassRatio,fatRatio bmi, armMuscleType, trunkMuscleType, legMuscleType." +
-                "muscleMassType, fatMassType,bmiType, userCase");
+                "muscleMassType, fatMassType,userCase");
 
         List<Map<String, Object>> parts = List.of(imagePart, textPart);
 

@@ -6,8 +6,7 @@ import lombok.*;
 
 @Data
 @AllArgsConstructor
-@Getter
-@Setter
+@NoArgsConstructor
 @Builder
 public class IntroduceRequestDto {
     // private long communityId; //필요한 경우
