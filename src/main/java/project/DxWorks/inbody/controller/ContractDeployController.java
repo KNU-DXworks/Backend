@@ -25,14 +25,6 @@ public class ContractDeployController {
         }
     }
 
-    @GetMapping("/test/{ctAdd}")
-    public String get(@PathVariable String ctAdd) {
-        try {
-            return contractDeployService.callMessage(ctAdd);
-        } catch (Exception e) {
-            return "Read Block failed: " + e.getMessage();
-        }
-    }
 
     @PostMapping("/api/inbody")
     public String addInbody(@RequestBody PostInbodyRequestDto requestDto) throws Exception {
@@ -40,7 +32,7 @@ public class ContractDeployController {
     }
 
     @GetMapping("/api/inbody/{privateKey}")
-    public List<InbodyDto> getInbody(@PathVariable String privateKey) throws IOException {
+    public List<PostInbodyRequestDto> getInbody(@PathVariable String privateKey) throws IOException {
         return contractDeployService.getInbody(privateKey);
     }
 }
