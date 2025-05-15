@@ -1,6 +1,7 @@
 package project.DxWorks.inbody.dto;
 
 public record PostInbodyRequestDto (
+        String privateKey,
         String createdAt,
         String gender,
         double weight,
