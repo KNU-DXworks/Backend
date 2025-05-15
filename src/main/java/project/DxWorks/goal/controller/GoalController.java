@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.DxWorks.goal.dto.GoalRequestDto;
 import project.DxWorks.goal.dto.GoalResponseDto;
+import project.DxWorks.goal.entity.BodyType;
 import project.DxWorks.goal.entity.BodyTypeLevel;
 import project.DxWorks.goal.entity.Goal;
 import project.DxWorks.goal.service.GoalService;
@@ -29,6 +30,7 @@ public class GoalController {
     /**
      * 목표 조회 (userId로 조회)
      */
+    //TODO : goalId : null, userId: null , 나머지 목표는 잘받아와짐.
     @GetMapping("/user/{userId}")
     public ResponseEntity<GoalResponseDto> getGoalByUserId(@PathVariable Long userId) {
         Goal goal = goalService.findGoalByUserId(userId);
@@ -38,6 +40,7 @@ public class GoalController {
     /**
      * 목표 조회 (goalId로 조회)
      */
+    //TODO : 필요 없는것 같음.
     @GetMapping("/{goalId}")
     public ResponseEntity<GoalResponseDto> getGoalById(@PathVariable Long goalId) {
         Goal goal = goalService.findGoalById(goalId);
@@ -78,11 +81,12 @@ public class GoalController {
         goal.setFat(requestDto.getFat());
         goal.setBmi(requestDto.getBmi());
 
-        goal.setArm(BodyTypeLevel.fromString(requestDto.getArm()));
-        goal.setBody(BodyTypeLevel.fromString(requestDto.getBody()));
-        goal.setLeg(BodyTypeLevel.fromString(requestDto.getLeg()));
+        //프론트에서 받은 문자열이, "BELOW_STANDARD" 같은 문자열일때.
+        goal.setArm(BodyTypeLevel.valueOf(requestDto.getArm()));
+        goal.setBody(BodyTypeLevel.valueOf(requestDto.getBody()));
+        goal.setLeg(BodyTypeLevel.valueOf(requestDto.getLeg()));
 
-        goal.setGoalGroup(requestDto.getGoalGroup());
+        goal.setGoalBody(BodyType.valueOf(requestDto.getGoalGroup()));
         return goal;
     }
 
@@ -102,7 +106,7 @@ public class GoalController {
         responseDto.setBody(String.valueOf(goal.getBody()));
         responseDto.setLeg(String.valueOf(goal.getLeg()));
 
-        responseDto.setGoalGroup(goal.getGoalGroup());
+        responseDto.setGoalGroup(String.valueOf(goal.getGoalBody()));
         return responseDto;
     }
 

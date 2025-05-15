@@ -16,5 +16,5 @@ public class GoalRequestDto {
     private String arm;
     private String body;
     private String leg;
-    private Double goalGroup;
+    private String goalGroup;
 }
