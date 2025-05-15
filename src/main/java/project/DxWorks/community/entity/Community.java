@@ -21,18 +21,7 @@ public class Community {
     @Enumerated(EnumType.STRING)
     private CommunityCategory communityCategory;
 
-    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> posts = new ArrayList<>();
 
 
-    public void addPost(Post post) {
-        posts.add(post);
-        post.setCommunity(this);
-    }
-
-    public void removePost(Post post) {
-        posts.remove(post);
-        post.setCommunity(null);
-    }
 }
 

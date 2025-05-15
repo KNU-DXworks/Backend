@@ -26,29 +26,29 @@ public class CommunityService {
     private final UserRepository userRepository;
 
     // 커뮤니티별 게시글 목록 조회
-    public List<PostResponseDto> getPostsByCommunity(Long communityId) {
-        return postRepository.findAllByCommunityId(communityId).stream()
-                .map(PostResponseDto::from)
-                .toList();
-    }
+//    public List<PostResponseDto> getPostsByCommunity(Long communityId) {
+//        return postRepository.findAllByCommunity(communityId).stream()
+//                .map(PostResponseDto::from)
+//                .toList();
+//    }
 
     // 커뮤니티에 게시글 생성
-    @Transactional
-    public Long createPost(Long communityId, PostRequestDto dto) {
-
-        UserEntity user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
-
-        Community community = communityRepository.findById(communityId)
-                .orElseThrow(() -> new NoSuchElementException("Community not found"));
-
-        Post post = new Post(user, community, dto.content(), dto.postImg());
-
-        community.addPost(post);
-
-        communityRepository.save(community);
-
-        return post.getId();
-    }
+//    @Transactional
+//    public Long createPost(Long communityId, PostRequestDto dto) {
+//
+//        UserEntity user = userRepository.findById(dto.userId())
+//                .orElseThrow(() -> new NoSuchElementException("User not found"));
+//
+//        Community community = communityRepository.findById(communityId)
+//                .orElseThrow(() -> new NoSuchElementException("Community not found"));
+//
+//        Post post = new Post(user, community, dto.content(), dto.postImg());
+//
+//        community.addPost(post);
+//
+//        communityRepository.save(community);
+//
+//        return post.getId();
+//    }
 }
 

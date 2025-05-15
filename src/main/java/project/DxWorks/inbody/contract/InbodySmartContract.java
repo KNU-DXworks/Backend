@@ -14,9 +14,8 @@ import org.web3j.protocol.core.methods.response.EthCall;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.Contract;
 import org.web3j.tx.gas.ContractGasProvider;
-import project.DxWorks.inbody.dto.PostInbodyRequestDto;
+import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.struct.InbodyStruct;
-import project.DxWorks.post.entity.Post;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -71,7 +70,7 @@ public class InbodySmartContract extends Contract {
     }
 
     // 인바디 정보 가져오기
-    public List<PostInbodyRequestDto> getMyRecords(Web3j web3j, String walletAddress, String contractAddress) throws IOException {
+    public List<InbodyDto> getMyRecords(Web3j web3j, String walletAddress, String contractAddress) throws IOException {
         // 스마트 컨트랙트 Web3j 함수 설정
         Function function = new Function(
                 "getMyRecords",
@@ -92,7 +91,7 @@ public class InbodySmartContract extends Contract {
         List<Type> decoded = FunctionReturnDecoder.decode(response.getValue(), function.getOutputParameters());
 
         // 반환 리스트
-        List<PostInbodyRequestDto> result = new ArrayList<>();
+        List<InbodyDto> result = new ArrayList<>();
 
         if (!decoded.isEmpty()) {
             List<DynamicStruct> records = (List<DynamicStruct>) decoded.get(0).getValue();
@@ -100,7 +99,7 @@ public class InbodySmartContract extends Contract {
             for (DynamicStruct record : records) {
                 List<Type> fields = record.getValue();
 
-                PostInbodyRequestDto dto = new PostInbodyRequestDto(
+                InbodyDto dto = new InbodyDto(
                         fields.get(0).getValue().toString(), // createdAt
                         fields.get(1).getValue().toString(), // gender
                         ((BigInteger) fields.get(2).getValue()).doubleValue() / 10, // weight

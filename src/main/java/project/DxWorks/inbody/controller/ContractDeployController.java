@@ -4,7 +4,7 @@ package project.DxWorks.inbody.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import project.DxWorks.inbody.dto.InbodyDto;
-import project.DxWorks.inbody.dto.PostInbodyRequestDto;
+import project.DxWorks.inbody.dto.PostInbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
 
 import java.io.IOException;
@@ -27,12 +27,12 @@ public class ContractDeployController {
 
 
     @PostMapping("/api/inbody")
-    public String addInbody(@RequestBody PostInbodyRequestDto requestDto) throws Exception {
+    public String addInbody(@RequestBody PostInbodyDto requestDto) throws Exception {
         return contractDeployService.addInbody(requestDto);
     }
 
     @GetMapping("/api/inbody/{walletAddress}")
-    public List<PostInbodyRequestDto> getInbody(@PathVariable String walletAddress) throws IOException {
+    public List<InbodyDto> getInbody(@PathVariable String walletAddress) throws IOException {
         return contractDeployService.getInbody(walletAddress);
     }
 }
