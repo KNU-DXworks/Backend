@@ -28,7 +28,6 @@ public class Inbody {
 
     private String muscleMassType; //골격근량 표준인지 표준이하인지
     private String fatMassType;  // 체지방량 표준인지 표준이하인지
-    // private String bmiType; 없어도됨.
 
     private String userCase; //사용자의 체형 유형
 
