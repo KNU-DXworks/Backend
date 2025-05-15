@@ -1,10 +1,16 @@
 package project.DxWorks.post.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import project.DxWorks.common.ui.Response;
+import project.DxWorks.post.dto.CreatePostRequestDto;
 import project.DxWorks.post.dto.PostRequestDto;
 import project.DxWorks.post.service.PostService;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -12,6 +18,16 @@ import project.DxWorks.post.service.PostService;
 public class PostController {
 
     private final PostService postService;
+
+    // Post 생성
+    @PostMapping
+    public Response<String> createPost(@RequestPart("data") String json, @RequestPart("image") MultipartFile file) throws IOException {
+        // form형식 데이터로 받아와서(image때문) 직점 Json 데이터로 수동 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        CreatePostRequestDto requestDto = objectMapper.readValue(json, CreatePostRequestDto.class);
+
+        return postService.createPost(requestDto, file);
+    }
 
     // Post 수정
     @PutMapping("/{postId}")
