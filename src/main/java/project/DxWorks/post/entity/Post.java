@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.DxWorks.community.entity.Community;
+import project.DxWorks.post.domain.PostType;
 import project.DxWorks.user.domain.UserEntity;
 
 @Entity
@@ -28,6 +29,8 @@ public class Post {
     private String content;
 
     private String postImg;
+
+    private PostType type;
 
     public Post(UserEntity user, Community community, String content, String postImg) {
         this.user = user;
