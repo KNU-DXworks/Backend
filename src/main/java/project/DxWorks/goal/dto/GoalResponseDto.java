@@ -20,6 +20,6 @@ public class GoalResponseDto {
     private String arm;
     private String body;
     private String leg;
-    private Double goalGroup;
+    private String goalGroup;
     private Long userId;
 }

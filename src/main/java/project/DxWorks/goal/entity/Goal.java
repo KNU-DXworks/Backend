@@ -38,8 +38,7 @@ public class Goal {
     @Enumerated(EnumType.STRING)
     private BodyTypeLevel leg;
 
-    @Column(name = "goal_group")
-    private Double goalGroup;
-
+    @Enumerated(EnumType.STRING)
+    private BodyType goalBody; //목표체형그룹
 
 }
