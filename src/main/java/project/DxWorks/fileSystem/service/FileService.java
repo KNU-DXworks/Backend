@@ -30,12 +30,13 @@ public class FileService {
         String fileName = null;
         if (file.getContentType() != null){
             // pdf, image 폴더 따로 관리
-            if (file.getContentType().equals("applicant/pdf"))
+            System.out.println(file.getContentType());
+            if (file.getContentType().equals("application/pdf"))
             {
-                fileName = UUID.randomUUID() + "-" + "pdfs/" + file.getOriginalFilename();
+                fileName = "pdfs/" + UUID.randomUUID() + file.getOriginalFilename();
             }
             else {
-                fileName = UUID.randomUUID() + "-" + "images/" + file.getOriginalFilename();
+                fileName =  "images/" + UUID.randomUUID() + file.getOriginalFilename();
             }
         }
 
