@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.DxWorks.common.ui.Response;
 import project.DxWorks.post.dto.CreatePostRequestDto;
+import project.DxWorks.post.dto.PostAllResponseDto;
 import project.DxWorks.post.dto.PostRequestDto;
 import project.DxWorks.post.service.PostService;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -43,5 +45,11 @@ public class PostController {
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{community}")
+    public Response<List<PostAllResponseDto>> getCommunityPost(@PathVariable String community) {
+
+        return Response.ok(postService.getCommunityPost(community));
     }
 }
