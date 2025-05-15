@@ -12,8 +12,8 @@ import java.time.LocalDate;
 public class TransformationRecordDto {
     private Long userId;
     private String username;
-    private int startGroup;
-    private int endGroup;
+    private String startGroup;
+    private String endGroup;
     private double weightEnd;
     private double muscleEnd;
     private double fatEnd;

@@ -33,8 +33,8 @@ public class RecommendService {
         Goal goal = user.getGoal();
         System.out.println("사용자ID = " + user.getId());
 
-        int startGroup = user.getCurrentGroup().intValue(); // 현재 체형 그룹
-        int goalGroup = goal.getGoalGroup().intValue();     // 목표 체형 그룹
+        String startGroup = user.getCurrentBody().name(); // 현재 체형 그룹
+        String goalGroup = goal.getGoalBody().name();     // 목표 체형 그룹
 
         RecommendRequestDto dto = new RecommendRequestDto(
                 startGroup,
@@ -57,22 +57,22 @@ public class RecommendService {
         return (List<Map<String, Object>>) response.getBody().get("recommended_users");
     }
 
-    // 유저의 그룹이 바뀔때 마다 이전 그룹, 현재 그룹, 체중, 근육량, 지방량을 벡터디비로 insert
+    // 유저의 그룹이 바뀌면 마다 이전 그룹, 현재 그룹, 체중, 근육량, 지방량을 벡터디비로 insert ==> 추후 사용 예정
     public void checkAndSaveIfGoalReached(UserEntity user) {
         Goal goal = user.getGoal();
 
-        if (user.getCurrentGroup().intValue() == goal.getGoalGroup().intValue()) {
-            TransformationRecordDto record = new TransformationRecordDto(
-                    user.getId(),
-                    user.getUserName(),
-                    user.getCurrentGroup().intValue(),
-                    goal.getGoalGroup().intValue(),
-                    goal.getWeight(),
-                    goal.getMuscle(),
-                    goal.getFat(),
-                    LocalDate.now()
-            );
-            bigQueryService.saveUserTransformation(record);
-        }
+
+        TransformationRecordDto record = new TransformationRecordDto(
+                user.getId(),
+                user.getUserName(),
+                user.getCurrentBody().name(),
+                goal.getGoalBody().name(),
+                goal.getWeight(),
+                goal.getMuscle(),
+                goal.getFat(),
+                LocalDate.now()
+        );
+        bigQueryService.saveUserTransformation(record);
+
     }
 }

@@ -41,4 +41,6 @@ public class Goal {
     @Enumerated(EnumType.STRING)
     private BodyType goalBody; //목표체형그룹
 
+//    public Number getGoalGroup() {
+//    }
 }
