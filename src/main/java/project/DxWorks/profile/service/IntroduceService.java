@@ -6,11 +6,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
+import project.DxWorks.post.dto.PostAllResponseDto;
+import project.DxWorks.post.dto.PostResponseDto;
+import project.DxWorks.post.repository.PostRepository;
 import project.DxWorks.profile.dto.HistoryDto;
 import project.DxWorks.profile.dto.IntroduceRequestDto;
 import project.DxWorks.profile.dto.IntroduceResponseDto;
 import project.DxWorks.profile.entity.Profile;
 import project.DxWorks.profile.repository.ProfileRepository;
+import project.DxWorks.user.domain.UserEntity;
+import project.DxWorks.user.repository.UserRepository;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,16 +27,20 @@ public class IntroduceService {
 
     private final ProfileRepository profileRepository;
     private final ContractDeployService contractDeployService;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     //자기소개 등록
     @Transactional
     public IntroduceResponseDto createIntroduce(IntroduceRequestDto requestDto) {
         Profile profile = Profile.builder().
                 introduce(requestDto.getIntroduce()).
-                //communityId(requestDto.getCommunityId).
+                user(userRepository.findById(requestDto.getUserId()).
+                        orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다. "))).
                         build();
         Profile saved = profileRepository.save(profile);
         //TODO : community id get 해야함.
+
         return toDto(saved);
     }
 
@@ -41,20 +50,44 @@ public class IntroduceService {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 프로필ID가 존재하지 않습니다.: " + profileId));
 
+        UserEntity user = profile.getUser();
+
         // getInbody 인자에 지갑주소 들어갈 예정
        List<InbodyDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
 
+       // 인바디 히스토리 정보
         List<HistoryDto> history = inbodySet.stream()
                 .map(dto -> new HistoryDto(dto.createdAt(), dto.userCase()))
                 .toList();
 
+        // 포스트 정보 불러오기
+        List<PostAllResponseDto> posts = postRepository.findAllByUser(user).stream()
+                .map(post -> new PostAllResponseDto(
+                    post.getId(),
+                    post.getUser().getUserName(),
+                    post.getRegDt(),
+                    post.getPostType(),
+                    post.getCommunityType(),
+                    post.getContent(),
+                    post.getPostImg(),
+                    resolveFileType(post.getPostImg())
+                ))
+                .toList();
+
+        InbodyDto inbody = null;
+
+        if (!inbodySet.isEmpty()){
+            inbody = inbodySet.get(inbodySet.size() - 1);
+        }
 
         IntroduceResponseDto dto = new IntroduceResponseDto(
                 profileId,
                 profile.getIntroduce(),
                 profile.getCommunityId(),
                 history,
-                inbodySet.get(inbodySet.size()-1));
+                inbody,
+                posts);
+
         return dto;
     }
 
@@ -82,6 +115,13 @@ public class IntroduceService {
                 .introduce(profile.getIntroduce())
                 //.communityId(profile.getCommunityId())
                 .build();
+    }
+
+    private String resolveFileType(String fileUrl) {
+        if (fileUrl == null || fileUrl.isBlank()) return "NONE";
+        if (fileUrl.endsWith(".pdf")) return "application/pdf";
+        if (fileUrl.matches(".*\\.(jpg|jpeg|png|gif|bmp)$")) return "image/jpeg";
+        return "UNKNOWN";
     }
 
 }

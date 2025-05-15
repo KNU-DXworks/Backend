@@ -25,4 +25,7 @@ public class Profile {
 
     private long communityId;
 
+    @OneToOne
+    private UserEntity user;
+
 }
