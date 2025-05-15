@@ -3,22 +3,16 @@ package project.DxWorks.profile.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import project.DxWorks.GeminiAI.service.InbodyService;
-import project.DxWorks.inbody.dto.PostInbodyRequestDto;
+import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
-import project.DxWorks.inbody.struct.InbodyStruct;
 import project.DxWorks.profile.dto.HistoryDto;
 import project.DxWorks.profile.dto.IntroduceRequestDto;
 import project.DxWorks.profile.dto.IntroduceResponseDto;
 import project.DxWorks.profile.entity.Profile;
 import project.DxWorks.profile.repository.ProfileRepository;
-import project.DxWorks.user.repository.UserRepository;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 //TODO : communityId와 아직 연동 x
@@ -48,7 +42,7 @@ public class IntroduceService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 프로필ID가 존재하지 않습니다.: " + profileId));
 
         // getInbody 인자에 지갑주소 들어갈 예정
-       List<PostInbodyRequestDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
+       List<InbodyDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
 
         List<HistoryDto> history = inbodySet.stream()
                 .map(dto -> new HistoryDto(dto.createdAt(), dto.userCase()))

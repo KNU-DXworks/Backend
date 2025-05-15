@@ -16,15 +16,15 @@ public class CommunityController {
 
     private final CommunityService communityService;
 
-    @GetMapping("/{communityId}")
-    public ResponseEntity<List<PostResponseDto>> getPosts(@PathVariable Long communityId) {
-        return ResponseEntity.ok(communityService.getPostsByCommunity(communityId));
-    }
+//    @GetMapping("/{communityId}")
+//    public ResponseEntity<List<PostResponseDto>> getPosts(@PathVariable Long communityId) {
+//        return ResponseEntity.ok(communityService.getPostsByCommunity(communityId));
+//    }
 
-    @PostMapping("/{communityId}")
-    public ResponseEntity<Long> createPost(
-            @PathVariable Long communityId,
-            @RequestBody PostRequestDto dto) {
-        return ResponseEntity.ok(communityService.createPost(communityId, dto));
-    }
+//    @PostMapping("/{communityId}")
+//    public ResponseEntity<Long> createPost(
+//            @PathVariable Long communityId,
+//            @RequestBody PostRequestDto dto) {
+//        return ResponseEntity.ok(communityService.createPost(communityId, dto));
+//    }
 }

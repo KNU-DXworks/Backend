@@ -6,10 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -22,7 +20,7 @@ import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 import project.DxWorks.inbody.contract.InbodySmartContract;
 import project.DxWorks.inbody.dto.InbodyDto;
-import project.DxWorks.inbody.dto.PostInbodyRequestDto;
+import project.DxWorks.inbody.dto.PostInbodyDto;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -110,7 +108,7 @@ public class ContractDeployService {
         return "hhhh";
     }
 
-    public String addInbody(PostInbodyRequestDto requestDto) throws Exception {
+    public String addInbody(PostInbodyDto requestDto) throws Exception {
         // Gas설정
         ContractGasProvider gasProvider = new StaticGasProvider(
                 BigInteger.valueOf(20_000_000_000L),
@@ -137,7 +135,7 @@ public class ContractDeployService {
 
 
     // 인바디 정보 가져오기
-    public List<PostInbodyRequestDto> getInbody(String walletAddress) throws IOException {
+    public List<InbodyDto> getInbody(String walletAddress) throws IOException {
         // 가스 설정
         ContractGasProvider gasProvider = new StaticGasProvider(
                 BigInteger.valueOf(20_000_000_000L),

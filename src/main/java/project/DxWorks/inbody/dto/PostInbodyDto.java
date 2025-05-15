@@ -1,6 +1,7 @@
 package project.DxWorks.inbody.dto;
 
-public record PostInbodyRequestDto (
+
+public record PostInbodyDto(
         String privateKey,
         String createdAt,
         String gender,
@@ -12,5 +13,5 @@ public record PostInbodyRequestDto (
         String userCase,
         String armMuscleType,
         String trunkMuscleType,
-        String legMuscleType
-){ }
+        String legMuscleType){
+}
