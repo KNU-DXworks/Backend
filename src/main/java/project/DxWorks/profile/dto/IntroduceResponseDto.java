@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import project.DxWorks.inbody.dto.InbodyDto;
+import project.DxWorks.post.dto.PostAllResponseDto;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public class IntroduceResponseDto {
     private List<HistoryDto> history;
 
     private InbodyDto inbody;
+
+    private List<PostAllResponseDto> posts;
 }
