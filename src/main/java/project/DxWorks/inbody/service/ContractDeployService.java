@@ -107,18 +107,6 @@ public class ContractDeployService {
                 DefaultBlockParameterName.LATEST // 가장 최신의 블록을 조회
         ).send();
 
-        System.out.println("▶️ Raw Response: " + response.getValue());
-        System.out.println("▶️ hasError: " + response.hasError());
-        if (response.hasError()) {
-            System.out.println("▶️ Error: " + response.getError().getMessage());
-        } else {
-            List<Type> decoded = FunctionReturnDecoder.decode(response.getValue(), function.getOutputParameters());
-            if (!decoded.isEmpty()) {
-                System.out.println("✅ message: " + decoded.get(0).getValue().toString());
-            } else {
-                System.out.println("❌ No result returned.");
-            }
-        }
         return "hhhh";
     }
 
@@ -129,7 +117,7 @@ public class ContractDeployService {
                 BigInteger.valueOf(6721975)
         );
 
-        Credentials credentials = Credentials.create(privateKey);
+        Credentials credentials = Credentials.create(requestDto.privateKey());
         InbodySmartContract contract = InbodySmartContract.load(contractAddress, web3j, credentials, gasProvider);
 
         return contract.addInbody(
