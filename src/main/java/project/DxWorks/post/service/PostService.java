@@ -6,7 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import project.DxWorks.common.ui.Response;
 import project.DxWorks.fileSystem.service.FileService;
+import project.DxWorks.post.domain.CommunityType;
 import project.DxWorks.post.dto.CreatePostRequestDto;
+import project.DxWorks.post.dto.PostAllResponseDto;
 import project.DxWorks.post.dto.PostRequestDto;
 import project.DxWorks.post.entity.Post;
 import project.DxWorks.post.repository.PostRepository;
@@ -14,6 +16,7 @@ import project.DxWorks.user.domain.UserEntity;
 import project.DxWorks.user.repository.UserRepository;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -64,5 +67,31 @@ public class PostService {
                 .orElseThrow(() -> new NoSuchElementException("Post not found"));
 
         postRepository.delete(post);
+    }
+
+    //커뮤니티 모든 게시물 조회
+    @Transactional
+    public List<PostAllResponseDto> getCommunityPost(String community) {
+        return postRepository.findAllByCommunityType(CommunityType.valueOf(community))
+                .stream()
+                .map(post -> new PostAllResponseDto(
+                        post.getId(),
+                        post.getUser().getUserName(),
+                        post.getRegDt(),
+                        post.getPostType(),
+                        post.getCommunityType(),
+                        post.getContent(),
+                        post.getPostImg(),
+                        resolveFileType(post.getPostImg())
+                ))
+                .toList();
+
+    }
+
+    private String resolveFileType(String fileUrl) {
+        if (fileUrl == null || fileUrl.isBlank()) return "NONE";
+        if (fileUrl.endsWith(".pdf")) return "application/pdf";
+        if (fileUrl.matches(".*\\.(jpg|jpeg|png|gif|bmp)$")) return "image/jpeg";
+        return "UNKNOWN";
     }
 }
