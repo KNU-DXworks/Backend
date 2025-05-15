@@ -68,14 +68,16 @@ public class GoalService {
             goal.setFat(goalData.getFat());
         if (goalData.getBmi() != null)
             goal.setBmi(goalData.getBmi());
+
         if (goalData.getArm() != null)
             goal.setArm(goalData.getArm());
         if (goalData.getBody() != null)
             goal.setBody(goalData.getBody());
         if (goalData.getLeg() != null)
             goal.setLeg(goalData.getLeg());
-        if (goalData.getGoalGroup() != null)
-            goal.setGoalGroup(goalData.getGoalGroup());
+
+        if (goalData.getGoalBody() != null)
+            goal.setGoalBody(goalData.getGoalBody());
 
     }
 
