@@ -31,6 +31,8 @@ public class UserEntity extends TimeBaseEntity {
     @JoinColumn(name = "goal_id")
     private Goal goal;
 
+    private Double currentGroup;
+
     @OneToOne
     @JoinColumn(name = "profile_id")
     private Profile profile;

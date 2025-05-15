@@ -6,6 +6,7 @@ import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.DxWorks.common.ui.Response;
+import project.DxWorks.goal.entity.Goal;
 import project.DxWorks.user.domain.UserEntity;
 import project.DxWorks.user.domain.UserInterestEntity;
 import project.DxWorks.user.dto.request.ModifyUserInfRequestDto;
@@ -75,5 +76,11 @@ public class UserService {
         return Response.ok(toUser.stream()
                 .map(u -> new InterestUserListResponseDto(u.getId(), u.getUserName()))
                 .collect(Collectors.toList()));
+    }
+
+    public Goal getUserGoal(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        return user.getGoal();
     }
 }

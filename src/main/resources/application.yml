@@ -52,3 +52,5 @@ aws:
   region:
     static: ap-northeast-2
 
+gcp:
+  project-id: dxworks-rag-ai
