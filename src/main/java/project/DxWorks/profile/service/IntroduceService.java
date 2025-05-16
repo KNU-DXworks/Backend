@@ -44,7 +44,7 @@ public class IntroduceService {
         return toDto(saved);
     }
 
-    //조회
+    //조회 (profileId로 조회 -> 다른 사람 프로필 조회)
     @Transactional
     public IntroduceResponseDto getIntroduce(Long profileId) throws IOException {
         Profile profile = profileRepository.findById(profileId)
@@ -92,6 +92,17 @@ public class IntroduceService {
 
         return dto;
     }
+
+
+//    //내 프로필 조회
+//    @Transactional
+//    public IntroduceResponseDto getMyIntroduce(Long userId) {
+//        //TODO : 현재 로그인된 사용자 id 가져와야함.
+//        //Long userId = getCurrentUserId();
+//        //userId로 UserEntity 조회
+//        UserEntity user = userRepository.findById(userId)
+//
+//    }
 
     //수정
     @Transactional
