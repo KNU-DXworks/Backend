@@ -24,24 +24,24 @@ public class UserController {
         return userService.getUserInf(userId);
     }
 
-    @PutMapping("/{userId}")
-    public Response<String> modifyUserEmail(@PathVariable Long userId, @RequestBody ModifyUserInfRequestDto requestDto){
+    @PutMapping
+    public Response<String> modifyUserEmail(@RequestAttribute Long userId, @RequestBody ModifyUserInfRequestDto requestDto){
         return userService.modifyUserEmail(userId, requestDto);
     }
 
-    @PostMapping("/interest/{userId}")
-    public Response<String> interestUser(@PathVariable Long userId, @RequestBody InterestUserDto dto) {
+    @PostMapping("/interest")
+    public Response<String> interestUser(@RequestAttribute Long userId, @RequestBody InterestUserDto dto) {
         return userService.interestUser(userId, dto.toUser());
     }
 
-    @GetMapping("/interest/to/{userId}")
-    public Response<List<InterestUserListResponseDto>> getInterestToUser(@PathVariable Long userId){
+    @GetMapping("/interest/to")
+    public Response<List<InterestUserListResponseDto>> getInterestToUser(@RequestAttribute Long userId){
 
         return userService.getInterestUser(userId, true);
     }
 
-    @GetMapping("/interest/from/{userId}")
-    public Response<List<InterestUserListResponseDto>> getInterestFromUser(@PathVariable Long userId){
+    @GetMapping("/interest/from")
+    public Response<List<InterestUserListResponseDto>> getInterestFromUser(@RequestAttribute Long userId){
 
         return userService.getInterestUser(userId, false);
     }
