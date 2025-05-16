@@ -51,6 +51,7 @@ public class IntroduceService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 프로필ID가 존재하지 않습니다.: " + profileId));
 
         UserEntity user = profile.getUser();
+        String userName = user.getUserName(); //userName 변수 추가.
 
         // getInbody 인자에 지갑주소 들어갈 예정
        List<InbodyDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
@@ -86,7 +87,8 @@ public class IntroduceService {
                 profile.getCommunityId(),
                 history,
                 inbody,
-                posts);
+                posts,
+                userName);
 
         return dto;
     }

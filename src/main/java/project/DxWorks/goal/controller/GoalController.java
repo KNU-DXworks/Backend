@@ -86,7 +86,7 @@ public class GoalController {
         goal.setBody(BodyTypeLevel.valueOf(requestDto.getBody()));
         goal.setLeg(BodyTypeLevel.valueOf(requestDto.getLeg()));
 
-        goal.setGoalBody(BodyType.valueOf(requestDto.getGoalGroup()));
+        goal.setGoalBody(BodyType.valueOf(requestDto.getGoalBody()));
         return goal;
     }
 
@@ -106,7 +106,7 @@ public class GoalController {
         responseDto.setBody(String.valueOf(goal.getBody()));
         responseDto.setLeg(String.valueOf(goal.getLeg()));
 
-        responseDto.setGoalGroup(String.valueOf(goal.getGoalBody()));
+        responseDto.setGoalBody(String.valueOf(goal.getGoalBody()));
         return responseDto;
     }
 
