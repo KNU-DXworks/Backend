@@ -28,7 +28,7 @@ public class FileDealService {
     @Value("${web3.private-key}")
     private String privateKey;
 
-    @Value("${web3.contract.address}")
+    @Value("${web3.contract.dealAddress}")
     private String contractAddress;
 
     public String deployContract() throws Exception {

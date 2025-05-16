@@ -23,6 +23,8 @@ web3:
   contract:
     address: ${CONTRACT_ADDRESS}
     transactionAddress: ${TRANSACTION_CONTRACT_ADDRESS}
+    dealAddress: ${DEAL_CONTRACT_ADDRESS}
+
   gas:
     price: 20000000000       # 20 Gwei
     limit: 6721975
