@@ -16,7 +16,7 @@ public class ContractDeployController {
 
     private final ContractDeployService contractDeployService;
 
-    @PostMapping("/test")
+    @PostMapping("/api/deploy")
     public String deploy() {
         try {
             return contractDeployService.deployContract();
