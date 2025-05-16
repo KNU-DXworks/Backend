@@ -23,6 +23,8 @@ import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.dto.PostInbodyDto;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -53,7 +55,6 @@ public class ContractDeployService {
         );
 
         // ABI & BIN 파일 읽기
-        String abi = readResourceFile("inbody.abi");
         String bin = readResourceFile("inbody.bin");
 
         // 트랜잭션 매니저
@@ -115,7 +116,7 @@ public class ContractDeployService {
                 BigInteger.valueOf(6721975)
         );
 
-        Credentials credentials = Credentials.create(requestDto.privateKey());
+        Credentials credentials = Credentials.create(privateKey);
         InbodySmartContract contract = InbodySmartContract.load(contractAddress, web3j, credentials, gasProvider);
 
         return contract.addInbody(
@@ -151,10 +152,12 @@ public class ContractDeployService {
     }
 
 
-    private String readResourceFile(String filename) throws IOException {
-        return new String(
-                Files.readAllBytes(new ClassPathResource(filename).getFile().toPath()),
-                StandardCharsets.UTF_8
-        ).replaceAll("\\s+", ""); // 공백 제거 (중요)
+    private String readResourceFile(String filename) {
+        try (InputStream inputStream = new ClassPathResource(filename).getInputStream()) {
+            String content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            return content.replaceAll("\\s+", ""); // 공백 제거
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to read resource file: " + filename, e);
+        }
     }
 }
