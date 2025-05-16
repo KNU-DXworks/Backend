@@ -28,8 +28,8 @@ public class ProfileController {
 
     //등록
     @PostMapping("/introduce")
-    public ResponseEntity<IntroduceResponseDto> create(@RequestBody IntroduceRequestDto dto){
-        IntroduceResponseDto created = introduceService.createIntroduce(dto);
+    public ResponseEntity<IntroduceResponseDto> create(@RequestAttribute Long userId, @RequestBody IntroduceRequestDto dto){
+        IntroduceResponseDto created = introduceService.createIntroduce(dto, userId);
         return ResponseEntity.ok(created);
     }
 

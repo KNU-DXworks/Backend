@@ -8,7 +8,6 @@ import project.DxWorks.post.domain.PostType;
 @Data
 @AllArgsConstructor
 public class CreatePostRequestDto {
-    private Long userId;
 
     private CommunityType communityType;
 
