@@ -31,8 +31,8 @@ public class GoalController {
      * 목표 조회 (userId로 조회)
      */
     //TODO : goalId : null, userId: null , 나머지 목표는 잘받아와짐.
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<GoalResponseDto> getGoalByUserId(@PathVariable Long userId) {
+    @GetMapping("/user")
+    public ResponseEntity<GoalResponseDto> getGoalByUserId(@RequestAttribute Long userId) {
         Goal goal = goalService.findGoalByUserId(userId);
         return ResponseEntity.ok(convertToDto(goal));
     }

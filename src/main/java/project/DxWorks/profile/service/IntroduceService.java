@@ -32,14 +32,13 @@ public class IntroduceService {
 
     //자기소개 등록
     @Transactional
-    public IntroduceResponseDto createIntroduce(IntroduceRequestDto requestDto) {
+    public IntroduceResponseDto createIntroduce(IntroduceRequestDto requestDto, Long userId) {
         Profile profile = Profile.builder().
                 introduce(requestDto.getIntroduce()).
-                user(userRepository.findById(requestDto.getUserId()).
+                user(userRepository.findById(userId).
                         orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다. "))).
                         build();
         Profile saved = profileRepository.save(profile);
-        //TODO : community id get 해야함.
 
         return toDto(saved);
     }
