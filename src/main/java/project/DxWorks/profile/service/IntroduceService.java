@@ -94,17 +94,60 @@ public class IntroduceService {
     }
 
 
-//    //내 프로필 조회
-//    @Transactional
-//    public IntroduceResponseDto getMyIntroduce(Long userId) {
-//        //TODO : 현재 로그인된 사용자 id 가져와야함.
-//        //Long userId = getCurrentUserId();
-//        //userId로 UserEntity 조회
-//        UserEntity user = userRepository.findById(userId)
-//
-//    }
+    //내 프로필 조회 (userId 사용)
+    @Transactional
+    public IntroduceResponseDto getMyIntroduce(Long userId) throws IOException {
+
+        //userId로 UserEntity 조회
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 사용자가 존재하지 않습니다."));
+
+        //유저로 프로필 조회
+        Profile profile = profileRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 프로필이 존재하지 않습니다."));
+
+        // getInbody 인자에 지갑주소 들어갈 예정
+        List<InbodyDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
+
+        // 인바디 히스토리 정보
+        List<HistoryDto> history = inbodySet.stream()
+                .map(dto -> new HistoryDto(dto.createdAt(), dto.userCase()))
+                .toList();
+
+        // 포스트 정보 불러오기
+        List<PostAllResponseDto> posts = postRepository.findAllByUser(user).stream()
+                .map(post -> new PostAllResponseDto(
+                        post.getId(),
+                        post.getUser().getUserName(),
+                        post.getRegDt(),
+                        post.getPostType(),
+                        post.getCommunityType(),
+                        post.getContent(),
+                        post.getPostImg(),
+                        resolveFileType(post.getPostImg())
+                ))
+                .toList();
+
+        InbodyDto inbody = null;
+
+        if (!inbodySet.isEmpty()){
+            inbody = inbodySet.get(inbodySet.size() - 1);
+        }
+
+        IntroduceResponseDto dto = new IntroduceResponseDto(
+                profile.getId(),
+                profile.getIntroduce(),
+                profile.getCommunityId(),
+                history,
+                inbody,
+                posts,
+                user.getUserName());
+
+        return dto;
+    }
 
     //수정
+    //TODO : 한 User는 프로필 1개(OnetoOne)를 가지므로 userId를 통해 수정? 삭제도 마찬가지?
     @Transactional
     public IntroduceResponseDto updateIntroduce(Long profileId,IntroduceRequestDto requestDto) {
         Profile profile = profileRepository.findById(profileId)
