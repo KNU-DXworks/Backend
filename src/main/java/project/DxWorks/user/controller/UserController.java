@@ -19,8 +19,8 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{userId}")
-    public Response<UserInfResponseDto> getUserInf(@PathVariable Long userId){
+    @GetMapping
+    public Response<UserInfResponseDto> getUserInf(@RequestAttribute Long userId){
         return userService.getUserInf(userId);
     }
 
