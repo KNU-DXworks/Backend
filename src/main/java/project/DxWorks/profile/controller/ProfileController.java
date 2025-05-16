@@ -2,14 +2,20 @@ package project.DxWorks.profile.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project.DxWorks.profile.dto.IntroduceRequestDto;
 import project.DxWorks.profile.dto.IntroduceResponseDto;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.profile.service.IntroduceService;
+import project.DxWorks.user.domain.UserEntity;
+import project.DxWorks.user.repository.UserRepository;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 @RestController
@@ -18,6 +24,7 @@ import java.io.IOException;
 public class ProfileController {
 
     private final IntroduceService introduceService;
+    private final UserRepository userRepository;
 
     //등록
     @PostMapping("/introduce")
@@ -26,11 +33,37 @@ public class ProfileController {
         return ResponseEntity.ok(created);
     }
 
-    //조회
+    //타인 프로필 조회
     @GetMapping("/{profileId}")
     public ResponseEntity<IntroduceResponseDto> get(@PathVariable long profileId) throws IOException {
         IntroduceResponseDto introduce = introduceService.getIntroduce(profileId);
         return ResponseEntity.ok(introduce);
+    }
+
+    //내 프로필 조회
+    @GetMapping("/myprofile")
+    public ResponseEntity<IntroduceResponseDto> getMyProfile() throws IOException {
+
+        //Spring Security 사용하여 Authentication 객채에서 userName 꺼내오고 , userName으로 userId찾음.
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        Object principal = auth.getPrincipal(); //principle -> String or UserEntity
+        String userName;
+
+        if (principal instanceof UserEntity) {
+            userName = ((UserEntity) principal).getUserName();
+        } else if(principal instanceof String) {
+            userName = (String) principal; //일반적으로는 userName임.
+        } else {
+            throw new IllegalArgumentException("해당 사용자 정보를 찾을 수 없습니다.");
+        }
+
+        //userName을 이용해 userEntity 조회
+        UserEntity user = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자 정보를 찾을 수 없습니다."));
+        IntroduceResponseDto dto = introduceService.getMyIntroduce(user.getId());
+
+        return ResponseEntity.ok(dto);
     }
 
     //수정
