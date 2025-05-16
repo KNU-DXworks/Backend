@@ -7,19 +7,6 @@
 				"internalType": "uint256",
 				"name": "dealId",
 				"type": "uint256"
-			}
-		],
-		"name": "DealConfirmed",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "uint256",
-				"name": "dealId",
-				"type": "uint256"
 			},
 			{
 				"indexed": true,
@@ -41,6 +28,50 @@
 			}
 		],
 		"name": "DealCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "dealId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "ipfsHash",
+				"type": "string"
+			}
+		],
+		"name": "FileRegistered",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "dealId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "seller",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "PaymentCompleted",
 		"type": "event"
 	},
 	{
@@ -68,7 +99,7 @@
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "dealId",
 				"type": "uint256"
 			}
 		],
@@ -101,14 +132,14 @@
 				"type": "uint256"
 			},
 			{
-				"internalType": "bool",
-				"name": "isConfirmed",
-				"type": "bool"
+				"internalType": "string",
+				"name": "ipfsHash",
+				"type": "string"
 			},
 			{
-				"internalType": "bool",
-				"name": "isPaid",
-				"type": "bool"
+				"internalType": "enum FileDealContract.DealStatus",
+				"name": "status",
+				"type": "uint8"
 			}
 		],
 		"stateMutability": "view",
@@ -140,14 +171,33 @@
 				"type": "uint256"
 			},
 			{
-				"internalType": "bool",
-				"name": "isConfirmed",
-				"type": "bool"
+				"internalType": "string",
+				"name": "ipfsHash",
+				"type": "string"
 			},
 			{
-				"internalType": "bool",
-				"name": "isPaid",
-				"type": "bool"
+				"internalType": "enum FileDealContract.DealStatus",
+				"name": "status",
+				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "dealId",
+				"type": "uint256"
+			}
+		],
+		"name": "getIpfsHash",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -164,6 +214,24 @@
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "dealId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_ipfsHash",
+				"type": "string"
+			}
+		],
+		"name": "registerFile",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]
