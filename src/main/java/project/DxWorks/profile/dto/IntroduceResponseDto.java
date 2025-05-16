@@ -23,4 +23,6 @@ public class IntroduceResponseDto {
     private InbodyDto inbody;
 
     private List<PostAllResponseDto> posts;
+
+    private String userName;
 }
