@@ -39,7 +39,6 @@ public class IntroduceService {
                         orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다. "))).
                         build();
         Profile saved = profileRepository.save(profile);
-        //TODO : community id get 해야함.
 
         return toDto(saved);
     }
