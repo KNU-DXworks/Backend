@@ -32,9 +32,9 @@ public class PostService {
 
     // Post 생성
     @Transactional
-    public Response<String> createPost(CreatePostRequestDto requestDto, MultipartFile file) throws IOException {
-        UserEntity userEntity = userRepository.findById(requestDto.getUserId())
-                .orElseThrow(()-> new NoSuchElementException("해당하는 user가 존재하지 않습니다.: " + requestDto.getUserId()));
+    public Response<String> createPost(CreatePostRequestDto requestDto, MultipartFile file, Long userId) throws IOException {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(()-> new NoSuchElementException("해당하는 user가 존재하지 않습니다.: " + userId));
 
         String url = fileService.uploadFile(file);
 
