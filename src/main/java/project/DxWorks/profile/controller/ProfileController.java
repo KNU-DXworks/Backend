@@ -7,9 +7,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import project.DxWorks.common.ui.Response;
 import project.DxWorks.profile.dto.IntroduceMyResponseDto;
 import project.DxWorks.profile.dto.IntroduceRequestDto;
 import project.DxWorks.profile.dto.IntroduceResponseDto;
+import project.DxWorks.profile.dto.PostWalletRequestDto;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.profile.service.IntroduceService;
 import project.DxWorks.user.domain.UserEntity;
@@ -80,6 +82,11 @@ public class ProfileController {
     public ResponseEntity<Void> delete(@PathVariable long profileId){
         introduceService.deleteIntroduce(profileId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/wallet")
+    public Response<String> postWallet(@RequestAttribute long userId, PostWalletRequestDto dto){
+        return introduceService.postWallet(userId, dto);
     }
 
 }
