@@ -58,6 +58,7 @@ public class SecurityConfig {
         config.addAllowedOriginPattern("http://172.16.10.93");
         config.addAllowedOriginPattern("https://chr.dxworks.co.kr:9020");
         config.addAllowedOriginPattern("http://localhost:8080");
+        config.addAllowedOriginPattern("http://localhost:5173");
 
         config.addAllowedHeader("*"); // 모든 헤더 허용
         config.addAllowedMethod("*"); // 모든 메서드 허용
