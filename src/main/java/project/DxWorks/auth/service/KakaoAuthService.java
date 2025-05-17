@@ -63,7 +63,7 @@ public class KakaoAuthService {
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
             params.add("grant_type", "authorization_code");
             params.add("client_id", clientId);
-            params.add("redirect_uri", "https://oauth.pstmn.io/v1/callback");
+            params.add("redirect_uri", "http://localhost:5173/redirection");
             params.add("code", authCode);
             params.add("client_secret", clientSecret);
 
