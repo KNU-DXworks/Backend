@@ -8,15 +8,13 @@ import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
+import project.DxWorks.common.ui.Response;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
 import project.DxWorks.post.dto.PostAllResponseDto;
 import project.DxWorks.post.dto.PostResponseDto;
 import project.DxWorks.post.repository.PostRepository;
-import project.DxWorks.profile.dto.HistoryDto;
-import project.DxWorks.profile.dto.IntroduceMyResponseDto;
-import project.DxWorks.profile.dto.IntroduceRequestDto;
-import project.DxWorks.profile.dto.IntroduceResponseDto;
+import project.DxWorks.profile.dto.*;
 import project.DxWorks.profile.entity.Profile;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.domain.UserEntity;
@@ -178,6 +176,22 @@ public class IntroduceService {
     @Transactional
     public void deleteIntroduce(Long profileId) { //profile introduce 삭제
         profileRepository.deleteById(profileId);
+    }
+
+    // 지갑 등록
+    @Transactional
+    public Response<String> postWallet(long userId, PostWalletRequestDto dto) {
+
+        Profile profile = profileRepository.findByUser(
+                userRepository.findById(userId).orElseThrow(
+                        () -> new IllegalArgumentException("해당하는 유저가 없습니다.")
+                )).orElseThrow(() -> new IllegalArgumentException("프로필을 먼저 생성해주세요"));
+
+        profile.setWalletAddress(dto.getWalletAddress());
+
+        profileRepository.save(profile);
+
+        return Response.ok("지갑이 정상적으로 등록됐습니다.");
     }
 
     private IntroduceResponseDto toDto(Profile profile) {
