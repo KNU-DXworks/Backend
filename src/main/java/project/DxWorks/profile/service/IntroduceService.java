@@ -3,13 +3,18 @@ package project.DxWorks.profile.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
 import project.DxWorks.post.dto.PostAllResponseDto;
 import project.DxWorks.post.dto.PostResponseDto;
 import project.DxWorks.post.repository.PostRepository;
 import project.DxWorks.profile.dto.HistoryDto;
+import project.DxWorks.profile.dto.IntroduceMyResponseDto;
 import project.DxWorks.profile.dto.IntroduceRequestDto;
 import project.DxWorks.profile.dto.IntroduceResponseDto;
 import project.DxWorks.profile.entity.Profile;
@@ -18,6 +23,8 @@ import project.DxWorks.user.domain.UserEntity;
 import project.DxWorks.user.repository.UserRepository;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 //TODO : communityId와 아직 연동 x
@@ -29,6 +36,8 @@ public class IntroduceService {
     private final ContractDeployService contractDeployService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final Web3j web3j;
+
 
     //자기소개 등록
     @Transactional
@@ -95,7 +104,7 @@ public class IntroduceService {
 
     //내 프로필 조회 (userId 사용)
     @Transactional
-    public IntroduceResponseDto getMyIntroduce(Long userId) throws IOException {
+    public IntroduceMyResponseDto getMyIntroduce(Long userId) throws IOException {
 
         //userId로 UserEntity 조회
         UserEntity user = userRepository.findById(userId)
@@ -132,11 +141,18 @@ public class IntroduceService {
         if (!inbodySet.isEmpty()){
             inbody = inbodySet.get(inbodySet.size() - 1);
         }
+        String eth = null;
 
-        IntroduceResponseDto dto = new IntroduceResponseDto(
+        // 지갑이 등록된 경우
+        if (profile.getWalletAddress() != null){
+            eth = getWalletBalance(profile.getWalletAddress());
+        }
+
+        IntroduceMyResponseDto dto = new IntroduceMyResponseDto(
                 profile.getId(),
                 profile.getIntroduce(),
                 profile.getCommunityId(),
+                eth,
                 history,
                 inbody,
                 posts,
@@ -177,6 +193,18 @@ public class IntroduceService {
         if (fileUrl.endsWith(".pdf")) return "application/pdf";
         if (fileUrl.matches(".*\\.(jpg|jpeg|png|gif|bmp)$")) return "image/jpeg";
         return "UNKNOWN";
+    }
+
+    // 잔액 정보 가져오기
+    public String getWalletBalance(String walletAddress) throws IOException {
+        EthGetBalance balanceResponse = web3j.ethGetBalance(
+                walletAddress, DefaultBlockParameterName.LATEST
+        ).send();
+
+        BigInteger balanceWei = balanceResponse.getBalance();
+        BigDecimal balanceEth = new BigDecimal(balanceWei).divide(BigDecimal.TEN.pow(18));
+
+        return balanceEth.stripTrailingZeros().toPlainString();
     }
 
 }
