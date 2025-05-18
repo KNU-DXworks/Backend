@@ -15,13 +15,12 @@ public class Inbody {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id; //inbody id
 
-
     private LocalDateTime createdAt; //등록 일시
 
-    private boolean inbodySheet; //인바디 공식 종이 인지 아닌지 판별
+    private boolean  inbodySheet; //인바디 공식 종이 인지 아닌지 판별
     private String gender; // 성별 (남,녀 별 8가지 클래스로 나누는 기준이 달라서 필요.)
-    private double weight; //몸무게
-    private double height; //키
+    private double height; //몸무게
+    private double weight; //키
     private double muscle; //골격근량
     private double fat; // 체지방량
     private double bmi;     // BMI

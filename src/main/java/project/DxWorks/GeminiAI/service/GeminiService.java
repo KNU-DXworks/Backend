@@ -64,14 +64,14 @@ import java.util.Map;
                     "Extract the following values from an Inbody result sheet image: \n" +
                 "gender(if male return MALE,if female,return FEMALE)\n" +
                 "weight (kg)\n" +
-                    "height (ft)\n" +
-                "musclemass (kg)\n" +
-                "fatmass (kg)\n" +
+                    "height (cm)\n" +
+                "muscle (kg)\n" +
+                "fat(kg)\n" +
                 "BMI\n" +
                 "For the following muscle parts, return their standard status as one of the following values:" +
                  "if 표준이하 return BELOW_STANDARD, if 표준 return STANDARD, if 표준이상 or HIGH return ABOVE_STANDARD" +
-                "musclemass\n" +
-                "fatmass\n" +
+                "muscleMass\n" +
+                "fatMass\n" +
                 "arm muscle\n" +
                 "trunk muscle\n" +
                 "leg muscle\n\n" +
@@ -116,7 +116,7 @@ import java.util.Map;
                 "- fat: high, muscle: low → OBESITY\n" +
                 "- fat: high, muscle: high → MUSCULAR_OBESITY\n" +
                 "Return the final result in JSON format. Use the following keys " +
-                "inbodySheet,gender, weight, height, muscleMassType, fatMassType ,bmi, armGrade, bodyGrade, legGrade, " +
+                "inbodySheet,gender, weight, height, muscle, fat ,bmi, armGrade, bodyGrade, legGrade, " +
                 "muscleMassType, fatMassType,bodyType");
 
         List<Map<String, Object>> parts = List.of(imagePart, textPart);
