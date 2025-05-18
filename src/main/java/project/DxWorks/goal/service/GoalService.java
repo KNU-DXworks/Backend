@@ -1,8 +1,13 @@
 package project.DxWorks.goal.service;
 
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.DxWorks.goal.dto.GoalRequestDto;
+import project.DxWorks.goal.dto.GoalResponseDto;
+import project.DxWorks.goal.entity.BodyType;
+import project.DxWorks.goal.entity.BodyTypeLevel;
 import project.DxWorks.goal.entity.Goal;
 import project.DxWorks.goal.repository.GoalRepository;
 import project.DxWorks.user.domain.UserEntity;
@@ -20,76 +25,87 @@ public class GoalService {
     private final UserRepository userRepository;
 
     /**
-     * 목표 생성
+     * 내 목표치 생성
      */
+    //TODO : figma에는 등록하기 버튼만 있으므로 등록과 수정 한꺼번에 처리했음.
     @Transactional
-    public Long createGoal(Goal goal, Long userId) {
+    public GoalResponseDto createGoal(Long userId, GoalRequestDto requestDto) {
+        //사용자 조회
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found, userId: "+userId));
+                .orElseThrow(() -> new NoSuchElementException("해당 사용자를 찾을 수 없습니다.: "+userId));
 
-        user.createGoal(goal);
+        Goal goal = user.getGoal();
+        if(goal == null) {
+            //등록 로직
+            goal = new Goal();
+            goal.setWeight(requestDto.getWeight());
+            goal.setMuscle(requestDto.getMuscle());
+            goal.setFat(requestDto.getFat());
+            goal.setBmi(requestDto.getBmi());
+            goal.setArmGrade(BodyTypeLevel.valueOf(requestDto.getArmGrade()));
+            goal.setBodyGrade(BodyTypeLevel.valueOf(requestDto.getBodyGrade()));
+            goal.setLegGrade(BodyTypeLevel.valueOf(requestDto.getLegGrade()));
+            goal.setBodyType(BodyType.valueOf(requestDto.getBodyType()));
 
-        goal.setCreatedDate(LocalDateTime.now());
-        goalRepository.save(goal);
+            goalRepository.save(goal);
+            user.createGoal(goal);
+        }else {
+            //수정 로직
+            if (requestDto.getWeight() != null)
+                goal.setWeight(requestDto.getWeight());
+            if (requestDto.getMuscle() != null)
+                goal.setMuscle(requestDto.getMuscle());
+            if (requestDto.getFat() != null)
+                goal.setFat(requestDto.getFat());
+            if (requestDto.getBmi() != null)
+                goal.setBmi(requestDto.getBmi());
 
-        return goal.getGoalId();
-    }
+            if (requestDto.getArmGrade() != null)
+                goal.setArmGrade(BodyTypeLevel.valueOf(requestDto.getArmGrade()));
+            if (requestDto.getBodyGrade() != null)
+                goal.setBodyGrade(BodyTypeLevel.valueOf(requestDto.getBodyGrade()));
+            if (requestDto.getLegGrade() != null)
+                goal.setLegGrade(BodyTypeLevel.valueOf(requestDto.getLegGrade()));
 
-    /**
-     * 목표 조회 (userId로 조회)
-     */
-    public Goal findGoalByUserId(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("Goal not found, userId: "+userId))
-                .getGoal();
-    }
+            if (requestDto.getBodyType() != null)
+                goal.setBodyType(BodyType.valueOf(requestDto.getBodyType()));
+        }
 
-    /**
-     * 목표 조회 (goalId로 조회)
-     */
-    public Goal findGoalById(Long goalId) {
-        return goalRepository.findById(goalId)
-                .orElseThrow(() -> new NoSuchElementException("Goal not found, goalId: "+goalId));
-    }
-
-    /**
-     * 목표 수정
-     */
-    @Transactional
-    public void updateGoal(Goal goalData, Long goalId) {
-        Goal goal = goalRepository.findById(goalId)
-                .orElseThrow(() -> new NoSuchElementException("Goal not found, userId: "+goalId));
-
-        if (goalData.getWeight() != null)
-            goal.setWeight(goalData.getWeight());
-        if (goalData.getMuscle() != null)
-            goal.setMuscle(goalData.getMuscle());
-        if (goalData.getFat() != null)
-            goal.setFat(goalData.getFat());
-        if (goalData.getBmi() != null)
-            goal.setBmi(goalData.getBmi());
-
-        if (goalData.getArm() != null)
-            goal.setArm(goalData.getArm());
-        if (goalData.getBody() != null)
-            goal.setBody(goalData.getBody());
-        if (goalData.getLeg() != null)
-            goal.setLeg(goalData.getLeg());
-
-        if (goalData.getGoalBody() != null)
-            goal.setGoalBody(goalData.getGoalBody());
-
-    }
+        return mapToResponseDto(goal,user.getId());
+        }
 
     /**
-     * 목표 삭제
+     * 나의 목표치 조회 (userId로 조회) :
      */
-    @Transactional
-    public void deleteGoal(Long goalId) {
-        Goal goal = goalRepository.findById(goalId)
-                .orElseThrow(() -> new NoSuchElementException("Goal not found, goalId: "+goalId));
+    public GoalResponseDto findGoalByUserId(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("해당 사용자의 목표치가 없습니다." + userId));
 
-        goalRepository.delete(goal);
+        Goal goal = user.getGoal();
+        if(goal == null){
+            throw new NoSuchElementException("사용자 id에 해당하는 목표치가 없습니다." + userId);
+        }
+
+        GoalResponseDto dto = mapToResponseDto(goal, userId);
+
+        return dto;
+    }
+
+
+    private GoalResponseDto mapToResponseDto(Goal goal, Long userId) {
+        GoalResponseDto dto = new GoalResponseDto();
+        dto.setGoalId(goal.getGoalId());
+        dto.setCreatedDate(goal.getCreatedDate());
+        dto.setWeight(goal.getWeight());
+        dto.setMuscle(goal.getMuscle());
+        dto.setFat(goal.getFat());
+        dto.setBmi(goal.getBmi());
+        dto.setArm(String.valueOf(goal.getArmGrade()));
+        dto.setBody(String.valueOf(goal.getBodyGrade()));
+        dto.setLeg(String.valueOf(goal.getLegGrade()));
+        dto.setGoalBody(String.valueOf(goal.getBodyType()));
+        dto.setUserId(userId);
+        return dto;
     }
 
 

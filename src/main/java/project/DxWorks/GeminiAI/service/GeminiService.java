@@ -31,7 +31,7 @@ import java.util.Map;
         this.objectMapper = objectMapper;
     }
     //인바디 데이터 추출하고 JSON 방식으로 변환하는 메서드
-
+    //TODO : 인바디 공식 사진만 추출하게,
     public Inbody extractInbodyData(MultipartFile file) throws IOException {
             //예시 : Gemini API를 통해 OCR 및 분석 결과를 추출한다고 가정
             //실제 구현 시 HTTP POST로 이미지 보내고 JSON 받아서 파싱 필요
@@ -58,9 +58,13 @@ import java.util.Map;
             imagePart.put("inlineData", inlineData);
             //test part
             Map<String, Object> textPart = new HashMap<>();
-            textPart.put("text", "Extract the following values from an Inbody result sheet image: \n" +
-                "gender(if male return male,if female,return female)\n" +
+            textPart.put("text", "The official InBody result sheet usually contains the InBody logo on the top-left, and contains specific sections in Korean like '체성분분석', '골격근-지방분석', and tabular data.\n" +
+                    "If the image is **not** an official InBody result sheet\n " +
+                    "return false else true boolean value \n" +
+                    "Extract the following values from an Inbody result sheet image: \n" +
+                "gender(if male return MALE,if female,return FEMALE)\n" +
                 "weight (kg)\n" +
+                    "height (ft)\n" +
                 "musclemass (kg)\n" +
                 "fatmass (kg)\n" +
                 "BMI\n" +
@@ -112,8 +116,8 @@ import java.util.Map;
                 "- fat: high, muscle: low → OBESITY\n" +
                 "- fat: high, muscle: high → MUSCULAR_OBESITY\n" +
                 "Return the final result in JSON format. Use the following keys " +
-                "gender, weight, muscleMass, fatMass,muscleMassRatio,fatRatio bmi, armMuscleType, trunkMuscleType, legMuscleType." +
-                "muscleMassType, fatMassType,userCase");
+                "inbodySheet,gender, weight, height, muscleMassType, fatMassType ,bmi, armGrade, bodyGrade, legGrade, " +
+                "muscleMassType, fatMassType,bodyType");
 
         List<Map<String, Object>> parts = List.of(imagePart, textPart);
 

@@ -19,7 +19,7 @@ public class Community {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private CommunityCategory communityCategory;
+    private CommunityCategory communityType;
 
 
 
