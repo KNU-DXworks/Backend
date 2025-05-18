@@ -34,7 +34,7 @@ public class BigQueryService {
 
         Map<String, Object> row = Map.of(
                 "user_id", dto.getUserId(),
-                "nickname", dto.getUsername(),
+                "username", dto.getUsername(),
                 "start_group", dto.getStartGroup(),
                 "end_group", dto.getEndGroup(),
                 "weight_end", dto.getWeightEnd(),

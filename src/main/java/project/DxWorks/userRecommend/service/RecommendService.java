@@ -50,6 +50,7 @@ public class RecommendService {
         HttpEntity<RecommendRequestDto> request = new HttpEntity<>(dto, headers);
 
         System.out.println("RecommendRequestDto 작성 후");
+        System.out.println("request = " + request);
         ResponseEntity<Map> response = restTemplate.postForEntity(
                 "http://localhost:8000/recommend", request, Map.class
         );
