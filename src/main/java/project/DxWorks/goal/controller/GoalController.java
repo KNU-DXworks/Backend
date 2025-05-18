@@ -11,103 +11,32 @@ import project.DxWorks.goal.entity.Goal;
 import project.DxWorks.goal.service.GoalService;
 
 @RestController
-@RequestMapping("/api/goals")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class GoalController {
     private final GoalService goalService;
 
     /**
-     * 목표 등록
+     * 목표 등록 및 수정
      */
-    @PostMapping
-    public ResponseEntity<Long> createGoal(@RequestBody GoalRequestDto requestDto) {
-        Goal goal = convertToGoal(requestDto);
-        Long goalId = goalService.createGoal(goal, requestDto.getUserId());
-        return ResponseEntity.ok(goalId);
+
+    //TODO : 카카오 로그인 해서 userID 받아오는 것 테스트 확인 해봐야함. desktop에서 client_id, client_secret 발급받아서 해봤지만 안됐음.
+    @PutMapping("/goal")
+    public ResponseEntity<GoalResponseDto> createGoal(@RequestAttribute Long userId,@RequestBody GoalRequestDto requestDto) {
+
+        GoalResponseDto created  = goalService.createGoal(userId,requestDto);
+
+        return ResponseEntity.ok(created);
     }
 
 
     /**
-     * 목표 조회 (userId로 조회)
+     * 나의 목표 조회 (userId로 조회)
      */
-    //TODO : goalId : null, userId: null , 나머지 목표는 잘받아와짐.
-    @GetMapping("/user")
+    @GetMapping("/goal")
     public ResponseEntity<GoalResponseDto> getGoalByUserId(@RequestAttribute Long userId) {
-        Goal goal = goalService.findGoalByUserId(userId);
-        return ResponseEntity.ok(convertToDto(goal));
-    }
-
-    /**
-     * 목표 조회 (goalId로 조회)
-     */
-    //TODO : 필요 없는것 같음.
-    @GetMapping("/{goalId}")
-    public ResponseEntity<GoalResponseDto> getGoalById(@PathVariable Long goalId) {
-        Goal goal = goalService.findGoalById(goalId);
-        return ResponseEntity.ok(convertToDto(goal));
-    }
-
-
-    /**
-     * 목표 수정
-     */
-    @PutMapping("/user/{goalId}")
-    public ResponseEntity<Void> updateGoal(@PathVariable Long goalId, @RequestBody GoalRequestDto requestDto) {
-        Goal goal = convertToGoal(requestDto);
-        goalService.updateGoal(goal, goalId);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * 목표 삭제
-     */
-    @DeleteMapping("/{goalId}")
-    public ResponseEntity<Void> deleteGoal(@PathVariable Long goalId) {
-        goalService.deleteGoal(goalId);
-        return ResponseEntity.noContent().build();
-    }
-
-
-
-
-    /**
-     * GoalRequestDto를 Goal 엔티티로 변환
-     */
-    private Goal convertToGoal(GoalRequestDto requestDto) {
-        Goal goal = new Goal();
-
-        goal.setWeight(requestDto.getWeight());
-        goal.setMuscle(requestDto.getMuscle());
-        goal.setFat(requestDto.getFat());
-        goal.setBmi(requestDto.getBmi());
-
-        //프론트에서 받은 문자열이, "BELOW_STANDARD" 같은 문자열일때.
-        goal.setArm(BodyTypeLevel.valueOf(requestDto.getArm()));
-        goal.setBody(BodyTypeLevel.valueOf(requestDto.getBody()));
-        goal.setLeg(BodyTypeLevel.valueOf(requestDto.getLeg()));
-
-        goal.setGoalBody(BodyType.valueOf(requestDto.getGoalBody()));
-        return goal;
-    }
-
-    /**
-     * Goal 엔티티를 GoalResponseDto로 변환
-     */
-    private GoalResponseDto convertToDto(Goal goal) {
-        GoalResponseDto responseDto = new GoalResponseDto();
-
-        responseDto.setCreatedDate(goal.getCreatedDate());
-        responseDto.setWeight(goal.getWeight());
-        responseDto.setMuscle(goal.getMuscle());
-        responseDto.setFat(goal.getFat());
-        responseDto.setBmi(goal.getBmi());
-
-        responseDto.setArm(String.valueOf(goal.getArm()));
-        responseDto.setBody(String.valueOf(goal.getBody()));
-        responseDto.setLeg(String.valueOf(goal.getLeg()));
-
-        responseDto.setGoalBody(String.valueOf(goal.getGoalBody()));
-        return responseDto;
+        GoalResponseDto created = goalService.findGoalByUserId(userId);
+        return ResponseEntity.ok(created);
     }
 
 }

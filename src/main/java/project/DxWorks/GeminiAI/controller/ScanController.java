@@ -19,6 +19,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class ScanController {
 
     private final InbodyService inbodyService;
@@ -32,7 +33,7 @@ public class ScanController {
             @ApiResponse(responseCode = "200", description = "업로드 및 분석 성공"),
             @ApiResponse(responseCode = "500", description = "서버 오류 발생")
     })
-    @PostMapping("/api/upload")
+    @PostMapping("/gemini/inbody")
     public ResponseEntity<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file) {
         try {
             System.out.println("파일 이름: " + file.getOriginalFilename());
@@ -51,7 +52,7 @@ public class ScanController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
-    @GetMapping("/api/getupload")
+    @GetMapping("/gemini/inbody")
     public ResponseEntity<List<Inbody>> getAll() {
         return ResponseEntity.ok(inbodyService.getAll());
     }

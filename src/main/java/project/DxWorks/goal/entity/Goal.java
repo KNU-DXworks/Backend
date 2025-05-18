@@ -1,7 +1,9 @@
 package project.DxWorks.goal.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.DxWorks.user.domain.UserEntity;
 
@@ -30,15 +32,15 @@ public class Goal {
 
     //TODO : 팔, 몸통, 다리 근육 Enum 형식으로 설정.
     @Enumerated(EnumType.STRING)
-    private BodyTypeLevel arm;
+    private BodyTypeLevel armGrade;
 
     @Enumerated(EnumType.STRING)
-    private BodyTypeLevel body;
+    private BodyTypeLevel bodyGrade;
 
     @Enumerated(EnumType.STRING)
-    private BodyTypeLevel leg;
+    private BodyTypeLevel legGrade;
 
     @Enumerated(EnumType.STRING)
-    private BodyType goalBody; //목표체형그룹
+    private BodyType bodyType; //목표체형그룹
 
 }

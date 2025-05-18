@@ -13,8 +13,8 @@ public class GoalRequestDto {
     private Double muscle;
     private Double fat;
     private Double bmi;
-    private String arm;
-    private String body;
-    private String leg;
-    private String goalBody;
+    private String armGrade;
+    private String bodyGrade;
+    private String legGrade;
+    private String bodyType;
 }
