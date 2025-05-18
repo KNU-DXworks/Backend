@@ -19,9 +19,6 @@ public class Goal {
     @Column(name = "goal_id")
     private Long goalId;
 
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;
-
     private Double weight;
 
     private Double muscle;
