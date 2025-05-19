@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public class KakaoProperties {
     private String nickname;
-    private String profileImage;
+    private String profile_image;
 
 }

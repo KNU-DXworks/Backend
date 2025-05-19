@@ -90,7 +90,7 @@ public class IntroduceService {
         IntroduceResponseDto dto = new IntroduceResponseDto(
                 profileId,
                 profile.getIntroduce(),
-                profile.getCommunityId(),
+                profile.getCommunity(),
                 history,
                 inbody,
                 posts,
@@ -149,7 +149,7 @@ public class IntroduceService {
         IntroduceMyResponseDto dto = new IntroduceMyResponseDto(
                 profile.getId(),
                 profile.getIntroduce(),
-                profile.getCommunityId(),
+                profile.getCommunity(),
                 eth,
                 history,
                 inbody,
