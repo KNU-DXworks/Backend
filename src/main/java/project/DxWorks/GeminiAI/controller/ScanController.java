@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import project.DxWorks.GeminiAI.entity.Inbody;
 import project.DxWorks.GeminiAI.service.GeminiService;
 import project.DxWorks.GeminiAI.service.InbodyService;
+import project.DxWorks.common.domain.exception.ErrorCode;
+import project.DxWorks.common.ui.Response;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,14 +36,14 @@ public class ScanController {
             @ApiResponse(responseCode = "500", description = "서버 오류 발생")
     })
     @PostMapping("/inbody")
-    public ResponseEntity<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file) {
+    public Response<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file) {
         try {
             System.out.println("파일 이름: " + file.getOriginalFilename());
             Inbody saved = inbodyService.analyzeAndSave(file);
-            return ResponseEntity.ok(saved);
+            return Response.ok(saved);
 
         } catch (IOException e) {
-            return ResponseEntity.internalServerError().build();
+            return Response.error(ErrorCode.INTERNAL_ERROR);
         }
     }
     @Operation(
@@ -53,7 +55,7 @@ public class ScanController {
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     @GetMapping("/getinbody")
-    public ResponseEntity<List<Inbody>> getAll() {
-        return ResponseEntity.ok(inbodyService.getAll());
+    public Response<List<Inbody>> getAll() {
+        return Response.ok(inbodyService.getAll());
     }
 }

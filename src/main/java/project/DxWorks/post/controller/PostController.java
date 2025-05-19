@@ -36,18 +36,18 @@ public class PostController {
 
     // Post 수정
     @PutMapping("/{postId}")
-    public ResponseEntity<Void> updatePost(
+    public Response<Void> updatePost(
             @PathVariable Long postId,
             @RequestBody PostRequestDto requestDto) {
         postService.updatePost(postId, requestDto);
-        return ResponseEntity.ok().build();
+        return Response.ok(null);
     }
 
     // Post 삭제
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+    public Response<Void> deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
-        return ResponseEntity.noContent().build();
+        return Response.ok(null);
     }
 
     @GetMapping("/{community}")
