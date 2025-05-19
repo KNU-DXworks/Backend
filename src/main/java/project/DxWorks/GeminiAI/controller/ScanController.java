@@ -15,16 +15,20 @@ import project.DxWorks.GeminiAI.service.GeminiService;
 import project.DxWorks.GeminiAI.service.InbodyService;
 import project.DxWorks.common.domain.exception.ErrorCode;
 import project.DxWorks.common.ui.Response;
+import project.DxWorks.inbody.dto.PostInbodyDto;
+import project.DxWorks.inbody.service.ContractDeployService;
 
 import java.io.IOException;
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/gemini")
 public class ScanController {
 
     private final InbodyService inbodyService;
+
+    private final ContractDeployService contractDeployService;
 
 
     @Operation(
@@ -35,27 +39,36 @@ public class ScanController {
             @ApiResponse(responseCode = "200", description = "업로드 및 분석 성공"),
             @ApiResponse(responseCode = "500", description = "서버 오류 발생")
     })
-    @PostMapping("/inbody")
-    public Response<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file) {
+    @PostMapping
+    public Response<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file, @RequestHeader("X-PRIVATE-KEY") String privateKey) {
         try {
-            System.out.println("파일 이름: " + file.getOriginalFilename());
+
             Inbody saved = inbodyService.analyzeAndSave(file);
+
+            PostInbodyDto dto = new PostInbodyDto(
+                    saved.getId(),
+                    saved.getCreatedAt(),
+                    saved.isInbodySheet(),
+                    saved.getGender(),
+                    saved.getWeight(),
+                    saved.getHeight(),
+                    saved.getMuscle(),
+                    saved.getFat(),
+                    saved.getBmi(),
+                    saved.getBodyType(),
+                    saved.getArmGrade(),
+                    saved.getBodyGrade(),
+                    saved.getLegGrade(),
+                    privateKey
+            );
+            contractDeployService.addInbody(dto);
             return Response.ok(saved);
 
         } catch (IOException e) {
             return Response.error(ErrorCode.INTERNAL_ERROR);
+        } catch (Exception e) {
+            throw new RuntimeException(e + "kkkk");
         }
     }
-    @Operation(
-            summary = "업로드된 인바디 전체 조회",
-            description = "저장된 모든 인바디 분석 데이터를 조회합니다."
-    )
 
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공")
-    })
-    @GetMapping("/getinbody")
-    public Response<List<Inbody>> getAll() {
-        return Response.ok(inbodyService.getAll());
-    }
 }

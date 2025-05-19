@@ -5,14 +5,11 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Getter @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
+@Data
 public class Inbody {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private long id; //inbody id
 
     private LocalDateTime createdAt; //등록 일시
