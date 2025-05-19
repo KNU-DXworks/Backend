@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 @Data
 public class GoalRequestDto {
-    private Long userId;
     private Double weight;
     private Double muscle;
     private Double fat;

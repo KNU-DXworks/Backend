@@ -80,7 +80,7 @@ import java.util.Map;
                 "body fat percentage = (body fat mass / weight) * 100 (round to 1 decimal place)\n\n" +
                 // 체형 분류 요청
                 "Finally, based on gender, muscle mass ratio, and body fat percentage, classify the body type into one of the 8 categories: " +
-                "SKINNY, SKINNY_MUSCLE, STANDARD, WEIGHT_LOSS, MUSCLE, WEIGHT, OBESITY, MUSCULAR_OBESITY\n" +
+                "SKINNY, SKINNY_MUSCLE, STANDARD, WEIGHT_LOSS, MUSCLE, OVERWEIGHT, OBESITY, MUSCULAR_OBESITY\n" +
                 "For males:\n" +
                     "\n" +
                     "body fat % ≤ 10 → low\n" +

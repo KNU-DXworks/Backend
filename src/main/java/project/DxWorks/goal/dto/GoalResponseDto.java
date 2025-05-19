@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Data
 public class GoalResponseDto {
 
-    private Long goalId;
     private Double weight;
     private Double muscle;
     private Double fat;
@@ -22,11 +21,10 @@ public class GoalResponseDto {
     private String bodyGrade;
     private String legGrade;
     private String bodyType;
-    private Long userId;
+
 
     public static GoalResponseDto fromEntity(Goal goal) {
         GoalResponseDto dto = new GoalResponseDto();
-        dto.goalId = goal.getGoalId();
         dto.weight = goal.getWeight();
         dto.muscle = goal.getMuscle();
         dto.fat = goal.getFat();
