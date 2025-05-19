@@ -3,19 +3,15 @@ package project.DxWorks.profile.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import project.DxWorks.common.ui.Response;
 import project.DxWorks.goal.entity.Goal;
-import project.DxWorks.goal.repository.GoalRepository;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
 import project.DxWorks.post.domain.PostType;
-import project.DxWorks.post.dto.PostAllResponseDto;
-import project.DxWorks.post.dto.PostResponseDto;
 import project.DxWorks.post.dto.response.UserPostResponseDto;
 import project.DxWorks.post.dto.response.myProfile.GoalDto;
 import project.DxWorks.post.dto.response.myProfile.MyProfileResponseDto;
@@ -193,16 +189,17 @@ public class IntroduceService {
     }
 
     //수정
-    //TODO : 한 User는 프로필 1개(OnetoOne)를 가지므로 userId를 통해 수정? 삭제도 마찬가지?
     @Transactional
-    public IntroduceResponseDto updateIntroduce(Long profileId,IntroduceRequestDto requestDto) {
-        Profile profile = profileRepository.findById(profileId)
+    public UpdateIntroduceDto updateIntroduce(Long userId, UpdateIntroduceDto requestDto) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+        Profile profile = profileRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("해당 프로필이 존재하지 않습니다."));
-        profile.setIntroduce(requestDto.getIntroduce());
-        //profile.setCommunityId(requestDto.getCommunityId);
+        profile.setIntroduce(requestDto.getIntroduce()); //자기소개 수정.
         Profile saved = profileRepository.save(profile);
 
-        return toDto(saved);
+        return new UpdateIntroduceDto(saved.getIntroduce());
+
     }
 
     //삭제
@@ -233,7 +230,6 @@ public class IntroduceService {
         return IntroduceResponseDto.builder()
                 .profileId(profile.getId())
                 .introduce(profile.getIntroduce())
-                //.communityId(profile.getCommunityId())
                 .build();
     }
 
