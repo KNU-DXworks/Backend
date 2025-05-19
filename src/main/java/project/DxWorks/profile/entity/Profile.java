@@ -3,6 +3,7 @@ package project.DxWorks.profile.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import project.DxWorks.community.entity.Community;
+import project.DxWorks.community.entity.CommunityCategory;
 import project.DxWorks.goal.entity.Goal;
 import project.DxWorks.user.domain.UserEntity;
 
@@ -21,9 +22,11 @@ public class Profile {
     @Column(length = 1000)
     private String introduce; //자기소개
 
+    private String profileUrl;
+
     private String walletAddress;
 
-    private long communityId;
+    private CommunityCategory community;
 
     @OneToOne
     private UserEntity user;

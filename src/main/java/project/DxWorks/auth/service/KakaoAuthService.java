@@ -38,6 +38,7 @@ public class KakaoAuthService {
         // 카카오 사용자 정보 요청
         KakaoUserInfo kakaoUserInfo = getKakaoUserInfo(kakaoAccessToken);
 
+
         // 사용자 정보 없을 시 예외처리
         if (kakaoUserInfo == null || kakaoUserInfo.getId() == null){
             throw new IllegalArgumentException("Invalid kakao token");
@@ -47,7 +48,8 @@ public class KakaoAuthService {
 
         // 유저정보 확인 후 가입 및 처리
         UserAuthEntity userAuthEntity = userAuthInterface.findByKakaoId(kakaoUserInfo.getId())
-                .orElseGet(() -> userAuthInterface.registerUser(kakaoUserInfo.toUser(), kakaoId));
+                .orElseGet(() -> userAuthInterface.registerUser(kakaoUserInfo.toUser(), kakaoId, kakaoUserInfo.getProperties().getProfile_image()));
+
 
         // 토큰 생성
         UserDetails userDetails = userDetailsService.loadUserByUsername(userAuthEntity.getUserId().toString()); // 별도의 고유 이름이 없기에 ID로 find
