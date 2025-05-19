@@ -27,8 +27,8 @@ public class ContractDeployController {
 
 
     @PostMapping("/api/inbody")
-    public String addInbody(@RequestBody PostInbodyDto requestDto) throws Exception {
-        return contractDeployService.addInbody(requestDto);
+    public String addInbody( @RequestBody PostInbodyDto requestDto) throws Exception {
+        return contractDeployService.addInbody( requestDto);
     }
 
     @GetMapping("/api/inbody/{walletAddress}")

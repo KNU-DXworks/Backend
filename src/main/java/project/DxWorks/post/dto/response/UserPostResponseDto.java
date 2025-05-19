@@ -2,7 +2,7 @@ package project.DxWorks.post.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import project.DxWorks.post.domain.CommunityType;
+import project.DxWorks.community.entity.CommunityCategory;
 import project.DxWorks.post.domain.PostType;
 
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ public class UserPostResponseDto {
 
     private PostType postType;
 
-    private CommunityType communityType;
+    private CommunityCategory communityType;
 
     private String content;
 

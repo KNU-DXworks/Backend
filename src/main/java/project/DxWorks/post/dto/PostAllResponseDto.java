@@ -1,10 +1,7 @@
 package project.DxWorks.post.dto;
 
 import project.DxWorks.community.entity.CommunityCategory;
-import project.DxWorks.post.domain.CommunityType;
-import project.DxWorks.post.domain.PostType;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record PostAllResponseDto(

@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.DxWorks.common.repository.TimeBaseEntity;
-import project.DxWorks.community.entity.Community;
-import project.DxWorks.post.domain.CommunityType;
+import project.DxWorks.community.entity.CommunityCategory;
 import project.DxWorks.post.domain.PostType;
 import project.DxWorks.user.domain.UserEntity;
 
@@ -24,7 +23,7 @@ public class Post extends TimeBaseEntity {
     @ManyToOne
     private UserEntity user;
 
-    private CommunityType communityType;
+    private CommunityCategory communityType;
 
     @Column(nullable = false)
     private String content;
@@ -33,7 +32,7 @@ public class Post extends TimeBaseEntity {
 
     private PostType postType;
 
-    public Post(UserEntity user, CommunityType communityType, String content, String postImg, PostType postType) {
+    public Post(UserEntity user, CommunityCategory communityType, String content, String postImg, PostType postType) {
         this.user = user;
         this.communityType = communityType;
         this.content = content;

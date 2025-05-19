@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import project.DxWorks.common.ui.Response;
+import project.DxWorks.community.entity.CommunityCategory;
 import project.DxWorks.fileSystem.service.FileService;
-import project.DxWorks.post.domain.CommunityType;
 import project.DxWorks.post.dto.CreatePostRequestDto;
 import project.DxWorks.post.dto.PostAllResponseDto;
 import project.DxWorks.post.dto.PostRequestDto;
@@ -77,7 +77,7 @@ public class PostService {
     //커뮤니티 모든 게시물 조회
     @Transactional
     public CommunityPostAllRequestDto getCommunityPost(String community) {
-        List<PostAllResponseDto> list =  postRepository.findAllByCommunityType(CommunityType.valueOf(community))
+        List<PostAllResponseDto> list =  postRepository.findAllByCommunityType(CommunityCategory.valueOf(community))
                 .stream()
                 .map(post -> {
                     UserEntity user = post.getUser();
@@ -98,7 +98,7 @@ public class PostService {
                 })
                 .toList();
 
-        return new CommunityPostAllRequestDto(CommunityType.valueOf(community), list);
+        return new CommunityPostAllRequestDto(CommunityCategory.valueOf(community), list);
     }
 
     public String resolveFileType(String fileUrl) {
