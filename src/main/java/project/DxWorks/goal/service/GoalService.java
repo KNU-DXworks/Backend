@@ -95,15 +95,14 @@ public class GoalService {
     private GoalResponseDto mapToResponseDto(Goal goal, Long userId) {
         GoalResponseDto dto = new GoalResponseDto();
         dto.setGoalId(goal.getGoalId());
-        dto.setCreatedDate(goal.getCreatedDate());
         dto.setWeight(goal.getWeight());
         dto.setMuscle(goal.getMuscle());
         dto.setFat(goal.getFat());
         dto.setBmi(goal.getBmi());
-        dto.setArm(String.valueOf(goal.getArmGrade()));
-        dto.setBody(String.valueOf(goal.getBodyGrade()));
-        dto.setLeg(String.valueOf(goal.getLegGrade()));
-        dto.setGoalBody(String.valueOf(goal.getBodyType()));
+        dto.setArmGrade(String.valueOf(goal.getArmGrade()));
+        dto.setBodyGrade(String.valueOf(goal.getBodyGrade()));
+        dto.setLegGrade(String.valueOf(goal.getLegGrade()));
+        dto.setBodyType(String.valueOf(goal.getBodyType()));
         dto.setUserId(userId);
         return dto;
     }
