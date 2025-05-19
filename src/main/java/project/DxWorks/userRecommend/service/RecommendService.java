@@ -25,6 +25,8 @@ public class RecommendService {
     private final UserRepository userRepository;
     private final BigQueryService bigQueryService;
 
+
+    // TODO : startGroup -> currentBodyType 이런식으로 이름 바꿀것.
     public List<Map<String, Object>> recommendUsers(Long userId) {
 
         System.out.println("사용자ID 찾기 전");
@@ -58,6 +60,7 @@ public class RecommendService {
         return (List<Map<String, Object>>) response.getBody().get("recommended_users");
     }
 
+    // TODO : 목표를 달성한 유저의 이전 그룹, 현재 그룹, 체중, 근육량, 지방량
     // 유저의 그룹이 바뀌면 마다 이전 그룹, 현재 그룹, 체중, 근육량, 지방량을 벡터디비로 insert ==> 추후 사용 예정
     public void checkAndSaveIfGoalReached(UserEntity user) {
         Goal goal = user.getGoal();

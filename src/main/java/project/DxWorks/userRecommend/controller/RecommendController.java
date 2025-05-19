@@ -18,6 +18,8 @@ public class RecommendController {
 
     private final RecommendService recommendService;
 
+
+    // TODO : requestAttribute로 수정
     @GetMapping("/{userId}")
     public ResponseEntity<List<Map<String, Object>>> recommend(@PathVariable Long userId) {
         List<Map<String, Object>> recommendations = recommendService.recommendUsers(userId);
