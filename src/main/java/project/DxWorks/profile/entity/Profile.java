@@ -31,4 +31,13 @@ public class Profile {
     @OneToOne
     private UserEntity user;
 
+    public boolean isWalletEmpty(){
+        if (walletAddress == null){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 }

@@ -3,13 +3,13 @@ package project.DxWorks.inbody.dto;
 public record InbodyDto(
         String createdAt,
         String gender,
+        double height,
         double weight,
-        double muscleMass,
-        double fatRatio,
-        String muscleMassType,
-        String fatMassType,
+        double muscle,
+        double fat,
+        double bmi,
         String userCase,
-        String armMuscleType,
-        String trunkMuscleType,
-        String legMuscleType
-){ }
+        String armGrade,
+        String bodyGrade,
+        String legGrade
+) {}

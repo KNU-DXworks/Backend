@@ -69,7 +69,7 @@ public class ProfileController {
     }
 
     @PostMapping("/wallet")
-    public Response<String> postWallet(@RequestAttribute long userId, PostWalletRequestDto dto){
+    public Response<String> postWallet(@RequestAttribute long userId, @RequestBody PostWalletRequestDto dto){
         return introduceService.postWallet(userId, dto);
     }
 
