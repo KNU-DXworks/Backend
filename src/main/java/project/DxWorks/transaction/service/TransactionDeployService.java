@@ -110,6 +110,8 @@ public class TransactionDeployService {
                 dto.getInfo()
         ).send();
 
+        System.out.println("👉 전달된 traderId: " + dto.getTraderId());
+
         System.out.println("📦 Receipt Logs Size: " + receipt.getLogs().size());
         System.out.println("📦 Contract Address: " + contract.getContractAddress());
         System.out.println("📦 Transaction Hash: " + receipt.getTransactionHash());
