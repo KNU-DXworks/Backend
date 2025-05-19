@@ -6,9 +6,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PostTransactionRequestDto {
-    private int transactionType;
-    private String trader;
-    private String transactionCycle;
-    private long transactionPrice;
-    private String transactionDescription;
+    private String traderId;
+    private int transactionPeriod;
+    private long amount;
+    private String info;
 }
