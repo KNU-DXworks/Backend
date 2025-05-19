@@ -6,7 +6,7 @@ public enum CommunityCategory {
     STANDARD, // 표준형
     WEIGHT_LOSS, // 감량형
     MUSCLE, // 근육형
-    WEIGHT, // 체중형
+    OVERWEIGHT, // 체중형
     OBESITY, //비만형
     MUSCULAR_OBESITY, //근육비만형
     NONE

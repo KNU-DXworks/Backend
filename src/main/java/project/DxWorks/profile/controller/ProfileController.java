@@ -46,7 +46,7 @@ public class ProfileController {
     }
 
     //내 프로필 조회
-    @GetMapping("/myprofile")
+    @GetMapping("/my")
     public ResponseEntity<MyProfileResponseDto> getMyProfile(@RequestAttribute Long userId) throws IOException {
 
         MyProfileResponseDto dto = introduceService.getMyIntroduce(userId);
