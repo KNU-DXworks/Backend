@@ -41,11 +41,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class TransactionDeployService {
 
-
     private static final Logger log = LoggerFactory.getLogger(TransactionDeployService.class);
-
-
-
 
     private final Web3j web3j;
 
@@ -66,40 +62,7 @@ public class TransactionDeployService {
         return TransactionContract.load(contractAddress, web3j, credentials, gasProvider());
     }
 
-//    // ---------- 거래 생성 ----------
-//    public String addTransaction(String privateKey, PostTransactionRequestDto dto) throws Exception {
-////        TransactionContract contract = loadContract(privateKey);
-////        return contract.createTransaction(
-////                dto.getTraderId(),
-////                BigInteger.valueOf(dto.getTransactionPeriod()),
-////                BigInteger.valueOf(dto.getAmount()),
-////                dto.getInfo()
-////        ).send().getTransactionHash();
-//
-//
-//
-//        TransactionContract contract = loadContract(privateKey);
-//
-//        // 트랜잭션 실행 및 receipt 수신
-//        TransactionReceipt receipt = contract.createTransaction(
-//                dto.getTraderId(),
-//                BigInteger.valueOf(dto.getTransactionPeriod()),
-//                BigInteger.valueOf(dto.getAmount()),
-//                dto.getInfo()
-//        ).send();
-//
-//        System.out.println("🔍 로그 개수: " + receipt.getLogs().size());
-//
-//        // 📦 이벤트 로그에서 ID 추출 (indexed 기반)
-//        contract.getCreatedTransactionId(receipt).ifPresent(id -> {
-//            log.info("✅ emit된 거래 ID: {}", id);
-//        });
-//
-//        return receipt.getTransactionHash();
-//
-//    }
-
-
+    // ---------- 거래 생성 ----------
     public String addTransaction(String privateKey, PostTransactionRequestDto dto) throws Exception {
         TransactionContract contract = loadContract(privateKey);
 
@@ -110,22 +73,6 @@ public class TransactionDeployService {
                 dto.getInfo()
         ).send();
 
-        System.out.println("👉 전달된 traderId: " + dto.getTraderId());
-
-        System.out.println("📦 Receipt Logs Size: " + receipt.getLogs().size());
-        System.out.println("📦 Contract Address: " + contract.getContractAddress());
-        System.out.println("📦 Transaction Hash: " + receipt.getTransactionHash());
-        System.out.println("📦 사용된 gas: " + receipt.getGasUsed());
-
-        receipt.getLogs().forEach(l -> {
-            System.out.println("📦 Log Raw: " + l.toString());
-        });
-
-        System.out.println("🔍 로그 개수: " + receipt.getLogs().size());
-        if (receipt.getLogs().isEmpty()) {
-            System.out.println("❌ 로그가 수신되지 않았습니다. ABI/BIN이 배포된 컨트랙트와 불일치할 수 있습니다.");
-        }
-
         contract.getCreatedTransactionId(receipt).ifPresent(id -> {
             log.info("✅ emit된 거래 ID: {}", id);
         });
@@ -133,12 +80,7 @@ public class TransactionDeployService {
         return receipt.getTransactionHash();
     }
 
-//    // ---------- 거래 단건 조회 ----------
-//    public TransactionDto getTransaction(String privateKey, Long transactionId) throws Exception {
-//        TransactionContract contract = loadContract(privateKey);
-//        return contract.getTransaction(BigInteger.valueOf(transactionId));
-//    }
-
+    // ---------- 거래 단건 조회 ----------
     public TransactionDto getTransaction(String privateKey, Long transactionId) throws Exception {
         TransactionContract contract = loadContract(privateKey);
         return contract.getTransaction(BigInteger.valueOf(transactionId));
