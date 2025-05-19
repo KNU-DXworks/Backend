@@ -125,7 +125,7 @@ public class ContractDeployService {
         InbodySmartContract contract = InbodySmartContract.load(contractAddress, web3j, credentials, gasProvider);
 
         return contract.addInbody(
-                requestDto.createdAt(),
+                requestDto.createdAt().toString(),
                 requestDto.gender(),
                 BigInteger.valueOf((long)(requestDto.height() * 10)),
                 BigInteger.valueOf((long)(requestDto.weight() * 10)),

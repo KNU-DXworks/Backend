@@ -1,9 +1,12 @@
 package project.DxWorks.inbody.dto;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public record PostInbodyDto(
         long id,
-        String createdAt,
+        LocalDateTime createdAt,
         boolean inbodySheet,
         String gender,
         double weight,
