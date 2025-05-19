@@ -44,11 +44,10 @@ kakao:
 aws:
   s3:
     bucket: ${S3_BUCKET_NAME}
-  dynamodb:
-    endpoint: https://dynamodb.ap-northeast-2.amazonaws.com
   credentials:
     accessKey: ${AWS_ACCESS_KEY}
     secretKey: ${AWS_SECRET_KEY}
   region:
     static: ap-northeast-2
+  url: https://comhere.s3.ap-northeast-2.amazonaws.com/
 
