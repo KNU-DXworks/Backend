@@ -62,11 +62,6 @@ public class IntroduceService {
         // getInbody 인자에 지갑주소 들어갈 예정
        List<InbodyDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
 
-       // 인바디 히스토리 정보
-        List<HistoryDto> history = inbodySet.stream()
-                .map(dto -> new HistoryDto(dto.createdAt(), dto.userCase()))
-                .toList();
-
         // 포스트 정보 불러오기
         List<PostAllResponseDto> posts = postRepository.findAllByUser(user).stream()
                 .map(post -> new PostAllResponseDto(
