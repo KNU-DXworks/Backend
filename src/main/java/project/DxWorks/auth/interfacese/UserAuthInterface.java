@@ -6,7 +6,7 @@ import project.DxWorks.user.domain.UserEntity;
 import java.util.Optional;
 
 public interface UserAuthInterface {
-    UserAuthEntity registerUser(UserEntity userEntity, Long kakaoId);
+    UserAuthEntity registerUser(UserEntity userEntity, Long kakaoId, String profileImage);
 
     Optional<UserAuthEntity> findByUserId(Long userId);
 
