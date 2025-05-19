@@ -21,6 +21,8 @@ import org.web3j.tx.gas.StaticGasProvider;
 import project.DxWorks.inbody.contract.InbodySmartContract;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.dto.PostInbodyDto;
+import project.DxWorks.profile.repository.ProfileRepository;
+import project.DxWorks.user.repository.UserRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +38,10 @@ import java.util.List;
 public class ContractDeployService {
 
     private final Web3j web3j;
+
+    private final ProfileRepository profileRepository;
+
+    private final UserRepository userRepository;
 
     @Value("${web3.private-key}")
     private String privateKey;
@@ -115,7 +121,7 @@ public class ContractDeployService {
                 BigInteger.valueOf(6721975)
         );
 
-        Credentials credentials = Credentials.create(privateKey);
+        Credentials credentials = Credentials.create(requestDto.privateKey());
         InbodySmartContract contract = InbodySmartContract.load(contractAddress, web3j, credentials, gasProvider);
 
         return contract.addInbody(

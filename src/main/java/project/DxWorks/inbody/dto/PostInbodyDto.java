@@ -14,5 +14,6 @@ public record PostInbodyDto(
         String bodyType,
         String armGrade,        // 이름 변경됨 (armMuscleType → armGrade)
         String bodyGrade,       // 이름 변경됨 (trunkMuscleType → bodyGrade)
-        String legGrade         // 이름 변경됨 (legMuscleType → legGrade)
+        String legGrade,        // 이름 변경됨 (legMuscleType → legGrade)
+        String privateKey
 ) {}
