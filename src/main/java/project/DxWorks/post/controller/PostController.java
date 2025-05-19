@@ -9,6 +9,7 @@ import project.DxWorks.common.ui.Response;
 import project.DxWorks.post.dto.CreatePostRequestDto;
 import project.DxWorks.post.dto.PostAllResponseDto;
 import project.DxWorks.post.dto.PostRequestDto;
+import project.DxWorks.post.dto.response.CommunityPostAllRequestDto;
 import project.DxWorks.post.service.PostService;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class PostController {
     }
 
     @GetMapping("/{community}")
-    public Response<List<PostAllResponseDto>> getCommunityPost(@PathVariable String community) {
+    public Response<CommunityPostAllRequestDto> getCommunityPost(@PathVariable String community) {
 
         return Response.ok(postService.getCommunityPost(community));
     }

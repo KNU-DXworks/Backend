@@ -10,8 +10,11 @@ import project.DxWorks.post.domain.CommunityType;
 import project.DxWorks.post.dto.CreatePostRequestDto;
 import project.DxWorks.post.dto.PostAllResponseDto;
 import project.DxWorks.post.dto.PostRequestDto;
+import project.DxWorks.post.dto.response.CommunityPostAllRequestDto;
 import project.DxWorks.post.entity.Post;
 import project.DxWorks.post.repository.PostRepository;
+import project.DxWorks.profile.entity.Profile;
+import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.domain.UserEntity;
 import project.DxWorks.user.repository.UserRepository;
 
@@ -29,6 +32,8 @@ public class PostService {
     private final UserRepository userRepository;
 
     private final FileService fileService;
+
+    private final ProfileRepository profileRepository;
 
     // Post 생성
     @Transactional
@@ -71,21 +76,29 @@ public class PostService {
 
     //커뮤니티 모든 게시물 조회
     @Transactional
-    public List<PostAllResponseDto> getCommunityPost(String community) {
-        return postRepository.findAllByCommunityType(CommunityType.valueOf(community))
+    public CommunityPostAllRequestDto getCommunityPost(String community) {
+        List<PostAllResponseDto> list =  postRepository.findAllByCommunityType(CommunityType.valueOf(community))
                 .stream()
-                .map(post -> new PostAllResponseDto(
+                .map(post -> {
+                    UserEntity user = post.getUser();
+                    Profile profile = profileRepository.findByUser(user)
+                            .orElseThrow(() -> new IllegalArgumentException("잘못된 사용자입니다."));
+
+                    return new PostAllResponseDto(
                         post.getId(),
-                        post.getUser().getUserName(),
+                        user.getId(),
+                        user.getUserName(),
+                        profile.getProfileUrl(),
                         post.getRegDt(),
-                        post.getPostType(),
-                        post.getCommunityType(),
+                        profile.getCommunity(),
                         post.getContent(),
                         post.getPostImg(),
                         resolveFileType(post.getPostImg())
-                ))
+                    );
+                })
                 .toList();
 
+        return new CommunityPostAllRequestDto(CommunityType.valueOf(community), list);
     }
 
     public String resolveFileType(String fileUrl) {
