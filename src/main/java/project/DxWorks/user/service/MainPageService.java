@@ -2,23 +2,22 @@ package project.DxWorks.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import project.DxWorks.GeminiAI.service.InbodyService;
 import project.DxWorks.common.ui.Response;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
+import project.DxWorks.post.repository.PostRepository;
+import project.DxWorks.post.service.PostService;
 import project.DxWorks.profile.entity.Profile;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.domain.UserEntity;
-import project.DxWorks.user.dto.response.mainpage.InterestUserDto;
-import project.DxWorks.user.dto.response.mainpage.MainPageResponseDto;
-import project.DxWorks.user.dto.response.mainpage.SubscribeUserDto;
+import project.DxWorks.user.dto.response.mainpage.*;
 import project.DxWorks.user.repository.UserInterestRepository;
 import project.DxWorks.user.repository.UserRepository;
 import project.DxWorks.user.repository.UserSubscibeRepository;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +27,8 @@ public class MainPageService {
     private final UserSubscibeRepository userSubscibeRepository;
     private final ProfileRepository profileRepository;
     private final ContractDeployService contractDeployService;
+    private final PostRepository postRepository;
+    private final PostService postService;
 
     public Response<MainPageResponseDto> mainPage(long userId) {
 
@@ -73,7 +74,40 @@ public class MainPageService {
                 })
                 .toList();
 
+        List<RecomandUserDto> recomandUserDtos = new ArrayList<RecomandUserDto>();
 
+
+        // 구독자 게시물
+
+        List<UserEntity> users = userSubscibeRepository.findToUsersByFromUser(myUser);
+        List<SubscribePostsDto> subscribePostsDtos = postRepository.findByUserIn(users)
+                .stream()
+                .map(post -> {
+                        UserEntity user = post.getUser();
+                        Profile profile = profileRepository.findByUser(user)
+                                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 존재하지 않습니다."));
+
+                        String fileType = postService.resolveFileType(post.getPostImg());
+                        return new SubscribePostsDto(
+                                post.getId(),
+                                user.getId(),
+                                user.getUserName(),
+                                profile.getProfileUrl(),
+                                post.getRegDt(),
+                                profile.getCommunity(),
+                                post.getContent(),
+                                post.getPostImg(),
+                                fileType
+                        );
+                })
+                .toList();
+
+        return Response.ok(new MainPageResponseDto(
+                interestUserDtoList,
+                subscribeUserDtoList,
+                recomandUserDtos,
+                subscribePostsDtos
+        ));
     }
 
 }
