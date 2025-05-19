@@ -1,5 +1,6 @@
 package project.DxWorks.user.repository;
 
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,4 +15,6 @@ public interface UserSubscibeRepository extends JpaRepository<UserSubscribeEntit
 
     @Query("SELECT u.fromUser FROM UserSubscribeEntity u WHERE u.toUser = :toUser")
     List<UserEntity> findFromUsersByToUser(@Param("toUser") UserEntity toUser);
+
+    boolean existsByFromUserAndToUser(UserEntity fromUser, UserEntity toUser);
 }
