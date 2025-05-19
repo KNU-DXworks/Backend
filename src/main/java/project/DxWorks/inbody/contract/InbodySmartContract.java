@@ -39,58 +39,53 @@ public class InbodySmartContract extends Contract {
     public RemoteFunctionCall<TransactionReceipt> addInbody(
             String createdAt,
             String gender,
+            BigInteger height,
             BigInteger weight,
-            BigInteger muscleMass,
-            BigInteger fatRatio,
-            String muscleMassType,
-            String fatMassType,
+            BigInteger muscle,
+            BigInteger fat,
+            BigInteger bmi,
             String userCase,
-            String armMuscleType,
-            String trunkMuscleType,
-            String legMuscleType
+            String armGrade,
+            String bodyGrade,
+            String legGrade
     ) {
         final Function function = new Function(
                 "addInbody",
                 Arrays.<Type>asList(
                         new Utf8String(createdAt),
                         new Utf8String(gender),
+                        new Uint256(height),
                         new Uint256(weight),
-                        new Uint256(muscleMass),
-                        new Uint256(fatRatio),
-                        new Utf8String(muscleMassType),
-                        new Utf8String(fatMassType),
+                        new Uint256(muscle),
+                        new Uint256(fat),
+                        new Uint256(bmi),
                         new Utf8String(userCase),
-                        new Utf8String(armMuscleType),
-                        new Utf8String(trunkMuscleType),
-                        new Utf8String(legMuscleType)
+                        new Utf8String(armGrade),
+                        new Utf8String(bodyGrade),
+                        new Utf8String(legGrade)
                 ),
                 Collections.<TypeReference<?>>emptyList()
         );
         return executeRemoteCallTransaction(function);
     }
 
+
     // 인바디 정보 가져오기
     public List<InbodyDto> getMyRecords(Web3j web3j, String walletAddress, String contractAddress) throws IOException {
-        // 스마트 컨트랙트 Web3j 함수 설정
         Function function = new Function(
                 "getMyRecords",
                 Collections.emptyList(),
                 List.of(new TypeReference<DynamicArray<InbodyStruct>>() {})
         );
 
-
         String encoded = FunctionEncoder.encode(function);
 
-
-        // 저수준 스마트컨트랙트 읽기
         EthCall response = web3j.ethCall(
                 Transaction.createEthCallTransaction(walletAddress, contractAddress, encoded),
                 DefaultBlockParameterName.LATEST
         ).send();
 
         List<Type> decoded = FunctionReturnDecoder.decode(response.getValue(), function.getOutputParameters());
-
-        // 반환 리스트
         List<InbodyDto> result = new ArrayList<>();
 
         if (!decoded.isEmpty()) {
@@ -100,18 +95,17 @@ public class InbodySmartContract extends Contract {
                 List<Type> fields = record.getValue();
 
                 InbodyDto dto = new InbodyDto(
-                        fields.get(0).getValue().toString(), // createdAt
-                        fields.get(1).getValue().toString(), // gender
-                        ((BigInteger) fields.get(2).getValue()).doubleValue() / 10, // weight
-                        ((BigInteger) fields.get(3).getValue()).doubleValue() / 10, // muscleMass
-                        ((BigInteger) fields.get(4).getValue()).doubleValue() / 10, // fatRatio
-                        fields.get(5).getValue().toString(), // muscleMassType
-                        fields.get(6).getValue().toString(), // fatMassType
-                        fields.get(7).getValue().toString(), // userCase
-                        fields.get(8).getValue().toString(), // armMuscleType
-                        fields.get(9).getValue().toString(), // trunkMuscleType
-                        fields.get(10).getValue().toString() // legMuscleType)
-
+                        fields.get(0).getValue().toString(),                           // createdAt
+                        fields.get(1).getValue().toString(),                           // gender
+                        ((BigInteger) fields.get(2).getValue()).doubleValue()/10,         // height
+                        ((BigInteger) fields.get(3).getValue()).doubleValue()/10,         // weight
+                        ((BigInteger) fields.get(4).getValue()).doubleValue()/10,         // muscle
+                        ((BigInteger) fields.get(5).getValue()).doubleValue()/10,         // fat
+                        ((BigInteger) fields.get(6).getValue()).doubleValue()/10,         // bmi
+                        fields.get(7).getValue().toString(),                           // userCase
+                        fields.get(8).getValue().toString(),                           // armGrade
+                        fields.get(9).getValue().toString(),                           // bodyGrade
+                        fields.get(10).getValue().toString()                           // legGrade
                 );
                 result.add(dto);
             }
@@ -119,5 +113,6 @@ public class InbodySmartContract extends Contract {
 
         return result;
     }
+
 
 }

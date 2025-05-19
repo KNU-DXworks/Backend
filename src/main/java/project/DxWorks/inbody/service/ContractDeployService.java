@@ -110,7 +110,6 @@ public class ContractDeployService {
     }
 
     public String addInbody(PostInbodyDto requestDto) throws Exception {
-        // Gas설정
         ContractGasProvider gasProvider = new StaticGasProvider(
                 BigInteger.valueOf(20_000_000_000L),
                 BigInteger.valueOf(6721975)
@@ -122,17 +121,19 @@ public class ContractDeployService {
         return contract.addInbody(
                 requestDto.createdAt(),
                 requestDto.gender(),
-                BigInteger.valueOf((long)(requestDto.weight() * 10)),           // uint256
-                BigInteger.valueOf((long)(requestDto.muscleMass() * 10)),       // uint256
-                BigInteger.valueOf((long)(requestDto.fatRatio() * 10)),         // uint256
-                requestDto.muscleMassType(),
-                requestDto.fatMassType(),
-                requestDto.userCase(),
-                requestDto.armMuscleType(),
-                requestDto.trunkMuscleType(),
-                requestDto.legMuscleType()
+                BigInteger.valueOf((long)(requestDto.height() * 10)),
+                BigInteger.valueOf((long)(requestDto.weight() * 10)),
+                BigInteger.valueOf((long)(requestDto.muscle() * 10)),
+                BigInteger.valueOf((long)(requestDto.fat() * 10)),
+                BigInteger.valueOf((long)(requestDto.bmi() * 10)),
+                requestDto.bodyType(),
+                requestDto.armGrade(),
+                requestDto.bodyGrade(),
+                requestDto.legGrade()
         ).send().getTransactionHash();
+
     }
+
 
 
     // 인바디 정보 가져오기
