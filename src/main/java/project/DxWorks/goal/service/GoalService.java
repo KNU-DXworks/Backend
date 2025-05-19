@@ -71,7 +71,7 @@ public class GoalService {
                 goal.setBodyType(BodyType.valueOf(requestDto.getBodyType()));
         }
 
-        return mapToResponseDto(goal,user.getId());
+        return mapToResponseDto(goal);
         }
 
     /**
@@ -86,15 +86,14 @@ public class GoalService {
             throw new NoSuchElementException("사용자 id에 해당하는 목표치가 없습니다." + userId);
         }
 
-        GoalResponseDto dto = mapToResponseDto(goal, userId);
+        GoalResponseDto dto = mapToResponseDto(goal);
 
         return dto;
     }
 
 
-    private GoalResponseDto mapToResponseDto(Goal goal, Long userId) {
+    private GoalResponseDto mapToResponseDto(Goal goal) {
         GoalResponseDto dto = new GoalResponseDto();
-        dto.setGoalId(goal.getGoalId());
         dto.setWeight(goal.getWeight());
         dto.setMuscle(goal.getMuscle());
         dto.setFat(goal.getFat());
@@ -103,7 +102,6 @@ public class GoalService {
         dto.setBodyGrade(String.valueOf(goal.getBodyGrade()));
         dto.setLegGrade(String.valueOf(goal.getLegGrade()));
         dto.setBodyType(String.valueOf(goal.getBodyType()));
-        dto.setUserId(userId);
         return dto;
     }
 
