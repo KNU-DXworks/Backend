@@ -1,5 +1,6 @@
 package project.DxWorks.profile.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data

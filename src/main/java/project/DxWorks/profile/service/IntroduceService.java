@@ -140,10 +140,18 @@ public class IntroduceService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 프로필이 존재하지 않습니다."));
 
         Goal goal = user.getGoal();
-        GoalDto goalDto = new GoalDto(goal.getWeight(), goal.getMuscle(), goal.getFat());
+        GoalDto goalDto = null;
+        if (goal != null){
+            goalDto = new GoalDto(goal.getWeight(), goal.getMuscle(), goal.getFat());
+        }
 
+
+        List<InbodyDto> inbodySet = null;
         // getInbody 인자에 지갑주소 들어갈 예정
-        List<InbodyDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
+        if (!profile.isWalletEmpty()){
+            inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
+        }
+
 
         // 포스트 정보 불러오기
         List<UserPostResponseDto> posts =  postRepository.findAllByUser(user).stream()
@@ -175,7 +183,7 @@ public class IntroduceService {
                 profile.getProfileUrl(),
                 eth,
                 profile.getIntroduce(),
-                profile.getWalletAddress().isEmpty(),
+                !profile.isWalletEmpty(),
                 goalDto,
                 inbodySet,
                 posts
@@ -213,6 +221,8 @@ public class IntroduceService {
                 )).orElseThrow(() -> new IllegalArgumentException("프로필을 먼저 생성해주세요"));
 
         profile.setWalletAddress(dto.getWalletAddress());
+
+        System.out.println(dto.getWalletAddress());
 
         profileRepository.save(profile);
 
