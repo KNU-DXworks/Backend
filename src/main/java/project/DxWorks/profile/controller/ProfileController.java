@@ -8,10 +8,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import project.DxWorks.common.ui.Response;
+import project.DxWorks.post.dto.response.myProfile.MyProfileResponseDto;
 import project.DxWorks.profile.dto.IntroduceMyResponseDto;
 import project.DxWorks.profile.dto.IntroduceRequestDto;
 import project.DxWorks.profile.dto.IntroduceResponseDto;
 import project.DxWorks.profile.dto.PostWalletRequestDto;
+import project.DxWorks.profile.dto.response.OtherProfileResponseDto;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.profile.service.IntroduceService;
 import project.DxWorks.user.domain.UserEntity;
@@ -38,16 +40,16 @@ public class ProfileController {
 
     //타인 프로필 조회
     @GetMapping("/{profileId}")
-    public ResponseEntity<IntroduceResponseDto> get(@PathVariable long profileId) throws IOException {
-        IntroduceResponseDto introduce = introduceService.getIntroduce(profileId);
+    public ResponseEntity<OtherProfileResponseDto> get(@PathVariable long profileId, @RequestAttribute long userId) throws IOException {
+        OtherProfileResponseDto introduce = introduceService.getIntroduce(profileId, userId);
         return ResponseEntity.ok(introduce);
     }
 
     //내 프로필 조회
     @GetMapping("/myprofile")
-    public ResponseEntity<IntroduceMyResponseDto> getMyProfile(@RequestAttribute Long userId) throws IOException {
+    public ResponseEntity<MyProfileResponseDto> getMyProfile(@RequestAttribute Long userId) throws IOException {
 
-        IntroduceMyResponseDto dto = introduceService.getMyIntroduce(userId);
+        MyProfileResponseDto dto = introduceService.getMyIntroduce(userId);
 
         return ResponseEntity.ok(dto);
     }
