@@ -9,16 +9,24 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import project.DxWorks.common.ui.Response;
+import project.DxWorks.goal.entity.Goal;
+import project.DxWorks.goal.repository.GoalRepository;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
+import project.DxWorks.post.domain.PostType;
 import project.DxWorks.post.dto.PostAllResponseDto;
 import project.DxWorks.post.dto.PostResponseDto;
+import project.DxWorks.post.dto.response.UserPostResponseDto;
+import project.DxWorks.post.dto.response.myProfile.GoalDto;
+import project.DxWorks.post.dto.response.myProfile.MyProfileResponseDto;
 import project.DxWorks.post.repository.PostRepository;
 import project.DxWorks.profile.dto.*;
+import project.DxWorks.profile.dto.response.OtherProfileResponseDto;
 import project.DxWorks.profile.entity.Profile;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.domain.UserEntity;
 import project.DxWorks.user.repository.UserRepository;
+import project.DxWorks.user.repository.UserSubscibeRepository;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -34,6 +42,7 @@ public class IntroduceService {
     private final ContractDeployService contractDeployService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final UserSubscibeRepository userSubscibeRepository;
     private final Web3j web3j;
 
 
@@ -52,7 +61,7 @@ public class IntroduceService {
 
     //조회 (profileId로 조회 -> 다른 사람 프로필 조회)
     @Transactional
-    public IntroduceResponseDto getIntroduce(Long profileId) throws IOException {
+    public OtherProfileResponseDto getIntroduce(Long profileId, long userId) throws IOException {
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 프로필ID가 존재하지 않습니다.: " + profileId));
 
@@ -62,34 +71,57 @@ public class IntroduceService {
         // getInbody 인자에 지갑주소 들어갈 예정
        List<InbodyDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
 
+       boolean isLinked = userSubscibeRepository.existsByFromUserAndToUser(userRepository.findById(userId)
+               .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")), user);
+
         // 포스트 정보 불러오기
-        List<PostAllResponseDto> posts = postRepository.findAllByUser(user).stream()
-                .map(post -> new PostAllResponseDto(
-                    post.getId(),
-                    post.getUser().getUserName(),
-                    post.getRegDt(),
-                    post.getPostType(),
-                    post.getCommunityType(),
-                    post.getContent(),
-                    post.getPostImg(),
-                    resolveFileType(post.getPostImg())
-                ))
-                .toList();
-
-        InbodyDto inbody = null;
-
-        if (!inbodySet.isEmpty()){
-            inbody = inbodySet.get(inbodySet.size() - 1);
+        List<UserPostResponseDto> posts;
+        if (isLinked)
+        {
+            posts = postRepository.findAllByUser(user).stream()
+                    .map(post -> new UserPostResponseDto(
+                                    post.getId(),
+                                    profile.getProfileUrl(),
+                                    user.getUserName(),
+                                    post.getRegDt(),
+                                    post.getPostType(),
+                                    post.getCommunityType(),
+                                    post.getContent(),
+                                    post.getPostImg(),
+                                    resolveFileType(post.getPostImg())
+                            )
+                    )
+                    .toList();
+        }
+        else{
+            posts = postRepository.findAllByUser(user).stream()
+                    .filter(post -> post.getPostType() == PostType.NORMAL)
+                    .map(post -> new UserPostResponseDto(
+                                    post.getId(),
+                                    profile.getProfileUrl(),
+                                    user.getUserName(),
+                                    post.getRegDt(),
+                                    post.getPostType(),
+                                    post.getCommunityType(),
+                                    post.getContent(),
+                                    post.getPostImg(),
+                                    resolveFileType(post.getPostImg())
+                            )
+                    )
+                    .toList();
         }
 
-        IntroduceResponseDto dto = new IntroduceResponseDto(
-                profileId,
-                profile.getIntroduce(),
+
+        OtherProfileResponseDto dto = new OtherProfileResponseDto(
+                user.getId(),
+                user.getUserName(),
                 profile.getCommunity(),
-                history,
-                inbody,
-                posts,
-                userName);
+                isLinked,
+                profile.getProfileUrl(),
+                profile.getIntroduce(),
+                inbodySet,
+                posts
+                );
 
         return dto;
     }
@@ -97,7 +129,7 @@ public class IntroduceService {
 
     //내 프로필 조회 (userId 사용)
     @Transactional
-    public IntroduceMyResponseDto getMyIntroduce(Long userId) throws IOException {
+    public MyProfileResponseDto getMyIntroduce(Long userId) throws IOException {
 
         //userId로 UserEntity 조회
         UserEntity user = userRepository.findById(userId)
@@ -107,33 +139,28 @@ public class IntroduceService {
         Profile profile = profileRepository.findByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 프로필이 존재하지 않습니다."));
 
+        Goal goal = user.getGoal();
+        GoalDto goalDto = new GoalDto(goal.getWeight(), goal.getMuscle(), goal.getFat());
+
         // getInbody 인자에 지갑주소 들어갈 예정
         List<InbodyDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
 
-        // 인바디 히스토리 정보
-        List<HistoryDto> history = inbodySet.stream()
-                .map(dto -> new HistoryDto(dto.createdAt(), dto.userCase()))
-                .toList();
-
         // 포스트 정보 불러오기
-        List<PostAllResponseDto> posts = postRepository.findAllByUser(user).stream()
-                .map(post -> new PostAllResponseDto(
-                        post.getId(),
-                        post.getUser().getUserName(),
-                        post.getRegDt(),
-                        post.getPostType(),
-                        post.getCommunityType(),
-                        post.getContent(),
-                        post.getPostImg(),
-                        resolveFileType(post.getPostImg())
-                ))
+        List<UserPostResponseDto> posts =  postRepository.findAllByUser(user).stream()
+                .map(post -> new UserPostResponseDto(
+                                post.getId(),
+                                profile.getProfileUrl(),
+                                user.getUserName(),
+                                post.getRegDt(),
+                                post.getPostType(),
+                                post.getCommunityType(),
+                                post.getContent(),
+                                post.getPostImg(),
+                                resolveFileType(post.getPostImg())
+                        )
+                )
                 .toList();
 
-        InbodyDto inbody = null;
-
-        if (!inbodySet.isEmpty()){
-            inbody = inbodySet.get(inbodySet.size() - 1);
-        }
         String eth = null;
 
         // 지갑이 등록된 경우
@@ -141,15 +168,18 @@ public class IntroduceService {
             eth = getWalletBalance(profile.getWalletAddress());
         }
 
-        IntroduceMyResponseDto dto = new IntroduceMyResponseDto(
-                profile.getId(),
-                profile.getIntroduce(),
+        MyProfileResponseDto dto = new MyProfileResponseDto(
+                user.getId(),
+                user.getUserName(),
                 profile.getCommunity(),
+                profile.getProfileUrl(),
                 eth,
-                history,
-                inbody,
-                posts,
-                user.getUserName());
+                profile.getIntroduce(),
+                profile.getWalletAddress().isEmpty(),
+                goalDto,
+                inbodySet,
+                posts
+                );
 
         return dto;
     }

@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import project.DxWorks.community.entity.CommunityCategory;
+import project.DxWorks.goal.entity.BodyType;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.post.dto.PostAllResponseDto;
+import project.DxWorks.post.dto.response.UserPostResponseDto;
 
 import java.util.List;
 
@@ -26,4 +28,6 @@ public class IntroduceResponseDto {
     private List<PostAllResponseDto> posts;
 
     private String userName;
+
+
 }
