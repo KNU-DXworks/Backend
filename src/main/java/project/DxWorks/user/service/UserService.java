@@ -5,7 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.DxWorks.GeminiAI.service.InbodyService;
 import project.DxWorks.common.ui.Response;
+import project.DxWorks.inbody.contract.InbodySmartContract;
+import project.DxWorks.inbody.dto.InbodyDto;
+import project.DxWorks.inbody.service.ContractDeployService;
+import project.DxWorks.profile.entity.Profile;
+import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.domain.UserEntity;
 import project.DxWorks.user.domain.UserInterestEntity;
 import project.DxWorks.user.dto.request.ModifyUserInfRequestDto;
@@ -14,6 +20,7 @@ import project.DxWorks.user.dto.response.UserInfResponseDto;
 import project.DxWorks.user.repository.UserInterestRepository;
 import project.DxWorks.user.repository.UserRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +32,10 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final UserInterestRepository userInterestRepository;
+
+    private final ProfileRepository profileRepository;
+
+    private final ContractDeployService contractDeployService;
 
     @Transactional
     public Response<UserInfResponseDto> getUserInf(Long userId) {
@@ -73,7 +84,23 @@ public class UserService {
         }
 
         return Response.ok(toUser.stream()
-                .map(u -> new InterestUserListResponseDto(u.getId(), u.getUserName()))
+                .map(u -> {
+                    Profile profile = profileRepository.findByUser(u)
+                            .orElseThrow(() -> new IllegalArgumentException("해당유저가 존재하지 않습니다."));
+                    try {
+                        List<InbodyDto> inbodys = contractDeployService.getInbody(profile.getWalletAddress());
+
+                        return new InterestUserListResponseDto(
+                                u.getId(),
+                                u.getUserName(),
+                                profile.getProfileUrl(),
+                                inbodys.get(inbodys.size()-2).userCase(),
+                                profile.getCommunity().toString()
+                        );
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .collect(Collectors.toList()));
     }
 }
