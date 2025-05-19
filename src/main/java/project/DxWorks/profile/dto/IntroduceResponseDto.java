@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import project.DxWorks.community.entity.CommunityCategory;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.post.dto.PostAllResponseDto;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public class IntroduceResponseDto {
     private long profileId;
     private String introduce; //조회 응답용.
-    private long communityId;
+    private CommunityCategory community;
 
     private List<HistoryDto> history;
 
