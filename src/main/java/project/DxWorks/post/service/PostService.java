@@ -88,7 +88,7 @@ public class PostService {
 
     }
 
-    private String resolveFileType(String fileUrl) {
+    public String resolveFileType(String fileUrl) {
         if (fileUrl == null || fileUrl.isBlank()) return "NONE";
         if (fileUrl.endsWith(".pdf")) return "application/pdf";
         if (fileUrl.matches(".*\\.(jpg|jpeg|png|gif|bmp)$")) return "image/jpeg";
