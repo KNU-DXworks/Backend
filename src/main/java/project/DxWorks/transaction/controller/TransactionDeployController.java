@@ -43,7 +43,15 @@ public class TransactionDeployController {
         return transactionDeployService.getTransactions(privateKey);
     }
 
-    // ---------- 거래 단건 조회 ----------
+//    // ---------- 거래 단건 조회 ----------
+//    @GetMapping("/detail/{id}")
+//    public TransactionDto getTransaction(
+//            @RequestHeader("X-PRIVATE-KEY") String privateKey,
+//            @PathVariable Long id
+//    ) throws Exception {
+//        return transactionDeployService.getTransaction(privateKey, id);
+//    }
+
     @GetMapping("/detail/{id}")
     public TransactionDto getTransaction(
             @RequestHeader("X-PRIVATE-KEY") String privateKey,

@@ -134,19 +134,57 @@ public class TransactionContract extends Contract {
 
 
 
-    // ---------- 단건 조회 ----------
+//    // ---------- 단건 조회 ----------
+//    public TransactionDto getTransaction(BigInteger transactionId) throws Exception {
+//        Function function = new Function(
+//                "getTransaction",
+//                Collections.singletonList(new Uint256(transactionId)),
+//                Arrays.asList(
+//                        new TypeReference<Uint256>() {},
+//                        new TypeReference<Uint8>() {},
+//                        new TypeReference<Address>() {},
+//                        new TypeReference<Utf8String>() {},
+//                        new TypeReference<Uint256>() {},
+//                        new TypeReference<Utf8String>() {},
+//                        new TypeReference<Address>() {}
+//                )
+//        );
+//
+//        String encoded = FunctionEncoder.encode(function);
+//
+//        EthCall response = web3j.ethCall(
+//                Transaction.createEthCallTransaction(
+//                        credentials.getAddress(), getContractAddress(), encoded),
+//                DefaultBlockParameterName.LATEST
+//        ).send();
+//
+//        List<Type> decoded = FunctionReturnDecoder.decode(response.getValue(), function.getOutputParameters());
+//
+//        if (decoded.isEmpty()) {
+//            throw new RuntimeException("No transaction found");
+//        }
+//
+//        return new TransactionDto(
+//                ((BigInteger) decoded.get(0).getValue()).longValue(),
+//                decoded.get(1).getValue().toString(),
+//                ((BigInteger) decoded.get(2).getValue()).intValue(),
+//                ((BigInteger) decoded.get(3).getValue()).longValue(),
+//                decoded.get(4).getValue().toString(),
+//                decoded.get(5).getValue().toString()
+//        );
+//    }
+
     public TransactionDto getTransaction(BigInteger transactionId) throws Exception {
         Function function = new Function(
                 "getTransaction",
                 Collections.singletonList(new Uint256(transactionId)),
                 Arrays.asList(
-                        new TypeReference<Uint256>() {},
-                        new TypeReference<Uint8>() {},
-                        new TypeReference<Address>() {},
-                        new TypeReference<Utf8String>() {},
-                        new TypeReference<Uint256>() {},
-                        new TypeReference<Utf8String>() {},
-                        new TypeReference<Address>() {}
+                        new TypeReference<Uint256>() {},   // id
+                        new TypeReference<Address>() {},   // traderId
+                        new TypeReference<Uint256>() {},   // transactionPeriod
+                        new TypeReference<Uint256>() {},   // amount
+                        new TypeReference<Utf8String>() {},// info
+                        new TypeReference<Address>() {}    // creator
                 )
         );
 
@@ -165,12 +203,12 @@ public class TransactionContract extends Contract {
         }
 
         return new TransactionDto(
-                ((BigInteger) decoded.get(0).getValue()).longValue(),
-                decoded.get(1).getValue().toString(),
-                ((BigInteger) decoded.get(2).getValue()).intValue(),
-                ((BigInteger) decoded.get(3).getValue()).longValue(),
-                decoded.get(4).getValue().toString(),
-                decoded.get(5).getValue().toString()
+                ((BigInteger) decoded.get(0).getValue()).longValue(),    // id
+                decoded.get(1).getValue().toString(),                    // traderId
+                ((BigInteger) decoded.get(2).getValue()).intValue(),     // transactionPeriod
+                ((BigInteger) decoded.get(3).getValue()).longValue(),    // amount
+                decoded.get(4).getValue().toString(),                    // info
+                decoded.get(5).getValue().toString()                     // creator
         );
     }
 
