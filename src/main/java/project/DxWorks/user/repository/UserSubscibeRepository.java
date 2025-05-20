@@ -10,7 +10,10 @@ import project.DxWorks.user.domain.UserSubscribeEntity;
 import java.util.List;
 
 public interface UserSubscibeRepository extends JpaRepository<UserSubscribeEntity, Long> {
-    @Query("SELECT u.toUser FROM UserSubscribeEntity u WHERE u.fromUser = :fromUser")
+//    @Query("SELECT u.toUser FROM UserSubscribeEntity u WHERE u.fromUser = :fromUser")
+//    List<UserEntity> findToUsersByFromUser(@Param("fromUser") UserEntity fromUser);
+
+    @Query("SELECT u.toUser FROM UserSubscribeEntity u WHERE u.fromUser = :fromUser AND u.expiresAt > CURRENT_TIMESTAMP")
     List<UserEntity> findToUsersByFromUser(@Param("fromUser") UserEntity fromUser);
 
     @Query("SELECT u.fromUser FROM UserSubscribeEntity u WHERE u.toUser = :toUser")
