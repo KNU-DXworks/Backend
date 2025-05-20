@@ -65,7 +65,7 @@ public class KakaoAuthService {
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
             params.add("grant_type", "authorization_code");
             params.add("client_id", clientId);
-            params.add("redirect_uri", "http://localhost:5173/redirection");
+            params.add("redirect_uri", "https://chr.dxworks.co.kr/redirection");
             params.add("code", authCode);
             params.add("client_secret", clientSecret);
 
