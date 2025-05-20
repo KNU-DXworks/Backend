@@ -48,7 +48,7 @@ public class KakaoAuthService {
 
         // 유저정보 확인 후 가입 및 처리
         UserAuthEntity userAuthEntity = userAuthInterface.findByKakaoId(kakaoUserInfo.getId())
-                .orElseGet(() -> userAuthInterface.registerUser(kakaoUserInfo.toUser(), kakaoId, kakaoUserInfo.getProperties().getProfile_image()));
+                .orElseGet(() -> userAuthInterface.registerUser(kakaoUserInfo.toUser(), kakaoId, kakaoUserInfo.getProperties().getThumbnail_image()));
 
 
         // 토큰 생성
