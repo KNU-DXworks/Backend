@@ -77,7 +77,7 @@ public class UserService {
         UserEntity user2 = userRepository.findById(fromUser)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
 
-        UserInterestEntity interest = userInterestRepository.findByToUserAndFromUser(user1, user2);
+        UserInterestEntity interest = userInterestRepository.findByToUserAndFromUser(user2, user1);
         userInterestRepository.delete(interest);
 
         return Response.ok("관심사용자에서 제거됐습니다.");
