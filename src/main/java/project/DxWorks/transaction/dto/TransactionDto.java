@@ -6,10 +6,11 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class TransactionDto {
-    private long id;
-    private String traderId;
+    private long id;            // 거래 ID
+    private String seller;      // 판매자 주소
+    private String buyer;       // 구매자 주소
     private int transactionPeriod;
     private long amount;
     private String info;
-    private String creator;
+    private boolean paid;       // 결제 여부
 }
