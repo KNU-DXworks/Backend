@@ -13,8 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 import project.DxWorks.GeminiAI.entity.Inbody;
 import project.DxWorks.GeminiAI.service.GeminiService;
 import project.DxWorks.GeminiAI.service.InbodyService;
+import project.DxWorks.UserRecommend.dto.EmbeddingRequestDto;
+import project.DxWorks.UserRecommend.dto.RecommendResponseDto;
+import project.DxWorks.UserRecommend.service.BigQueryService;
+import project.DxWorks.UserRecommend.service.RecommendService;
 import project.DxWorks.common.domain.exception.ErrorCode;
 import project.DxWorks.common.ui.Response;
+import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.dto.PostInbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
 
@@ -30,6 +35,10 @@ public class ScanController {
 
     private final ContractDeployService contractDeployService;
 
+    private final RecommendService recommendService;
+
+    private final BigQueryService bigQueryService;
+
 
     @Operation(
             summary = "인바디 이미지 업로드",
@@ -39,11 +48,26 @@ public class ScanController {
             @ApiResponse(responseCode = "200", description = "업로드 및 분석 성공"),
             @ApiResponse(responseCode = "500", description = "서버 오류 발생")
     })
-    @PostMapping
+    @PostMapping("/inbody")
     public Response<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file, @RequestHeader("X-PRIVATE-KEY") String privateKey) {
         try {
 
             Inbody saved = inbodyService.analyzeAndSave(file);
+
+            //임베딩을 위한 dto
+            InbodyDto embeddingDto = new InbodyDto(
+                    saved.getCreatedAt().toString(),
+                    saved.getGender(),
+                    saved.getWeight(),
+                    saved.getHeight(),
+                    saved.getMuscle(),
+                    saved.getFat(),
+                    saved.getBmi(),
+                    saved.getBodyType(),
+                    saved.getArmGrade(),
+                    saved.getBodyGrade(),
+                    saved.getLegGrade()
+            );
 
             PostInbodyDto dto = new PostInbodyDto(
                     saved.getId(),
@@ -61,13 +85,26 @@ public class ScanController {
                     saved.getLegGrade(),
                     privateKey
             );
+
             contractDeployService.addInbody(dto);
+            System.out.println("1");
+
+//          //String 형태 -> double로 인코딩 한 후 dto 전달.
+            EmbeddingRequestDto embeddingRequestDto = recommendService.toEmbeddingRequest(saved.getId(),embeddingDto);
+            //Flask 서버로 POST
+            recommendService.storeEmbedding(embeddingRequestDto);
+//            System.out.println("2");
+//            //TODO : 벡터 DB에 저장하는 로직 필요.
+//            bigQueryService.saveEmbedding(saved.getId(),embeddingRequestDto);
+//            System.out.println("3");
+
             return Response.ok(saved);
+
 
         } catch (IOException e) {
             return Response.error(ErrorCode.INTERNAL_ERROR);
         } catch (Exception e) {
-            throw new RuntimeException(e + "kkkk");
+            throw new RuntimeException(e.getMessage(),e);
         }
     }
 
