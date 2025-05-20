@@ -10,7 +10,7 @@ import project.DxWorks.profile.entity.Profile;
 
 @Service
 @RequiredArgsConstructor
-public class SubscribeService {
+public class UserSubscribeService {
 
     private final ProfileRepository profileRepository;
     private final UserSubscibeRepository subscribeRepository;
