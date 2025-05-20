@@ -70,6 +70,20 @@ public class UserService {
     }
 
     @Transactional
+    public Response<String> deleteInterestUser(Long toUser, Long fromUser) {
+        UserEntity user1 = userRepository.findById(toUser)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
+
+        UserEntity user2 = userRepository.findById(fromUser)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
+
+        UserInterestEntity interest = userInterestRepository.findByToUserAndFromUser(user1, user2);
+        userInterestRepository.delete(interest);
+
+        return Response.ok("관심사용자에서 제거됐습니다.");
+    }
+
+    @Transactional
     public Response<List<InterestUserListResponseDto>> getInterestUser(Long userId, boolean type){
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));

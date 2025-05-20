@@ -16,4 +16,6 @@ public interface UserInterestRepository extends JpaRepository<UserInterestEntity
     @Query("SELECT u.fromUser FROM UserInterestEntity u WHERE u.toUser = :toUser")
     List<UserEntity> findFromUsersByToUser(@Param("toUser") UserEntity toUser);
 
+    UserInterestEntity findByToUserAndFromUser(UserEntity toUser, UserEntity fromUser);
+
 }

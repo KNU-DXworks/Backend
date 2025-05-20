@@ -34,6 +34,11 @@ public class UserController {
         return userService.interestUser(userId, dto.toUser());
     }
 
+    @DeleteMapping("/interest")
+    public Response<String> deleteInterestUser(@RequestAttribute Long userId, @RequestBody InterestUserDto dto) {
+        return userService.deleteInterestUser(userId, dto.toUser());
+    }
+
     @GetMapping("/interest/to")
     public Response<List<InterestUserListResponseDto>> getInterestToUser(@RequestAttribute Long userId){
 
