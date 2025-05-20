@@ -21,6 +21,7 @@ import project.DxWorks.profile.dto.response.OtherProfileResponseDto;
 import project.DxWorks.profile.entity.Profile;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.domain.UserEntity;
+import project.DxWorks.user.repository.UserInterestRepository;
 import project.DxWorks.user.repository.UserRepository;
 import project.DxWorks.user.repository.UserSubscibeRepository;
 
@@ -39,6 +40,7 @@ public class IntroduceService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final UserSubscibeRepository userSubscibeRepository;
+    private final UserInterestRepository userInterestRepository;
     private final Web3j web3j;
 
 
@@ -62,17 +64,19 @@ public class IntroduceService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 프로필ID가 존재하지 않습니다.: " + profileId));
 
         UserEntity user = profile.getUser();
-        String userName = user.getUserName(); //userName 변수 추가.
 
         // getInbody 인자에 지갑주소 들어갈 예정
        List<InbodyDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());
 
-       boolean isLinked = userSubscibeRepository.existsByFromUserAndToUser(userRepository.findById(userId)
+       boolean isSub = userSubscibeRepository.existsByFromUserAndToUser(userRepository.findById(userId)
+               .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")), user);
+
+       boolean isLiked = userInterestRepository.existsByFromUserAndToUser(userRepository.findById(userId)
                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다.")), user);
 
         // 포스트 정보 불러오기
         List<UserPostResponseDto> posts;
-        if (isLinked)
+        if (isSub)
         {
             posts = postRepository.findAllByUser(user).stream()
                     .map(post -> new UserPostResponseDto(
@@ -112,7 +116,7 @@ public class IntroduceService {
                 user.getId(),
                 user.getUserName(),
                 profile.getCommunity(),
-                isLinked,
+                isLiked,
                 profile.getProfileUrl(),
                 profile.getIntroduce(),
                 inbodySet,
@@ -138,7 +142,7 @@ public class IntroduceService {
         Goal goal = user.getGoal();
         GoalDto goalDto = null;
         if (goal != null){
-            goalDto = new GoalDto(goal.getWeight(), goal.getMuscle(), goal.getFat());
+            goalDto = new GoalDto(goal.getWeight(), goal.getMuscle(), goal.getFat(), goal.getBodyType());
         }
 
 
