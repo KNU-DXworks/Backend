@@ -27,6 +27,7 @@ import org.web3j.tx.gas.StaticGasProvider;
 import project.DxWorks.transaction.contract.TransactionContract;
 import project.DxWorks.transaction.dto.PostTransactionRequestDto;
 import project.DxWorks.transaction.dto.TransactionDto;
+import project.DxWorks.user.service.SubscribeService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +41,8 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class TransactionDeployService {
+
+    private final SubscribeService subscribeService;
 
     private static final Logger log = LoggerFactory.getLogger(TransactionDeployService.class);
 
@@ -94,14 +97,40 @@ public class TransactionDeployService {
         return receipt.getTransactionHash();
     }
 
-    // 거래 송금
+//    // 거래 송금
+//    public String payForTransaction(String privateKey, Long transactionId, Long amount) throws Exception {
+//        TransactionContract contract = loadContract(privateKey);
+//        return contract.payForTransaction(
+//                BigInteger.valueOf(transactionId),
+//                BigInteger.valueOf(amount)
+//        ).send().getTransactionHash();
+//    }
+
+    // ---------- 거래 송금 ----------
     public String payForTransaction(String privateKey, Long transactionId, Long amount) throws Exception {
         TransactionContract contract = loadContract(privateKey);
-        return contract.payForTransaction(
+
+        // 1. 송금 트랜잭션 실행
+        TransactionReceipt receipt = contract.payForTransaction(
                 BigInteger.valueOf(transactionId),
                 BigInteger.valueOf(amount)
-        ).send().getTransactionHash();
+        ).send();
+
+        // 2. 거래 정보 조회
+        TransactionDto tx = contract.getTransaction(BigInteger.valueOf(transactionId));
+
+        // 3. 구독 처리
+        subscribeService.subscribeByWalletAddresses(
+                tx.getBuyer(),
+                tx.getSeller(),
+                tx.getTransactionPeriod()
+        );
+
+        return receipt.getTransactionHash();
     }
+
+
+
 
 //    // ---------- 거래 단건 조회 ----------
 //    public TransactionDto getTransaction(String privateKey, Long transactionId) throws Exception {
