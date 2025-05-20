@@ -17,7 +17,7 @@ public class OtherProfileResponseDto {
 
     private CommunityCategory bodyType;
 
-    private boolean isLinked;
+    private boolean isLiked;
 
     private String profileImg;
 
