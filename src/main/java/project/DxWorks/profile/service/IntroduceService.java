@@ -142,7 +142,7 @@ public class IntroduceService {
         Goal goal = user.getGoal();
         GoalDto goalDto = null;
         if (goal != null){
-            goalDto = new GoalDto(goal.getWeight(), goal.getMuscle(), goal.getFat());
+            goalDto = new GoalDto(goal.getWeight(), goal.getMuscle(), goal.getFat(), goal.getBodyType());
         }
 
 
