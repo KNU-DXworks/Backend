@@ -15,7 +15,7 @@ public class UserSubscribeService {
     private final ProfileRepository profileRepository;
     private final UserSubscibeRepository subscribeRepository;
 
-    public void subscribeByWalletAddresses(String buyerAddress, String sellerAddress, int periodDays) {
+    public void subscribeByWalletAddresses(Long transactionId, String buyerAddress, String sellerAddress, int periodDays) {
         UserEntity buyer = profileRepository.findByWalletAddress(buyerAddress)
                 .map(Profile::getUser)
                 .orElseThrow(() -> new IllegalArgumentException("Buyer not found"));
@@ -26,7 +26,7 @@ public class UserSubscribeService {
 
         // 중복 구독 방지
         if (!subscribeRepository.existsByFromUserAndToUser(buyer, seller)) {
-            UserSubscribeEntity subscribe = new UserSubscribeEntity(buyer, seller, periodDays);
+            UserSubscribeEntity subscribe = new UserSubscribeEntity(transactionId, buyer, seller, periodDays);
             subscribeRepository.save(subscribe);
         }
     }

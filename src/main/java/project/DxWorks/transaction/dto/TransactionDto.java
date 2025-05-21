@@ -3,6 +3,8 @@ package project.DxWorks.transaction.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 public class TransactionDto {
@@ -13,4 +15,5 @@ public class TransactionDto {
     private long amount;
     private String info;
     private boolean paid;       // 결제 여부
+    private LocalDateTime createdAt;
 }
