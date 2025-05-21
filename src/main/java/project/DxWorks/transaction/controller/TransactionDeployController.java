@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import project.DxWorks.transaction.dto.PostTransactionRequestDto;
 import project.DxWorks.transaction.dto.TransactionDto;
+import project.DxWorks.transaction.dto.response.TransactionResponseDto;
 import project.DxWorks.transaction.service.TransactionDeployService;
 
 import java.util.List;
@@ -45,10 +46,11 @@ public class TransactionDeployController {
 
     // ---------- 내 모든 거래 조회 ----------
     @GetMapping
-    public List<TransactionDto> getTransactions(
-            @RequestHeader("X-PRIVATE-KEY") String privateKey
+    public TransactionResponseDto getTransactions(
+            @RequestHeader("X-PRIVATE-KEY") String privateKey,
+            @RequestAttribute Long userId
     ) throws Exception {
-        return transactionDeployService.getTransactions(privateKey);
+        return transactionDeployService.getTransactions(privateKey, userId);
     }
 
     // ---------- 거래 단건 조회 ----------
