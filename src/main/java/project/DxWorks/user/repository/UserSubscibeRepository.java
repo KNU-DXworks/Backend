@@ -8,6 +8,7 @@ import project.DxWorks.user.domain.UserEntity;
 import project.DxWorks.user.domain.UserSubscribeEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserSubscibeRepository extends JpaRepository<UserSubscribeEntity, Long> {
 //    @Query("SELECT u.toUser FROM UserSubscribeEntity u WHERE u.fromUser = :fromUser")
@@ -20,4 +21,6 @@ public interface UserSubscibeRepository extends JpaRepository<UserSubscribeEntit
     List<UserEntity> findFromUsersByToUser(@Param("toUser") UserEntity toUser);
 
     boolean existsByFromUserAndToUser(UserEntity fromUser, UserEntity toUser);
+
+    Optional<UserSubscribeEntity> findByTransactionId(Long transactionId);
 }

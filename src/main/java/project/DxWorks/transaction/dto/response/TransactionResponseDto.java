@@ -10,6 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 public class TransactionResponseDto {
 
-    private List<TransactionDto> sellers;
-    private List<TransactionDto> buyers;
+    private List<TransactionObjectDto> following;
+    private List<TransactionObjectDto> follower;
 }
