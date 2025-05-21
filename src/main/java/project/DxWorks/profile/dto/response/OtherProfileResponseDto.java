@@ -19,6 +19,8 @@ public class OtherProfileResponseDto {
 
     private boolean isLiked;
 
+    private String telegram;
+
     private String profileImg;
 
     private String info;

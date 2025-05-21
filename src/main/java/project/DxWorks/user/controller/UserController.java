@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import project.DxWorks.common.ui.Response;
 import project.DxWorks.user.dto.request.InterestUserDto;
 import project.DxWorks.user.dto.request.ModifyUserInfRequestDto;
+import project.DxWorks.user.dto.request.TelegramDto;
 import project.DxWorks.user.dto.response.InterestUserListResponseDto;
 import project.DxWorks.user.dto.response.UserInfResponseDto;
 import project.DxWorks.user.service.UserService;
@@ -27,6 +28,11 @@ public class UserController {
     @PutMapping
     public Response<String> modifyUserEmail(@RequestAttribute Long userId, @RequestBody ModifyUserInfRequestDto requestDto){
         return userService.modifyUserEmail(userId, requestDto);
+    }
+
+    @PutMapping("/telegram")
+    public Response<String> putTelegramUsername(@RequestAttribute Long userId, @RequestBody TelegramDto requestDto){
+        return userService.putTelegramUsername(userId, requestDto);
     }
 
     @PostMapping("/interest")
