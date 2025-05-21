@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private final SecretKey key;
-    private static final long ACCESS_TOKEN_TIME = 1000L * 60 * 60;
+    private static final long ACCESS_TOKEN_TIME = 1000L * 60 * 60 * 24 * 7;
     private static final long REFRESH_TOKEN_TIME = 1000L * 60 * 60 * 24 * 7;
 
     public JwtTokenProvider(@Value("${secret-key}") String secretKey) {
