@@ -15,6 +15,7 @@ import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.domain.UserEntity;
 import project.DxWorks.user.domain.UserInterestEntity;
 import project.DxWorks.user.dto.request.ModifyUserInfRequestDto;
+import project.DxWorks.user.dto.request.TelegramDto;
 import project.DxWorks.user.dto.response.InterestUserListResponseDto;
 import project.DxWorks.user.dto.response.UserInfResponseDto;
 import project.DxWorks.user.repository.UserInterestRepository;
@@ -54,6 +55,16 @@ public class UserService {
         userEntity.modifyEmail(requestDto.email());
 
         return Response.ok("이메일 변경이 완료됐습니다.");
+    }
+
+    @Transactional
+    public Response<String> putTelegramUsername(Long userId, TelegramDto requestDto){
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(()-> new IllegalArgumentException("잘못된 사용자입니다."));
+
+        user.modifyEmail(requestDto.userName());
+
+        return Response.ok("텔레그램 username 등록 완료");
     }
 
     @Transactional
