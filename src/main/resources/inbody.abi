@@ -26,28 +26,28 @@
 			},
 			{
 				"internalType": "uint256",
+				"name": "_height",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
 				"name": "_weight",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "_muscleMass",
+				"name": "_muscle",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "_fatRatio",
+				"name": "_fat",
 				"type": "uint256"
 			},
 			{
-				"internalType": "string",
-				"name": "_muscleMassType",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_fatMassType",
-				"type": "string"
+				"internalType": "uint256",
+				"name": "_bmi",
+				"type": "uint256"
 			},
 			{
 				"internalType": "string",
@@ -56,17 +56,17 @@
 			},
 			{
 				"internalType": "string",
-				"name": "_armMuscleType",
+				"name": "_armGrade",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "_trunkMuscleType",
+				"name": "_bodyGrade",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "_legMuscleType",
+				"name": "_legGrade",
 				"type": "string"
 			}
 		],
@@ -93,28 +93,28 @@
 					},
 					{
 						"internalType": "uint256",
+						"name": "height",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
 						"name": "weight",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "muscleMass",
+						"name": "muscle",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "fatRatio",
+						"name": "fat",
 						"type": "uint256"
 					},
 					{
-						"internalType": "string",
-						"name": "muscleMassType",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "fatMassType",
-						"type": "string"
+						"internalType": "uint256",
+						"name": "bmi",
+						"type": "uint256"
 					},
 					{
 						"internalType": "string",
@@ -123,17 +123,17 @@
 					},
 					{
 						"internalType": "string",
-						"name": "armMuscleType",
+						"name": "armGrade",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "trunkMuscleType",
+						"name": "bodyGrade",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "legMuscleType",
+						"name": "legGrade",
 						"type": "string"
 					}
 				],
@@ -172,28 +172,28 @@
 			},
 			{
 				"internalType": "uint256",
+				"name": "height",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
 				"name": "weight",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "muscleMass",
+				"name": "muscle",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "fatRatio",
+				"name": "fat",
 				"type": "uint256"
 			},
 			{
-				"internalType": "string",
-				"name": "muscleMassType",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "fatMassType",
-				"type": "string"
+				"internalType": "uint256",
+				"name": "bmi",
+				"type": "uint256"
 			},
 			{
 				"internalType": "string",
@@ -202,17 +202,17 @@
 			},
 			{
 				"internalType": "string",
-				"name": "armMuscleType",
+				"name": "armGrade",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "trunkMuscleType",
+				"name": "bodyGrade",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "legMuscleType",
+				"name": "legGrade",
 				"type": "string"
 			}
 		],

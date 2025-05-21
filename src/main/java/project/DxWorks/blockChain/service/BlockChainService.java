@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.utils.Convert;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 @Service
@@ -33,6 +35,7 @@ public class BlockChainService {
                 System.out.println("  From: " + transaction.getFrom());
                 System.out.println("  To: " + transaction.getTo());
                 System.out.println("  Value: " + transaction.getValue());
+                System.out.println(Convert.fromWei(new BigDecimal(transaction.getValue()), Convert.Unit.ETHER).toString());
             });
         }
     }
