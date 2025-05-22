@@ -53,6 +53,7 @@ import java.util.Map;
 
             // image 와 text part 나눔.
 
+            //TODO : 프롬포팅 새로하기 계속 다른 체형 받아옴.
             //image part
             Map<String, Object> imagePart = new HashMap<>();
             imagePart.put("inlineData", inlineData);
