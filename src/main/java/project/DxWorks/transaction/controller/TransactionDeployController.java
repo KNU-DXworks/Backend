@@ -35,13 +35,13 @@ public class TransactionDeployController {
     }
 
     // ---------- 거래 송금 ----------
-    @PostMapping("/pay/{id}")
+    @PostMapping("/pay/{transactionId}")
     public String payTransaction(
             @RequestHeader("X-PRIVATE-KEY") String privateKey,
-            @PathVariable Long id,
+            @PathVariable Long transactionId,
             @RequestParam Long amount
     ) throws Exception {
-        return transactionDeployService.payForTransaction(privateKey, id, amount);
+        return transactionDeployService.payForTransaction(privateKey, transactionId, amount);
     }
 
     // ---------- 내 모든 거래 조회 ----------
@@ -54,30 +54,30 @@ public class TransactionDeployController {
     }
 
     // ---------- 거래 단건 조회 ----------
-    @GetMapping("/detail/{id}")
+    @GetMapping("/detail/{transactionId}")
     public TransactionDto getTransaction(
             @RequestHeader("X-PRIVATE-KEY") String privateKey,
-            @PathVariable Long id
+            @PathVariable Long transactionId
     ) throws Exception {
-        return transactionDeployService.getTransaction(privateKey, id);
+        return transactionDeployService.getTransaction(privateKey, transactionId);
     }
 
     // ---------- 거래 수정 ----------
-    @PutMapping("/{id}")
+    @PutMapping("/{transactionId}")
     public String updateTransaction(
             @RequestHeader("X-PRIVATE-KEY") String privateKey,
-            @PathVariable Long id,
+            @PathVariable Long transactionId,
             @RequestBody PostTransactionRequestDto dto
     ) throws Exception {
-        return transactionDeployService.updateTransaction(privateKey, id, dto);
+        return transactionDeployService.updateTransaction(privateKey, transactionId, dto);
     }
 
     // ---------- 거래 삭제 ----------
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{transactionId}")
     public String deleteTransaction(
             @RequestHeader("X-PRIVATE-KEY") String privateKey,
-            @PathVariable Long id
+            @PathVariable Long transactionId
     ) throws Exception {
-        return transactionDeployService.deleteTransaction(privateKey, id);
+        return transactionDeployService.deleteTransaction(privateKey, transactionId);
     }
 }
