@@ -12,7 +12,7 @@ public class MainPageResponseDto {
 
     private List<SubscribeUserDto> subscribeUser;
 
-    private List<RecomandUserDto> recommandUser;
+    private List<RecommendUserDto> recommandUser;
 
     private List<SubscribePostsDto> subscribePosts;
 }

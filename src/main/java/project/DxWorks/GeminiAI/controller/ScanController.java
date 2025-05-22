@@ -22,6 +22,8 @@ import project.DxWorks.common.ui.Response;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.dto.PostInbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
+import project.DxWorks.user.domain.UserEntity;
+import project.DxWorks.user.repository.UserRepository;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,7 +39,7 @@ public class ScanController {
 
     private final RecommendService recommendService;
 
-    private final BigQueryService bigQueryService;
+    private final UserRepository userRepository;
 
 
     @Operation(
@@ -49,10 +51,14 @@ public class ScanController {
             @ApiResponse(responseCode = "500", description = "서버 오류 발생")
     })
     @PostMapping("/inbody")
-    public Response<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file, @RequestHeader("X-PRIVATE-KEY") String privateKey) {
+    public Response<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file, @RequestHeader("X-PRIVATE-KEY") String privateKey,
+                                              @RequestAttribute Long userId) {
         try {
-
+            //TODO : 로그인된 사용자의 id를 bigquery에 저장하기 위함.
+            UserEntity user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 Id가 없습니다." + userId));
             Inbody saved = inbodyService.analyzeAndSave(file);
+
 
             //임베딩을 위한 dto
             InbodyDto embeddingDto = new InbodyDto(
@@ -88,16 +94,14 @@ public class ScanController {
 
             contractDeployService.addInbody(dto);
             System.out.println("1");
+            //System.out.println(saved.getId()); // 0으로 받아옴.
+            System.out.println(user.getId());
 
 //          //String 형태 -> double로 인코딩 한 후 dto 전달.
-            EmbeddingRequestDto embeddingRequestDto = recommendService.toEmbeddingRequest(saved.getId(),embeddingDto);
+            EmbeddingRequestDto embeddingRequestDto = recommendService.toEmbeddingRequest(user.getId(),embeddingDto);
             //Flask 서버로 POST
+            //TODO : userId가 BigQuery에 들어가지 않음. saved.getId()가 0으로 고정됨.
             recommendService.storeEmbedding(embeddingRequestDto);
-//            System.out.println("2");
-//            //TODO : 벡터 DB에 저장하는 로직 필요.
-//            bigQueryService.saveEmbedding(saved.getId(),embeddingRequestDto);
-//            System.out.println("3");
-
             return Response.ok(saved);
 
 
