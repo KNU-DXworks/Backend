@@ -148,7 +148,7 @@ public class TransactionDeployService {
 
         System.out.println("list = " + list);
 
-        List<TransactionObjectDto> sellers = list.stream()
+        List<TransactionObjectDto> follwers = list.stream()
                 .filter(dto -> dto.getSeller().equals(wallet))
                 .map(dto -> {
                     Profile profile = profileRepository.findByWalletAddress(dto.getBuyer())
@@ -168,8 +168,8 @@ public class TransactionDeployService {
                             dto.getId(),
                             trader.getId(),
                             trader.getUserName(),
-                            profile.getWalletAddress(),
                             profile.getProfileUrl(),
+                            profile.getWalletAddress(),
                             dto.getTransactionPeriod(),
                             dto.getAmount(),
                             dto.isPaid(),
@@ -179,9 +179,7 @@ public class TransactionDeployService {
                 })
                 .toList();
 
-        System.out.println("sellers = " + sellers);
-
-        List<TransactionObjectDto> buyers = list.stream()
+        List<TransactionObjectDto> followings = list.stream()
                 .filter(dto -> dto.getBuyer().equals(wallet))
                 .map(dto -> {
                     Profile profile = profileRepository.findByWalletAddress(dto.getSeller())
@@ -201,8 +199,8 @@ public class TransactionDeployService {
                             dto.getId(),
                             trader.getId(),
                             trader.getUserName(),
-                            profile.getWalletAddress(),
                             profile.getProfileUrl(),
+                            profile.getWalletAddress(),
                             dto.getTransactionPeriod(),
                             dto.getAmount(),
                             dto.isPaid(),
@@ -212,9 +210,7 @@ public class TransactionDeployService {
                 })
                 .toList();
 
-        System.out.println("buyers = " + buyers);
-
-        TransactionResponseDto dto = new TransactionResponseDto(sellers, buyers);
+        TransactionResponseDto dto = new TransactionResponseDto(followings, follwers);
 
         return dto;
     }
