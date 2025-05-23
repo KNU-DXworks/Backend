@@ -62,30 +62,69 @@ public class TransactionDeployService {
         return TransactionContract.load(contractAddress, web3j, credentials, gasProvider());
     }
 
+//    // ---------- 거래 생성 ----------
+//    public String addTransaction(String privateKey, PostTransactionRequestDto dto) throws Exception {
+//        TransactionContract contract = loadContract(privateKey);
+//
+//        TransactionReceipt receipt = contract.createTransaction(
+//                dto.getTraderId(),
+//                BigInteger.valueOf(dto.getTransactionPeriod()),
+//                BigInteger.valueOf(dto.getAmount()),
+//                dto.getInfo()
+//        ).send();
+//
+//        contract.getCreatedTransactionId(receipt).ifPresent(id -> {
+//            log.info("✅ emit된 거래 ID: {}", id);
+//        });
+//
+//        return receipt.getTransactionHash();
+//    }
+
     // ---------- 거래 생성 ----------
     public String addTransaction(String privateKey, PostTransactionRequestDto dto) throws Exception {
         TransactionContract contract = loadContract(privateKey);
-
         TransactionReceipt receipt = contract.createTransaction(
-                dto.getTraderId(),
+                dto.getBuyerId(),
                 BigInteger.valueOf(dto.getTransactionPeriod()),
                 BigInteger.valueOf(dto.getAmount()),
                 dto.getInfo()
         ).send();
 
-        contract.getCreatedTransactionId(receipt).ifPresent(id -> {
-            log.info("✅ emit된 거래 ID: {}", id);
-        });
-
+        contract.getCreatedTransactionId(receipt).ifPresent(id -> log.info("✅ emit된 거래 ID: {}", id));
         return receipt.getTransactionHash();
     }
+
+    // 거래 송금
+    public String payForTransaction(String privateKey, Long transactionId, Long amount) throws Exception {
+        TransactionContract contract = loadContract(privateKey);
+        return contract.payForTransaction(
+                BigInteger.valueOf(transactionId),
+                BigInteger.valueOf(amount)
+        ).send().getTransactionHash();
+    }
+
+//    // ---------- 거래 단건 조회 ----------
+//    public TransactionDto getTransaction(String privateKey, Long transactionId) throws Exception {
+//        TransactionContract contract = loadContract(privateKey);
+//        return contract.getTransaction(BigInteger.valueOf(transactionId));
+//    }
 
     // ---------- 거래 단건 조회 ----------
     public TransactionDto getTransaction(String privateKey, Long transactionId) throws Exception {
         TransactionContract contract = loadContract(privateKey);
         return contract.getTransaction(BigInteger.valueOf(transactionId));
-
     }
+
+//    // ---------- 거래 수정 ----------
+//    public String updateTransaction(String privateKey, Long transactionId, PostTransactionRequestDto dto) throws Exception {
+//        TransactionContract contract = loadContract(privateKey);
+//        return contract.updateTransaction(
+//                BigInteger.valueOf(transactionId),
+//                BigInteger.valueOf(dto.getTransactionPeriod()),
+//                BigInteger.valueOf(dto.getAmount()),
+//                dto.getInfo()
+//        ).send().getTransactionHash();
+//    }
 
     // ---------- 거래 수정 ----------
     public String updateTransaction(String privateKey, Long transactionId, PostTransactionRequestDto dto) throws Exception {

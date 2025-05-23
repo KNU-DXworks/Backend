@@ -16,9 +16,7 @@ public class TransactionDeployController {
     private final TransactionDeployService transactionDeployService;
 
     @PostMapping("/deploy")
-    public String deploy(
-            @RequestHeader("X-PRIVATE-KEY") String privateKey
-    ) {
+    public String deploy(@RequestHeader("X-PRIVATE-KEY") String privateKey) {
         try {
             return transactionDeployService.deployContract(privateKey);
         } catch (Exception e) {
@@ -33,6 +31,16 @@ public class TransactionDeployController {
             @RequestBody PostTransactionRequestDto dto
     ) throws Exception {
         return transactionDeployService.addTransaction(privateKey, dto);
+    }
+
+    // ---------- 거래 송금 ----------
+    @PostMapping("/pay/{id}")
+    public String payTransaction(
+            @RequestHeader("X-PRIVATE-KEY") String privateKey,
+            @PathVariable Long id,
+            @RequestParam Long amount
+    ) throws Exception {
+        return transactionDeployService.payForTransaction(privateKey, id, amount);
     }
 
     // ---------- 내 모든 거래 조회 ----------

@@ -11,7 +11,13 @@
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "traderId",
+				"name": "seller",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "buyer",
 				"type": "address"
 			},
 			{
@@ -31,12 +37,6 @@
 				"internalType": "string",
                 "name": "info",
 				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "creator",
-				"type": "address"
 			}
 		],
 		"name": "TransactionCreated",
@@ -46,7 +46,7 @@
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
+				"indexed": true,
 				"internalType": "uint256",
 				"name": "id",
 				"type": "uint256"
@@ -58,9 +58,34 @@
 	{
 		"anonymous": false,
 		"inputs": [
+		    {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "buyer",
+                "type": "address"
+            },
 			{
 				"indexed": false,
 				"internalType": "uint256",
+				"name": "amount",
+                "type": "uint256"
+            }
+        ],
+                "name": "TransactionPaid",
+        		"type": "event"
+        	},
+        	{
+        		"anonymous": false,
+        		"inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
 				"name": "id",
 				"type": "uint256"
 			},
@@ -90,7 +115,7 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "traderId",
+				"name": "buyer",
 				"type": "address"
 			},
 			{
@@ -131,7 +156,7 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "transactionId",
+				"name": "id",
 				"type": "uint256"
 			}
 		],
@@ -139,33 +164,38 @@
 		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "id",
+				"name": "",
 				"type": "uint256"
 			},
 			{
 				"internalType": "address",
-				"name": "traderId",
+				"name": "",
+				"type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-                "name": "transactionPeriod",
+                "name": "",
                 "type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "",
 				"type": "uint256"
 			},
 			{
 				"internalType": "string",
-				"name": "info",
+				"name": "",
 				"type": "string"
 			},
 			{
-				"internalType": "address",
-				"name": "creator",
-				"type": "address"
+				"internalType": "bool",
+                "name": "",
+                "type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -184,7 +214,12 @@
 					},
 					{
 						"internalType": "address",
-						"name": "traderId",
+						"name": "seller",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "buyer",
 						"type": "address"
 					},
 					{
@@ -203,9 +238,9 @@
 						"type": "string"
 					},
 					{
-						"internalType": "address",
-						"name": "creator",
-						"type": "address"
+						"internalType": "bool",
+                        "name": "paid",
+                        "type": "bool"
 					}
 				],
 				"internalType": "struct Transaction.TransactionStruct[]",
@@ -230,6 +265,19 @@
 		"type": "function"
 	},
 	{
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            }
+        ],
+        "name": "payForTransaction",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -246,7 +294,12 @@
 			},
 			{
 				"internalType": "address",
-				"name": "traderId",
+				"name": "seller",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "buyer",
 				"type": "address"
 			},
 			{
@@ -265,9 +318,9 @@
 				"type": "string"
 			},
 			{
-				"internalType": "address",
-				"name": "creator",
-				"type": "address"
+				"internalType": "bool",
+                "name": "paid",
+                "type": "bool"
 			}
 		],
 		"stateMutability": "view",
