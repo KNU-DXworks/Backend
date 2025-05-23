@@ -36,4 +36,11 @@ public class UserSubscribeEntity {
         this.createdAt = LocalDateTime.now();
         this.expiresAt = this.createdAt.plusDays(days);
     }
+
+    /**
+     * 구독 기간 유효여부 확인
+     */
+    public boolean isValid() {
+        return expiresAt == null || expiresAt.isAfter(LocalDateTime.now());
+    }
 }

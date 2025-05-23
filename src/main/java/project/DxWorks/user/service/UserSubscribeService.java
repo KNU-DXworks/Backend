@@ -10,7 +10,7 @@ import project.DxWorks.user.repository.UserSubscibeRepository;
 
 @Service
 @AllArgsConstructor
-public class SubscribeService {
+public class UserSubscribeService {
 
     private final ProfileRepository profileRepository;
     private final UserSubscibeRepository subscribeRepository;

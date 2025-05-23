@@ -5,44 +5,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.FunctionReturnDecoder;
-import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Event;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.Utf8String;
-import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthCall;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
-import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.tx.Contract;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 import project.DxWorks.transaction.contract.TransactionContract;
 import project.DxWorks.transaction.dto.PostTransactionRequestDto;
 import project.DxWorks.transaction.dto.TransactionDto;
-import project.DxWorks.user.service.SubscribeService;
+import project.DxWorks.user.service.UserSubscribeService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
 public class TransactionDeployService {
 
-    private final SubscribeService subscribeService;
+    private final UserSubscribeService subscribeService;
 
     private static final Logger log = LoggerFactory.getLogger(TransactionDeployService.class);
 
@@ -65,24 +50,6 @@ public class TransactionDeployService {
         return TransactionContract.load(contractAddress, web3j, credentials, gasProvider());
     }
 
-//    // ---------- 거래 생성 ----------
-//    public String addTransaction(String privateKey, PostTransactionRequestDto dto) throws Exception {
-//        TransactionContract contract = loadContract(privateKey);
-//
-//        TransactionReceipt receipt = contract.createTransaction(
-//                dto.getTraderId(),
-//                BigInteger.valueOf(dto.getTransactionPeriod()),
-//                BigInteger.valueOf(dto.getAmount()),
-//                dto.getInfo()
-//        ).send();
-//
-//        contract.getCreatedTransactionId(receipt).ifPresent(id -> {
-//            log.info("✅ emit된 거래 ID: {}", id);
-//        });
-//
-//        return receipt.getTransactionHash();
-//    }
-
     // ---------- 거래 생성 ----------
     public String addTransaction(String privateKey, PostTransactionRequestDto dto) throws Exception {
         TransactionContract contract = loadContract(privateKey);
@@ -97,15 +64,6 @@ public class TransactionDeployService {
         return receipt.getTransactionHash();
     }
 
-//    // 거래 송금
-//    public String payForTransaction(String privateKey, Long transactionId, Long amount) throws Exception {
-//        TransactionContract contract = loadContract(privateKey);
-//        return contract.payForTransaction(
-//                BigInteger.valueOf(transactionId),
-//                BigInteger.valueOf(amount)
-//        ).send().getTransactionHash();
-//    }
-
     // ---------- 거래 송금 ----------
     public String payForTransaction(String privateKey, Long transactionId, Long amount) throws Exception {
         TransactionContract contract = loadContract(privateKey);
@@ -119,6 +77,9 @@ public class TransactionDeployService {
         // 2. 거래 정보 조회
         TransactionDto tx = contract.getTransaction(BigInteger.valueOf(transactionId));
 
+        System.out.println("tx.getBuyer() = " + tx.getBuyer());
+        System.out.println("tx.getSeller() = " + tx.getSeller());
+        System.out.println("tx.getTransactionPeriod() = " + tx.getTransactionPeriod());
         // 3. 구독 처리
         subscribeService.subscribeByWalletAddresses(
                 tx.getBuyer(),
@@ -126,34 +87,15 @@ public class TransactionDeployService {
                 tx.getTransactionPeriod()
         );
 
+
         return receipt.getTransactionHash();
     }
-
-
-
-
-//    // ---------- 거래 단건 조회 ----------
-//    public TransactionDto getTransaction(String privateKey, Long transactionId) throws Exception {
-//        TransactionContract contract = loadContract(privateKey);
-//        return contract.getTransaction(BigInteger.valueOf(transactionId));
-//    }
 
     // ---------- 거래 단건 조회 ----------
     public TransactionDto getTransaction(String privateKey, Long transactionId) throws Exception {
         TransactionContract contract = loadContract(privateKey);
         return contract.getTransaction(BigInteger.valueOf(transactionId));
     }
-
-//    // ---------- 거래 수정 ----------
-//    public String updateTransaction(String privateKey, Long transactionId, PostTransactionRequestDto dto) throws Exception {
-//        TransactionContract contract = loadContract(privateKey);
-//        return contract.updateTransaction(
-//                BigInteger.valueOf(transactionId),
-//                BigInteger.valueOf(dto.getTransactionPeriod()),
-//                BigInteger.valueOf(dto.getAmount()),
-//                dto.getInfo()
-//        ).send().getTransactionHash();
-//    }
 
     // ---------- 거래 수정 ----------
     public String updateTransaction(String privateKey, Long transactionId, PostTransactionRequestDto dto) throws Exception {
