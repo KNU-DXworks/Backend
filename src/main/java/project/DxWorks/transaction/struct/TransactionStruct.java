@@ -9,22 +9,20 @@ import org.web3j.abi.datatypes.generated.Uint8;
 public class TransactionStruct extends DynamicStruct {
 
     public Uint256 id;
-    public Uint8 transactionType;
-    public Address trader;
-    public Utf8String transactionCycle;
-    public Uint256 transactionPrice;
-    public Utf8String transactionDescription;
+    public Address traderId;
+    public Uint256 transactionPeriod;
+    public Uint256 amount;
+    public Utf8String info;
     public Address creator;
 
-    public TransactionStruct(Uint256 id, Uint8 transactionType, Address trader, Utf8String transactionCycle,
-                             Uint256 transactionPrice, Utf8String transactionDescription, Address creator) {
-        super(id, transactionType, trader, transactionCycle, transactionPrice, transactionDescription, creator);
+    public TransactionStruct(Uint256 id, Address traderId, Uint256 transactionPeriod,
+                             Uint256 amount, Utf8String info, Address creator) {
+        super(id, traderId, transactionPeriod, amount, info, creator);
         this.id = id;
-        this.transactionType = transactionType;
-        this.trader = trader;
-        this.transactionCycle = transactionCycle;
-        this.transactionPrice = transactionPrice;
-        this.transactionDescription = transactionDescription;
+        this.traderId = traderId;
+        this.transactionPeriod = transactionPeriod;
+        this.amount = amount;
+        this.info = info;
         this.creator = creator;
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/test/transaction")
+@RequestMapping("/api/transaction")
 public class TransactionDeployController {
 
     private final TransactionDeployService transactionDeployService;

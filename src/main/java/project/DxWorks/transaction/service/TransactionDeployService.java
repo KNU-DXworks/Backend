@@ -56,18 +56,18 @@ public class TransactionDeployService {
     public String addTransaction(String privateKey, PostTransactionRequestDto dto) throws Exception {
         TransactionContract contract = loadContract(privateKey);
         return contract.createTransaction(
-                BigInteger.valueOf(dto.getTransactionType()),
-                dto.getTrader(),
-                dto.getTransactionCycle(),
-                BigInteger.valueOf(dto.getTransactionPrice()),
-                dto.getTransactionDescription()
+                dto.getTraderId(),
+                BigInteger.valueOf(dto.getTransactionPeriod()),
+                BigInteger.valueOf(dto.getAmount()),
+                dto.getInfo()
         ).send().getTransactionHash();
     }
 
     // ---------- 거래 단건 조회 ----------
     public TransactionDto getTransaction(String privateKey, Long transactionId) throws Exception {
         TransactionContract contract = loadContract(privateKey);
-        return contract.getTransaction(transactionId);
+        return contract.getTransaction(BigInteger.valueOf(transactionId));
+
     }
 
     // ---------- 거래 수정 ----------
@@ -75,10 +75,9 @@ public class TransactionDeployService {
         TransactionContract contract = loadContract(privateKey);
         return contract.updateTransaction(
                 BigInteger.valueOf(transactionId),
-                BigInteger.valueOf(dto.getTransactionType()),
-                dto.getTransactionCycle(),
-                BigInteger.valueOf(dto.getTransactionPrice()),
-                dto.getTransactionDescription()
+                BigInteger.valueOf(dto.getTransactionPeriod()),
+                BigInteger.valueOf(dto.getAmount()),
+                dto.getInfo()
         ).send().getTransactionHash();
     }
 
