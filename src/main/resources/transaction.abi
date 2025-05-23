@@ -196,6 +196,11 @@
 				"internalType": "bool",
                 "name": "",
                 "type": "bool"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -241,6 +246,11 @@
 						"internalType": "bool",
                         "name": "paid",
                         "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "createdAt",
+                        "type": "uint256"
 					}
 				],
 				"internalType": "struct Transaction.TransactionStruct[]",
@@ -321,6 +331,11 @@
 				"internalType": "bool",
                 "name": "paid",
                 "type": "bool"
+            },
+            {
+                "internalType": "uint256",
+                "name": "createdAt",
+                "type": "uint256
 			}
 		],
 		"stateMutability": "view",

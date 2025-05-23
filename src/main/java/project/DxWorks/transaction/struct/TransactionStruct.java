@@ -16,9 +16,10 @@ public class TransactionStruct extends DynamicStruct {
     public Uint256 amount;
     public Utf8String info;
     public Bool paid;
+    public Uint256 createdAt;
 
-    public TransactionStruct(Uint256 id, Address seller, Address buyer, Uint256 transactionPeriod, Uint256 amount, Utf8String info, Bool paid) {
-        super(id, seller, buyer, transactionPeriod, amount, info, paid);
+    public TransactionStruct(Uint256 id, Address seller, Address buyer, Uint256 transactionPeriod, Uint256 amount, Utf8String info, Bool paid, Uint256 createdAt) {
+        super(id, seller, buyer, transactionPeriod, amount, info, paid, createdAt);
         this.id = id;
         this.seller = seller;
         this.buyer = buyer;
@@ -26,5 +27,6 @@ public class TransactionStruct extends DynamicStruct {
         this.amount = amount;
         this.info = info;
         this.paid = paid;
+        this.createdAt = createdAt;
     }
 }
