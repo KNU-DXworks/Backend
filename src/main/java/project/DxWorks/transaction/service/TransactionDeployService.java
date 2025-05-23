@@ -13,8 +13,12 @@ import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 import project.DxWorks.transaction.contract.TransactionContract;
+import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.transaction.dto.PostTransactionRequestDto;
 import project.DxWorks.transaction.dto.TransactionDto;
+import project.DxWorks.transaction.dto.response.TransactionResponseDto;
+import project.DxWorks.user.domain.UserEntity;
+import project.DxWorks.user.repository.UserRepository;
 import project.DxWorks.user.service.UserSubscribeService;
 
 import java.io.IOException;
@@ -28,6 +32,8 @@ import java.util.Scanner;
 public class TransactionDeployService {
 
     private final UserSubscribeService subscribeService;
+    private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
 
     private static final Logger log = LoggerFactory.getLogger(TransactionDeployService.class);
 
@@ -64,32 +70,41 @@ public class TransactionDeployService {
         return receipt.getTransactionHash();
     }
 
-    // ---------- 거래 송금 ----------
+    // 거래 송금(테스트용)
     public String payForTransaction(String privateKey, Long transactionId, Long amount) throws Exception {
         TransactionContract contract = loadContract(privateKey);
-
-        // 1. 송금 트랜잭션 실행
-        TransactionReceipt receipt = contract.payForTransaction(
+        return contract.payForTransaction(
                 BigInteger.valueOf(transactionId),
                 BigInteger.valueOf(amount)
-        ).send();
-
-        // 2. 거래 정보 조회
-        TransactionDto tx = contract.getTransaction(BigInteger.valueOf(transactionId));
-
-        System.out.println("tx.getBuyer() = " + tx.getBuyer());
-        System.out.println("tx.getSeller() = " + tx.getSeller());
-        System.out.println("tx.getTransactionPeriod() = " + tx.getTransactionPeriod());
-        // 3. 구독 처리
-        subscribeService.subscribeByWalletAddresses(
-                tx.getBuyer(),
-                tx.getSeller(),
-                tx.getTransactionPeriod()
-        );
-
-
-        return receipt.getTransactionHash();
+        ).send().getTransactionHash();
     }
+
+//    // ---------- 거래 송금 ----------
+//    public String payForTransaction(String privateKey, Long transactionId, Long amount) throws Exception {
+//        TransactionContract contract = loadContract(privateKey);
+//
+//        // 1. 송금 트랜잭션 실행
+//        TransactionReceipt receipt = contract.payForTransaction(
+//                BigInteger.valueOf(transactionId),
+//                BigInteger.valueOf(amount)
+//        ).send();
+//
+//        // 2. 거래 정보 조회
+//        TransactionDto tx = contract.getTransaction(BigInteger.valueOf(transactionId));
+//
+//        System.out.println("tx.getBuyer() = " + tx.getBuyer());
+//        System.out.println("tx.getSeller() = " + tx.getSeller());
+//        System.out.println("tx.getTransactionPeriod() = " + tx.getTransactionPeriod());
+//        // 3. 구독 처리
+//        subscribeService.subscribeByWalletAddresses(
+//                tx.getBuyer(),
+//                tx.getSeller(),
+//                tx.getTransactionPeriod()
+//        );
+//
+//
+//        return receipt.getTransactionHash();
+//    }
 
     // ---------- 거래 단건 조회 ----------
     public TransactionDto getTransaction(String privateKey, Long transactionId) throws Exception {
@@ -115,9 +130,30 @@ public class TransactionDeployService {
     }
 
     // ---------- 내 거래 전체 조회 ----------
-    public List<TransactionDto> getTransactions(String privateKey) throws IOException {
+    public TransactionResponseDto getTransactions(String privateKey, Long userId) throws IOException {
+
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("잘못된 사용자입니다."));
+
+        String wallet = profileRepository.findByUser(user).orElseThrow(() -> new IllegalArgumentException(("잘못된 프로필입니다.")))
+                .getWalletAddress();
+
+
         TransactionContract contract = loadContract(privateKey);
-        return contract.getTransactions();
+
+        // 리스트 받아오기
+        List<TransactionDto> list = contract.getTransactions();
+
+        List<TransactionDto> sellers = list.stream()
+                .filter(dto -> dto.getSeller().equals(wallet))
+                .toList();
+
+        List<TransactionDto> buyers = list.stream()
+                .filter(dto -> dto.getBuyer().equals(wallet))
+                .toList();
+
+        TransactionResponseDto dto = new TransactionResponseDto(sellers, buyers);
+
+        return dto;
     }
 
     // ---------- 스마트컨트랙트 배포 ----------
