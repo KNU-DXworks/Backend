@@ -10,32 +10,26 @@
 			},
 			{
 				"indexed": false,
-				"internalType": "enum Transaction.TransactionType",
-				"name": "transactionType",
-				"type": "uint8"
-			},
-			{
-				"indexed": false,
 				"internalType": "address",
-				"name": "trader",
+				"name": "traderId",
 				"type": "address"
 			},
 			{
 				"indexed": false,
-				"internalType": "string",
-				"name": "transactionCycle",
-				"type": "string"
+                "internalType": "uint256",
+                "name": "transactionPeriod",
+                "type": "uint256"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "transactionPrice",
+				"name": "amount",
 				"type": "uint256"
 			},
 			{
 				"indexed": false,
 				"internalType": "string",
-				"name": "transactionDescription",
+                "name": "info",
 				"type": "string"
 			},
 			{
@@ -72,26 +66,20 @@
 			},
 			{
 				"indexed": false,
-				"internalType": "enum Transaction.TransactionType",
-				"name": "transactionType",
-				"type": "uint8"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "transactionCycle",
-				"type": "string"
+				"internalType": "uint256",
+                "name": "transactionPeriod",
+                "type": "uint256"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "transactionPrice",
+				"name": "amount",
 				"type": "uint256"
 			},
 			{
 				"indexed": false,
 				"internalType": "string",
-				"name": "transactionDescription",
+				"name": "info",
 				"type": "string"
 			}
 		],
@@ -101,28 +89,23 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint8",
-				"name": "transactionType",
-				"type": "uint8"
-			},
-			{
 				"internalType": "address",
-				"name": "trader",
+				"name": "traderId",
 				"type": "address"
 			},
 			{
-				"internalType": "string",
-				"name": "transactionCycle",
-				"type": "string"
+				internalType": "uint256",
+                "name": "transactionPeriod",
+                "type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "transactionPrice",
+				"name": "amount",
 				"type": "uint256"
 			},
 			{
 				"internalType": "string",
-				"name": "transactionDescription",
+				"name": "info",
 				"type": "string"
 			}
 		],
@@ -160,28 +143,23 @@
 				"type": "uint256"
 			},
 			{
-				"internalType": "enum Transaction.TransactionType",
-				"name": "transactionType",
-				"type": "uint8"
-			},
-			{
 				"internalType": "address",
-				"name": "trader",
+				"name": "traderId",
 				"type": "address"
 			},
 			{
-				"internalType": "string",
-				"name": "transactionCycle",
-				"type": "string"
+				"internalType": "uint256",
+                "name": "transactionPeriod",
+                "type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "transactionPrice",
+				"name": "amount",
 				"type": "uint256"
 			},
 			{
 				"internalType": "string",
-				"name": "transactionDescription",
+				"name": "info",
 				"type": "string"
 			},
 			{
@@ -205,28 +183,23 @@
 						"type": "uint256"
 					},
 					{
-						"internalType": "enum Transaction.TransactionType",
-						"name": "transactionType",
-						"type": "uint8"
-					},
-					{
 						"internalType": "address",
-						"name": "trader",
+						"name": "traderId",
 						"type": "address"
 					},
 					{
-						"internalType": "string",
-						"name": "transactionCycle",
-						"type": "string"
+						"internalType": "uint256",
+                        "name": "transactionPeriod",
+                        "type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "transactionPrice",
+						"name": "amount",
 						"type": "uint256"
 					},
 					{
 						"internalType": "string",
-						"name": "transactionDescription",
+						"name": "info",
 						"type": "string"
 					},
 					{
@@ -272,28 +245,23 @@
 				"type": "uint256"
 			},
 			{
-				"internalType": "enum Transaction.TransactionType",
-				"name": "transactionType",
-				"type": "uint8"
-			},
-			{
 				"internalType": "address",
-				"name": "trader",
+				"name": "traderId",
 				"type": "address"
 			},
 			{
-				"internalType": "string",
-				"name": "transactionCycle",
-				"type": "string"
+				"internalType": "uint256",
+                "name": "transactionPeriod",
+                "type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "transactionPrice",
+				"name": "amount",
 				"type": "uint256"
 			},
 			{
 				"internalType": "string",
-				"name": "transactionDescription",
+				"name": "info",
 				"type": "string"
 			},
 			{
@@ -313,23 +281,18 @@
 				"type": "uint256"
 			},
 			{
-				"internalType": "uint8",
-				"name": "transactionType",
-				"type": "uint8"
-			},
-			{
-				"internalType": "string",
-				"name": "transactionCycle",
-				"type": "string"
+				"internalType": "uint256",
+                "name": "transactionPeriod",
+                "type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "transactionPrice",
+				"name": "amount",
 				"type": "uint256"
 			},
 			{
 				"internalType": "string",
-				"name": "transactionDescription",
+				"name": "info",
 				"type": "string"
 			}
 		],
