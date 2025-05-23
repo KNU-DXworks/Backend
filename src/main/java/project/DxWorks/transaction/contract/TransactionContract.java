@@ -24,7 +24,7 @@ import java.util.*;
 
 public class TransactionContract extends Contract {
 
-    public static final String BINARY = "/* 배포된 바이트코드 넣기 */";
+    public static final String BINARY = "/* 12345 */";
 
     private final Web3j web3j;
     private final Credentials credentials;
