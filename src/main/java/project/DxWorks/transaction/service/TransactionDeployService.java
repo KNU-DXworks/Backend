@@ -1,19 +1,26 @@
 package project.DxWorks.transaction.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthCall;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tx.Contract;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
@@ -24,6 +31,7 @@ import project.DxWorks.transaction.dto.TransactionDto;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
@@ -32,6 +40,12 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class TransactionDeployService {
+
+
+    private static final Logger log = LoggerFactory.getLogger(TransactionDeployService.class);
+
+
+
 
     private final Web3j web3j;
 
@@ -52,15 +66,69 @@ public class TransactionDeployService {
         return TransactionContract.load(contractAddress, web3j, credentials, gasProvider());
     }
 
-    // ---------- 거래 생성 ----------
+    //    // ---------- 거래 생성 ----------
+//    public String addTransaction(String privateKey, PostTransactionRequestDto dto) throws Exception {
+////        TransactionContract contract = loadContract(privateKey);
+////        return contract.createTransaction(
+////                dto.getTraderId(),
+////                BigInteger.valueOf(dto.getTransactionPeriod()),
+////                BigInteger.valueOf(dto.getAmount()),
+////                dto.getInfo()
+////        ).send().getTransactionHash();
+//
+//
+//
+//        TransactionContract contract = loadContract(privateKey);
+//
+//        // 트랜잭션 실행 및 receipt 수신
+//        TransactionReceipt receipt = contract.createTransaction(
+//                dto.getTraderId(),
+//                BigInteger.valueOf(dto.getTransactionPeriod()),
+//                BigInteger.valueOf(dto.getAmount()),
+//                dto.getInfo()
+//        ).send();
+//
+//        System.out.println("🔍 로그 개수: " + receipt.getLogs().size());
+//
+//        // 📦 이벤트 로그에서 ID 추출 (indexed 기반)
+//        contract.getCreatedTransactionId(receipt).ifPresent(id -> {
+//            log.info("✅ emit된 거래 ID: {}", id);
+//        });
+//
+//        return receipt.getTransactionHash();
+//
+//    }
+
+
     public String addTransaction(String privateKey, PostTransactionRequestDto dto) throws Exception {
         TransactionContract contract = loadContract(privateKey);
-        return contract.createTransaction(
+
+        TransactionReceipt receipt = contract.createTransaction(
                 dto.getTraderId(),
                 BigInteger.valueOf(dto.getTransactionPeriod()),
                 BigInteger.valueOf(dto.getAmount()),
                 dto.getInfo()
-        ).send().getTransactionHash();
+        ).send();
+
+        System.out.println("📦 Receipt Logs Size: " + receipt.getLogs().size());
+        System.out.println("📦 Contract Address: " + contract.getContractAddress());
+        System.out.println("📦 Transaction Hash: " + receipt.getTransactionHash());
+        System.out.println("📦 사용된 gas: " + receipt.getGasUsed());
+
+        receipt.getLogs().forEach(l -> {
+            System.out.println("📦 Log Raw: " + l.toString());
+        });
+
+        System.out.println("🔍 로그 개수: " + receipt.getLogs().size());
+        if (receipt.getLogs().isEmpty()) {
+            System.out.println("❌ 로그가 수신되지 않았습니다. ABI/BIN이 배포된 컨트랙트와 불일치할 수 있습니다.");
+        }
+
+        contract.getCreatedTransactionId(receipt).ifPresent(id -> {
+            log.info("✅ emit된 거래 ID: {}", id);
+        });
+
+        return receipt.getTransactionHash();
     }
 
     // ---------- 거래 단건 조회 ----------
