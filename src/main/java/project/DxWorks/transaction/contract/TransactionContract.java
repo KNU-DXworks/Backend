@@ -41,51 +41,6 @@ public class TransactionContract extends Contract {
         return new TransactionContract(contractAddress, web3j, credentials, gasProvider);
     }
 
-    //    // ---------- 거래 생성 ----------
-//    public RemoteFunctionCall<TransactionReceipt> createTransaction(
-//            String traderId,
-//            BigInteger transactionPeriod,
-//            BigInteger amount,
-//            String info
-//    ) {
-//        Function function = new Function(
-//                "createTransaction",
-//                Arrays.asList(
-//                        new Address(traderId),
-//                        new Uint256(transactionPeriod),
-//                        new Uint256(amount),
-//                        new Utf8String(info)
-//                ),
-//                Collections.emptyList()
-//        );
-//        return executeRemoteCallTransaction(function);
-//    }
-//
-//    public Optional<BigInteger> getCreatedTransactionId(TransactionReceipt receipt) {
-//        final Event event = new Event("TransactionCreated",
-//                Arrays.asList(
-//                        new TypeReference<Uint256>(true) {},     // indexed id
-//                        new TypeReference<Address>(true) {},     // indexed traderId
-//                        new TypeReference<Uint256>() {},         // transactionPeriod
-//                        new TypeReference<Uint256>() {},         // amount
-//                        new TypeReference<Utf8String>() {},      // info
-//                        new TypeReference<Address>() {}          // creator
-//                )
-//        );
-//
-//        for (Log log : receipt.getLogs()) {
-//            EventValuesWithLog eventValues = staticExtractEventParametersWithLog(event, log);
-//            if (eventValues != null) {
-//                Uint256 id = (Uint256) eventValues.getIndexedValues().get(0);
-//                return Optional.of(id.getValue());
-//            }
-//        }
-//
-//        return Optional.empty();
-//    }
-
-
-
     // ---------- 거래 생성 ----------
     public RemoteFunctionCall<TransactionReceipt> createTransaction(
             String traderId,
@@ -128,52 +83,7 @@ public class TransactionContract extends Contract {
     }
 
 
-
-
-
-
-
-
-    //    // ---------- 단건 조회 ----------
-//    public TransactionDto getTransaction(BigInteger transactionId) throws Exception {
-//        Function function = new Function(
-//                "getTransaction",
-//                Collections.singletonList(new Uint256(transactionId)),
-//                Arrays.asList(
-//                        new TypeReference<Uint256>() {},
-//                        new TypeReference<Uint8>() {},
-//                        new TypeReference<Address>() {},
-//                        new TypeReference<Utf8String>() {},
-//                        new TypeReference<Uint256>() {},
-//                        new TypeReference<Utf8String>() {},
-//                        new TypeReference<Address>() {}
-//                )
-//        );
-//
-//        String encoded = FunctionEncoder.encode(function);
-//
-//        EthCall response = web3j.ethCall(
-//                Transaction.createEthCallTransaction(
-//                        credentials.getAddress(), getContractAddress(), encoded),
-//                DefaultBlockParameterName.LATEST
-//        ).send();
-//
-//        List<Type> decoded = FunctionReturnDecoder.decode(response.getValue(), function.getOutputParameters());
-//
-//        if (decoded.isEmpty()) {
-//            throw new RuntimeException("No transaction found");
-//        }
-//
-//        return new TransactionDto(
-//                ((BigInteger) decoded.get(0).getValue()).longValue(),
-//                decoded.get(1).getValue().toString(),
-//                ((BigInteger) decoded.get(2).getValue()).intValue(),
-//                ((BigInteger) decoded.get(3).getValue()).longValue(),
-//                decoded.get(4).getValue().toString(),
-//                decoded.get(5).getValue().toString()
-//        );
-//    }
-
+    // ---------- 단건 조회 ----------
     public TransactionDto getTransaction(BigInteger transactionId) throws Exception {
         Function function = new Function(
                 "getTransaction",
@@ -244,7 +154,6 @@ public class TransactionContract extends Contract {
 
     // ---------- 내 거래 전체 조회 ----------
     public List<TransactionDto> getTransactions() throws IOException {
-
         Function function = new Function(
                 "getTransactions",
                 Collections.emptyList(),
@@ -253,14 +162,16 @@ public class TransactionContract extends Contract {
 
         String encoded = FunctionEncoder.encode(function);
 
-        EthCall response = web3j.ethCall(
+        // 여기서 sender address를 credentials.getAddress()로 지정해야 msg.sender로 인식됨
+                EthCall response = web3j.ethCall(
                 Transaction.createEthCallTransaction(
-                        credentials.getAddress(), getContractAddress(), encoded),
+                        credentials.getAddress(),  // 반드시 개인키 기반 주소 사용
+                        getContractAddress(),
+                        encoded),
                 DefaultBlockParameterName.LATEST
         ).send();
 
         List<Type> decoded = FunctionReturnDecoder.decode(response.getValue(), function.getOutputParameters());
-
         List<TransactionDto> result = new ArrayList<>();
 
         if (!decoded.isEmpty()) {
@@ -284,5 +195,6 @@ public class TransactionContract extends Contract {
 
         return result;
     }
+
 }
 
