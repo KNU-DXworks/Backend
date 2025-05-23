@@ -148,7 +148,7 @@ public class TransactionDeployService {
 
         System.out.println("list = " + list);
 
-        List<TransactionObjectDto> follwers = list.stream()
+        List<TransactionObjectDto> followers = list.stream()
                 .filter(dto -> dto.getSeller().equals(wallet))
                 .map(dto -> {
                     Profile profile = profileRepository.findByWalletAddress(dto.getBuyer())
@@ -210,7 +210,7 @@ public class TransactionDeployService {
                 })
                 .toList();
 
-        TransactionResponseDto dto = new TransactionResponseDto(followings, follwers);
+        TransactionResponseDto dto = new TransactionResponseDto(followings, followers);
 
         return dto;
     }
