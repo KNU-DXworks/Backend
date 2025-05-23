@@ -131,7 +131,12 @@ public class TransactionDeployService {
         return receipt.getTransactionHash();
     }
 
-    // ---------- 거래 단건 조회 ----------
+    //    // ---------- 거래 단건 조회 ----------
+//    public TransactionDto getTransaction(String privateKey, Long transactionId) throws Exception {
+//        TransactionContract contract = loadContract(privateKey);
+//        return contract.getTransaction(BigInteger.valueOf(transactionId));
+//    }
+
     public TransactionDto getTransaction(String privateKey, Long transactionId) throws Exception {
         TransactionContract contract = loadContract(privateKey);
         return contract.getTransaction(BigInteger.valueOf(transactionId));
