@@ -7,6 +7,7 @@ import project.DxWorks.transaction.dto.TransactionDto;
 import project.DxWorks.transaction.dto.response.TransactionResponseDto;
 import project.DxWorks.transaction.service.TransactionDeployService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -39,7 +40,7 @@ public class TransactionDeployController {
     public String payTransaction(
             @RequestHeader("X-PRIVATE-KEY") String privateKey,
             @PathVariable Long transactionId,
-            @RequestParam Long amount
+            @RequestParam BigDecimal amount
     ) throws Exception {
         return transactionDeployService.payForTransaction(privateKey, transactionId, amount);
     }
