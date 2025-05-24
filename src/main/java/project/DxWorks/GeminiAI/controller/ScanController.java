@@ -15,7 +15,6 @@ import project.DxWorks.GeminiAI.service.GeminiService;
 import project.DxWorks.GeminiAI.service.InbodyService;
 import project.DxWorks.UserRecommend.dto.EmbeddingRequestDto;
 import project.DxWorks.UserRecommend.dto.RecommendResponseDto;
-import project.DxWorks.UserRecommend.service.BigQueryService;
 import project.DxWorks.UserRecommend.service.RecommendService;
 import project.DxWorks.common.domain.exception.ErrorCode;
 import project.DxWorks.common.ui.Response;
