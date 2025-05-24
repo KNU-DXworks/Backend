@@ -2,6 +2,7 @@ package project.DxWorks.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import project.DxWorks.UserRecommend.service.RecommendService;
 import project.DxWorks.common.ui.Response;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
@@ -16,7 +17,6 @@ import project.DxWorks.user.repository.UserRepository;
 import project.DxWorks.user.repository.UserSubscibeRepository;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +29,7 @@ public class MainPageService {
     private final ContractDeployService contractDeployService;
     private final PostRepository postRepository;
     private final PostService postService;
+    private final RecommendService recommendService;
 
     public Response<MainPageResponseDto> mainPage(long userId) {
 
@@ -74,7 +75,8 @@ public class MainPageService {
                 })
                 .toList();
 
-        List<RecomandUserDto> recomandUserDtos = new ArrayList<RecomandUserDto>();
+        List<RecommendUserDto> recomandUserDtos = recommendService.recommendUserByGoal(userId);
+
 
 
         // 구독자 게시물

@@ -1,6 +1,7 @@
 package project.DxWorks.transaction.struct;
 
 import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.DynamicStruct;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
@@ -9,22 +10,23 @@ import org.web3j.abi.datatypes.generated.Uint8;
 public class TransactionStruct extends DynamicStruct {
 
     public Uint256 id;
-    public Uint8 transactionType;
-    public Address trader;
-    public Utf8String transactionCycle;
-    public Uint256 transactionPrice;
-    public Utf8String transactionDescription;
-    public Address creator;
+    public Address seller;
+    public Address buyer;
+    public Uint256 transactionPeriod;
+    public Uint256 amount;
+    public Utf8String info;
+    public Bool paid;
+    public Uint256 createdAt;
 
-    public TransactionStruct(Uint256 id, Uint8 transactionType, Address trader, Utf8String transactionCycle,
-                             Uint256 transactionPrice, Utf8String transactionDescription, Address creator) {
-        super(id, transactionType, trader, transactionCycle, transactionPrice, transactionDescription, creator);
+    public TransactionStruct(Uint256 id, Address seller, Address buyer, Uint256 transactionPeriod, Uint256 amount, Utf8String info, Bool paid, Uint256 createdAt) {
+        super(id, seller, buyer, transactionPeriod, amount, info, paid, createdAt);
         this.id = id;
-        this.transactionType = transactionType;
-        this.trader = trader;
-        this.transactionCycle = transactionCycle;
-        this.transactionPrice = transactionPrice;
-        this.transactionDescription = transactionDescription;
-        this.creator = creator;
+        this.seller = seller;
+        this.buyer = buyer;
+        this.transactionPeriod = transactionPeriod;
+        this.amount = amount;
+        this.info = info;
+        this.paid = paid;
+        this.createdAt = createdAt;
     }
 }

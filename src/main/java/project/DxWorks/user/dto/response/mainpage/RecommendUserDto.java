@@ -2,11 +2,10 @@ package project.DxWorks.user.dto.response.mainpage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import project.DxWorks.community.entity.CommunityCategory;
 
 @Data
 @AllArgsConstructor
-public class RecomandUserDto {
+public class RecommendUserDto {
     private long userId;
 
     private String userName;
@@ -15,5 +14,5 @@ public class RecomandUserDto {
 
     private String prevType;
 
-    private CommunityCategory bodyType;
+    private String bodyType;
 }

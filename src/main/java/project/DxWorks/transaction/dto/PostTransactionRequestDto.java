@@ -6,9 +6,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PostTransactionRequestDto {
-    private int transactionType;
-    private String trader;
-    private String transactionCycle;
-    private long transactionPrice;
-    private String transactionDescription;
+    private String buyerId;             // 구매자 주소
+    private int transactionPeriod;      // 거래 기간
+    private long amount;                // 금액
+    private String info;                // 설명
 }

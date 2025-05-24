@@ -52,6 +52,11 @@ aws:
   url: https://comhere.s3.ap-northeast-2.amazonaws.com/
 
 
+
 telegram:
   bot-token: ${TELEGRAM_BOT_TOKEN}
+
+
+gcp:
+  project-id: dxworks-rag-ai
 

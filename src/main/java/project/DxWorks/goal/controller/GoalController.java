@@ -11,6 +11,8 @@ import project.DxWorks.goal.entity.BodyTypeLevel;
 import project.DxWorks.goal.entity.Goal;
 import project.DxWorks.goal.service.GoalService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor

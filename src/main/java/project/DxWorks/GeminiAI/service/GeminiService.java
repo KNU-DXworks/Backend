@@ -53,6 +53,7 @@ import java.util.Map;
 
             // image 와 text part 나눔.
 
+            //TODO : 프롬포팅 새로하기 계속 다른 체형 받아옴.
             //image part
             Map<String, Object> imagePart = new HashMap<>();
             imagePart.put("inlineData", inlineData);
@@ -73,7 +74,7 @@ import java.util.Map;
                 "muscleMass\n" +
                 "fatMass\n" +
                 "arm muscle\n" +
-                "trunk muscle\n" +
+                "body muscle\n" +
                 "leg muscle\n\n" +
                 "Then calculate the following:\n" +
                 "muscle mass ratio = (skeletal muscle mass / weight) * 100 (round to 1 decimal place)\n\n" +
@@ -112,7 +113,7 @@ import java.util.Map;
                 "- fat: normal, muscle: normal → STANDARD\n" +
                 "- fat: high, muscle: low → WEIGHT_LOSS\n" +
                 "- fat: normal, muscle: high → MUSCLE\n" +
-                "- fat: high, muscle: normal → WEIGHT\n" +
+                "- fat: high, muscle: normal → OVERWEIGHT\n" +
                 "- fat: high, muscle: low → OBESITY\n" +
                 "- fat: high, muscle: high → MUSCULAR_OBESITY\n" +
                 "Return the final result in JSON format. Use the following keys " +
