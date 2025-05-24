@@ -31,7 +31,7 @@ public class MainPageService {
     private final PostService postService;
     private final RecommendService recommendService;
 
-    public Response<MainPageResponseDto> mainPage(long userId) {
+    public Response<MainPageResponseDto> mainPage(long userId) throws IOException {
 
         UserEntity myUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));

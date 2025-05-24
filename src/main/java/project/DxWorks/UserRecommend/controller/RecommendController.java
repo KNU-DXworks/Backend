@@ -11,6 +11,7 @@ import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.dto.response.mainpage.RecommendUserDto;
 import project.DxWorks.user.repository.UserRepository;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class RecommendController {
     //mypage
     //TODO : 골 dto도 encoding 하여 Bigquery db에 저장된 값과 벡터 유사도 계산 한뒤 top3 추천.로직
     @GetMapping("/recommend")
-    public Response<List<RecommendUserDto>> recommendUser(@RequestAttribute Long userId){
+    public Response<List<RecommendUserDto>> recommendUser(@RequestAttribute Long userId) throws IOException {
         List<RecommendUserDto> result = recommendService.recommendUserByGoal(userId);
         return Response.ok(result);
    }

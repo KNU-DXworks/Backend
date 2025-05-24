@@ -2,6 +2,7 @@
 
 
     import com.fasterxml.jackson.core.JsonProcessingException;
+    import com.fasterxml.jackson.core.type.TypeReference;
     import com.fasterxml.jackson.databind.JsonNode;
     import com.fasterxml.jackson.databind.ObjectMapper;
     import jakarta.transaction.Transactional;
@@ -9,10 +10,10 @@
     import org.springframework.http.*;
     import org.springframework.stereotype.Service;
     import org.springframework.web.client.RestTemplate;
+    import project.DxWorks.GeminiAI.service.GeminiService;
     import project.DxWorks.UserRecommend.dto.EmbeddingRequestDto;
     import project.DxWorks.UserRecommend.dto.Others.OthersRecommendDto;
     import project.DxWorks.UserRecommend.dto.Others.OthersRecommendResponseDto;
-    import project.DxWorks.UserRecommend.dto.RecommendUsersDto;
     import project.DxWorks.UserRecommend.dto.SimilarUserDto;
     import project.DxWorks.goal.dto.GoalResponseDto;
     import project.DxWorks.goal.service.GoalService;
@@ -24,6 +25,7 @@
     import project.DxWorks.user.domain.UserEntity;
     import project.DxWorks.user.dto.response.mainpage.RecommendUserDto;
     import project.DxWorks.user.repository.UserRepository;
+
 
     import java.io.IOException;
     import java.time.LocalDateTime;
@@ -40,8 +42,8 @@
         private final GoalService goalService;
         private final UserRepository userRepository;
         private final ProfileRepository profileRepository;
-        GoalResponseDto goalResponseDto;
-        RecommendUserDto recommandUserDto;
+        private final GeminiService geminiService;
+
 
         @Transactional
         //Flask 서버로 gemini가 스캔한 인바디의 인코딩된 정보 넘겨 json 파일 형태로 저장.
@@ -85,7 +87,45 @@
         }
         @Transactional
         //Flask 서버로 인코딩된 내 목표치 정보 넘겨서 벡터디비의 다른 인바디들과 유사도 계산.
-        public OthersRecommendResponseDto sendToGoal(Long myUserId, List<Double> encodedGoal) throws IOException {
+        public List<SimilarUserDto> sendToGoal(List<Double> encodedGoal) throws IOException {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "http://localhost:5000/api/main/recommend";
+
+            Map<String,Object> requestBody = new HashMap<>();
+            requestBody.put("goal_vector",encodedGoal);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<Map<String,Object>> entity = new HttpEntity<>(requestBody,headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(url,entity,String.class);
+            System.out.println("추천 결과 : " + response.getBody());
+
+            //JSON 응답 파싱
+            ObjectMapper mapper = new ObjectMapper();
+            List<SimilarUserDto> recommendUsers = new ArrayList<>();
+            try {
+                JsonNode root = mapper.readTree(response.getBody());
+                JsonNode top3 = root.get("top3");
+
+                if(top3 != null && top3.isArray()){
+                    for (JsonNode userNode : top3) {
+                        Long userId = userNode.get("userId").asLong();
+                        Double similarity = userNode.get("similarity").asDouble();
+                        recommendUsers.add(new SimilarUserDto(userId, similarity));
+                    }
+                }
+            }catch (JsonProcessingException e){
+                e.printStackTrace();
+            }
+
+            return recommendUsers;
+
+        }
+
+        @Transactional
+        public OthersRecommendResponseDto getRecommandTop10(Long myUserId, List<Double> encodedGoal) throws IOException{
             RestTemplate restTemplate = new RestTemplate();
             String url = "http://localhost:5000/api/main/recommend";
 
@@ -140,7 +180,7 @@
                     return new OthersRecommendDto(
                             recommendUser.userId(),
                             inbody
-                            );
+                    );
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -153,7 +193,7 @@
             List<InbodyDto> myInbodys = contractDeployService.getInbody(myWallet);
             InbodyDto myInbody = myInbodys.get(myInbodys.size() - 1);
 
-            return new OthersRecommendResponseDto(
+            OthersRecommendResponseDto dtos =  new OthersRecommendResponseDto(
                     new InbodyRecommendDto(
                             myInbody.gender(),
                             myInbody.height(),
@@ -169,13 +209,14 @@
                     recommendDtos
             );
 
-
-
-
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> map = objectMapper.convertValue(dtos, new TypeReference<>() {});
+            geminiService.recommendSimilarUsersByTrajectory(myUserId, map);
+            return dtos;
         }
 
         @Transactional
-        public List<RecommendUserDto> recommendUserByGoal(Long userId){
+        public List<RecommendUserDto> recommendUserByGoal(Long userId) throws IOException {
             //1. 사용자 목표치 조회 및 인코딩
             GoalResponseDto goalDto = goalService.findGoalByUserId(userId);
             if(goalDto == null){
@@ -185,7 +226,7 @@
             System.out.println("목표 벡터 : " + encoded); //디버깅용
 
             //2. Flask 서버로 유사 사용자 조회
-            List<SimilarUserDto> similarUserDtos = sendToGoal(userId, encoded);
+            List<SimilarUserDto> similarUserDtos = sendToGoal(encoded);
 
             //3. 각 사용자에 대해 인바디 및 정보 조회
             return similarUserDtos.stream()
