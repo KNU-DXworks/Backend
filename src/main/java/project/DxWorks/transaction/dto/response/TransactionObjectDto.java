@@ -3,6 +3,7 @@ package project.DxWorks.transaction.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,7 +15,7 @@ public class TransactionObjectDto {
     private String profileImg;              // 거래자 프로필 사진
     private String walletAddress;           // 거래자 지갑 주소
     private int transactionPeriod;          // 거래일수
-    private long amount;                    // 거래 금액
+    private BigDecimal amount;                    // 거래 금액
     private boolean isTransfered;           // 결제 여부
     private LocalDateTime contractDate;
     private String expirationDate;

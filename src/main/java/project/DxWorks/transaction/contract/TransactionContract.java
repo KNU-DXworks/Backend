@@ -22,6 +22,7 @@ import project.DxWorks.transaction.dto.TransactionDto;
 import project.DxWorks.transaction.struct.TransactionStruct;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -126,7 +127,7 @@ public class TransactionContract extends Contract {
                 decoded.get(1).getValue().toString(), // seller
                 decoded.get(2).getValue().toString(), // buyer
                 ((BigInteger) decoded.get(3).getValue()).intValue(),
-                ((BigInteger) decoded.get(4).getValue()).longValue(),
+                new BigDecimal((BigInteger) decoded.get(4).getValue()),
                 decoded.get(5).getValue().toString(),
                 (Boolean) decoded.get(6).getValue(),
                 createdAt
@@ -206,7 +207,7 @@ public class TransactionContract extends Contract {
                         fields.get(1).getValue().toString(), // seller
                         fields.get(2).getValue().toString(), // buyer
                         ((BigInteger) fields.get(3).getValue()).intValue(),
-                        ((BigInteger) fields.get(4).getValue()).longValue(),
+                        new BigDecimal((BigInteger) fields.get(4).getValue()),
                         fields.get(5).getValue().toString(),
                         (Boolean) fields.get(6).getValue(),
                         createdAt
