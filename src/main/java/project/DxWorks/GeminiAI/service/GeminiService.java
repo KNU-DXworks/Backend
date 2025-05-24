@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import project.DxWorks.GeminiAI.dto.RecommendationDto;
 import project.DxWorks.GeminiAI.dto.RecommendationResponseDto;
 import project.DxWorks.GeminiAI.entity.Inbody;
+import project.DxWorks.user.domain.UserRecommend;
+import project.DxWorks.user.repository.UserRecommendRepository;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -26,11 +28,13 @@ import java.util.Map;
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
+    private final UserRecommendRepository userRecommendRepository;
     @Value("${gemini.api-key}")
     private String geminiApiKey;
 
-    public GeminiService(ObjectMapper objectMapper) {
+    public GeminiService(ObjectMapper objectMapper, UserRecommendRepository userRecommendRepository) {
         this.objectMapper = objectMapper;
+        this.userRecommendRepository = userRecommendRepository;
     }
     //인바디 데이터 추출하고 JSON 방식으로 변환하는 메서드
     //TODO : 인바디 공식 사진만 추출하게,
@@ -184,7 +188,7 @@ import java.util.Map;
         throw new RuntimeException("Json 파싱 실패 : 응답에서 JSON을 찾을수 없음");
     }
 
-    public List<RecommendationDto> recommendSimilarUsersByTrajectory(Map<String, Object> inputData) {
+    public List<RecommendationDto> recommendSimilarUsersByTrajectory(Long userId, Map<String, Object> inputData) {
         try {
             // 사용자 및 타 사용자 인바디 정보 JSON 변환
             ObjectMapper mapper = new ObjectMapper();
@@ -253,16 +257,32 @@ import java.util.Map;
             RecommendationResponseDto respon =
                     objectMapper.readValue(cleanedJson, RecommendationResponseDto.class);
 
+            if (userRecommendRepository.existsByUserId(userId)){
+                userRecommendRepository.deleteAllByUserId(userId);
+            }
+
+            respon.recommand().stream().map(res -> {
+                UserRecommend userRecommend = new UserRecommend().builder()
+                        .userId(userId)
+                        .recommendUserId(res.userId())
+                        .reason(res.reason())
+                        .build();
+                return userRecommendRepository.save(userRecommend);
+            });
 
 
 //            if (textNode.isMissingNode()) {
 //                throw new RuntimeException("Gemini 응답에서 Text를 찾을 수 없습니다.");
 //            }
 
+
             return respon.recommand();
+
+
 
         } catch (Exception e) {
             throw new RuntimeException("Gemini 유사 사용자 추천 실패: " + e.getMessage(), e);
         }
     }
+
 }
