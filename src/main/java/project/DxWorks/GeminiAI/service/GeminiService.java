@@ -11,7 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import project.DxWorks.GeminiAI.dto.RecommendationDto;
+import project.DxWorks.GeminiAI.dto.RecommendationResponseDto;
 import project.DxWorks.GeminiAI.entity.Inbody;
+import project.DxWorks.user.domain.UserRecommend;
+import project.DxWorks.user.repository.UserRecommendRepository;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -24,11 +28,13 @@ import java.util.Map;
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
+    private final UserRecommendRepository userRecommendRepository;
     @Value("${gemini.api-key}")
     private String geminiApiKey;
 
-    public GeminiService(ObjectMapper objectMapper) {
+    public GeminiService(ObjectMapper objectMapper, UserRecommendRepository userRecommendRepository) {
         this.objectMapper = objectMapper;
+        this.userRecommendRepository = userRecommendRepository;
     }
     //인바디 데이터 추출하고 JSON 방식으로 변환하는 메서드
     //TODO : 인바디 공식 사진만 추출하게,
@@ -182,4 +188,98 @@ import java.util.Map;
         }
         throw new RuntimeException("Json 파싱 실패 : 응답에서 JSON을 찾을수 없음");
     }
+
+    public List<RecommendationDto> recommendSimilarUsersByTrajectory(Long userId, Map<String, Object> inputData) {
+        try {
+            // 사용자 및 타 사용자 인바디 정보 JSON 변환
+            ObjectMapper mapper = new ObjectMapper();
+            String user = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(inputData.get("user"));
+            String others = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(inputData.get("others"));
+
+            // 프롬프트 생성
+            String prompt = """
+                아래는 사용자의 현재 인바디 데이터와 타 사용자들의 과거 인바디 이력 데이터입니다.
+
+                타 사용자들의 과거 데이터를 바탕으로 현재 사용자와 인바디 변화 추이가 유사한 사용자 3명을 추천해주세요.
+
+                유사도 판단 기준은 체중, 근육량, 지방량, BMI, 체형 등급, 근육 등급, 지방 등급, 체형 타입 등입니다.
+                단순히 현재 값이 비슷한 것이 아니라, 과거에서 현재로 이어지는 인바디 변화 방향 및 경향성이 유사한 사용자를 3명 선정해야 합니다.
+
+                아래 JSON 형식으로 결과를 반환하세요.
+
+                ### 사용자 현재 인바디 데이터:
+                %s
+
+                ### 타 사용자들의 인바디 데이터:
+                %s
+
+                ### 결과 형식:
+                {
+                  "recommand": [
+                    {
+                      "userId": 1,
+                      "reason": "근육량과 지방량, 체형 등급의 변화 추이가 현재 사용자와 거의 일치합니다."
+                    }
+                  ]
+                }
+                """.formatted(user, others);
+
+            // 요청 바디 구성
+            Map<String, Object> textPart = Map.of("text", prompt);
+            Map<String, Object> content = Map.of("parts", List.of(textPart));
+            Map<String, Object> requestBody = Map.of("contents", List.of(content));
+
+            // HTTP 요청 구성
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
+
+            // URL 구성
+            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + geminiApiKey;
+
+            // 요청 전송
+            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+            String result = response.getBody();
+
+            // 응답 파싱
+            JsonNode root = objectMapper.readTree(result);
+            String innerJson = root.path("candidates").get(0)
+                    .path("content").path("parts").get(0)
+                    .path("text").asText();
+
+            System.out.println("innerData:" + innerJson);
+
+            String cleanedJson = innerJson
+                    .replaceAll("^```json\\s*", "")
+                    .replaceAll("\\s*```$", "")
+                    .trim();
+
+
+            RecommendationResponseDto respon =
+                    objectMapper.readValue(cleanedJson, RecommendationResponseDto.class);
+
+            if (userRecommendRepository.existsByUserId(userId)){
+                userRecommendRepository.deleteAllByUserId(userId);
+            }
+
+            for (RecommendationDto res : respon.recommand()){
+                new UserRecommend();
+                UserRecommend userRecommend = UserRecommend.builder()
+                        .userId(userId)
+                        .recommendUserId(res.userId())
+                        .reason(res.reason())
+                        .build();
+                userRecommendRepository.save(userRecommend);
+            }
+
+
+            return respon.recommand();
+
+
+
+        } catch (Exception e) {
+            throw new RuntimeException("Gemini 유사 사용자 추천 실패: " + e.getMessage(), e);
+        }
+    }
+
 }

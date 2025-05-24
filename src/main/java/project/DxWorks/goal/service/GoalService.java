@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.DxWorks.UserRecommend.service.RecommendService;
+import project.DxWorks.common.ui.Response;
 import project.DxWorks.goal.dto.GoalRequestDto;
 import project.DxWorks.goal.dto.GoalResponseDto;
 import project.DxWorks.goal.entity.BodyType;
@@ -13,7 +15,9 @@ import project.DxWorks.goal.repository.GoalRepository;
 import project.DxWorks.user.domain.UserEntity;
 import project.DxWorks.user.repository.UserRepository;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -23,13 +27,15 @@ public class GoalService {
 
     private final GoalRepository goalRepository;
     private final UserRepository userRepository;
+    private final RecommendService recommendService;
+
 
     /**
      * 내 목표치 생성
      */
     //TODO : figma에는 등록하기 버튼만 있으므로 등록과 수정 한꺼번에 처리했음.
     @Transactional
-    public GoalResponseDto createGoal(Long userId, GoalRequestDto requestDto) {
+    public String createGoal(Long userId, GoalRequestDto requestDto) throws IOException {
         //사용자 조회
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("해당 사용자를 찾을 수 없습니다.: "+userId));
@@ -71,7 +77,16 @@ public class GoalService {
                 goal.setBodyType(BodyType.valueOf(requestDto.getBodyType()));
         }
 
-        return mapToResponseDto(goal);
+        GoalResponseDto goalDto = findGoalByUserId(userId);
+        if(goalDto == null){
+            throw new IllegalArgumentException("나의 목표치가 없습니다. " + userId);
+        }
+        List<Double> encoded = recommendService.EncodingGoal(goalDto);
+        System.out.println("목표 벡터 : " + encoded); //디버깅용
+
+        recommendService.getRecommandTop10(userId, encoded);
+
+        return "추천 사용자가 추가됐습니다!";
         }
 
     /**

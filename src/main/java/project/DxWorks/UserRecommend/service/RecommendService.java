@@ -2,6 +2,7 @@
 
 
     import com.fasterxml.jackson.core.JsonProcessingException;
+    import com.fasterxml.jackson.core.type.TypeReference;
     import com.fasterxml.jackson.databind.JsonNode;
     import com.fasterxml.jackson.databind.ObjectMapper;
     import jakarta.transaction.Transactional;
@@ -9,18 +10,22 @@
     import org.springframework.http.*;
     import org.springframework.stereotype.Service;
     import org.springframework.web.client.RestTemplate;
+    import project.DxWorks.GeminiAI.service.GeminiService;
     import project.DxWorks.UserRecommend.dto.EmbeddingRequestDto;
-    import project.DxWorks.UserRecommend.dto.RecommendUsersDto;
+    import project.DxWorks.UserRecommend.dto.Others.OthersRecommendDto;
+    import project.DxWorks.UserRecommend.dto.Others.OthersRecommendResponseDto;
     import project.DxWorks.UserRecommend.dto.SimilarUserDto;
     import project.DxWorks.goal.dto.GoalResponseDto;
     import project.DxWorks.goal.service.GoalService;
     import project.DxWorks.inbody.dto.InbodyDto;
+    import project.DxWorks.inbody.dto.InbodyRecommendDto;
     import project.DxWorks.inbody.service.ContractDeployService;
     import project.DxWorks.profile.entity.Profile;
     import project.DxWorks.profile.repository.ProfileRepository;
     import project.DxWorks.user.domain.UserEntity;
     import project.DxWorks.user.dto.response.mainpage.RecommendUserDto;
     import project.DxWorks.user.repository.UserRepository;
+
 
     import java.io.IOException;
     import java.nio.file.Files;
@@ -29,10 +34,7 @@
     import java.time.LocalDateTime;
     import java.time.ZoneOffset;
     import java.time.format.DateTimeFormatter;
-    import java.util.ArrayList;
-    import java.util.HashMap;
-    import java.util.List;
-    import java.util.Map;
+    import java.util.*;
     import java.util.stream.Collectors;
 
     @Service
@@ -43,8 +45,7 @@
         private final GoalService goalService;
         private final UserRepository userRepository;
         private final ProfileRepository profileRepository;
-        GoalResponseDto goalResponseDto;
-        RecommendUserDto recommandUserDto;
+        private final GeminiService geminiService;
 
         @Transactional
         //Flask 서버로 gemini가 스캔한 인바디의 인코딩된 정보 넘겨 json 파일 형태로 저장.
@@ -87,8 +88,9 @@
         }
 
         @Transactional
-        //Flask 서버로 인코딩된 내 목표치 정보 넘겨서 Flask에서 벡터디비의 다른 인바디들과 유사도 계산.
-        public List<SimilarUserDto> sendToGoal(List<Double> encodedGoal) {
+        //Flask 서버로 인코딩된 내 목표치 정보 넘겨서 벡터디비의 다른 인바디들과 유사도 계산.
+        public List<SimilarUserDto> sendToGoal(List<Double> encodedGoal) throws IOException {
+
             RestTemplate restTemplate = new RestTemplate();
             String url = "http://localhost:5000/api/main/recommend";
 
@@ -120,11 +122,103 @@
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
+
             return recommendUsers;
         }
 
         @Transactional
-        public List<RecommendUserDto> recommendUserByGoal(Long userId) {
+        public OthersRecommendResponseDto getRecommandTop10(Long myUserId, List<Double> encodedGoal) throws IOException{
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "http://localhost:5000/api/main/recommend";
+
+            Map<String,Object> requestBody = new HashMap<>();
+            requestBody.put("goal_vector",encodedGoal);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<Map<String,Object>> entity = new HttpEntity<>(requestBody,headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(url,entity,String.class);
+            System.out.println("추천 결과 : " + response.getBody());
+
+            //JSON 응답 파싱
+            ObjectMapper mapper = new ObjectMapper();
+            List<SimilarUserDto> recommendUsers = new ArrayList<>();
+            try {
+                JsonNode root = mapper.readTree(response.getBody());
+                JsonNode top3 = root.get("top3");
+
+                if(top3 != null && top3.isArray()){
+                    for (JsonNode userNode : top3) {
+                        Long userId = userNode.get("userId").asLong();
+                        Double similarity = userNode.get("similarity").asDouble();
+                        recommendUsers.add(new SimilarUserDto(userId, similarity));
+                    }
+                }
+            }catch (JsonProcessingException e){
+                e.printStackTrace();
+            }
+
+            List<OthersRecommendDto> recommendDtos = recommendUsers.stream().map(recommendUser -> {
+                Profile profile = profileRepository.findProfileByUserId(recommendUser.userId())
+                        .orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다"));
+                try {
+                    List<InbodyRecommendDto> inbody = contractDeployService.getInbody(profile.getWalletAddress())
+                            .stream()
+                            .map(inb -> new InbodyRecommendDto(
+                                    inb.gender(),
+                                    inb.height(),
+                                    inb.weight(),
+                                    inb.muscle(),
+                                    inb.fat(),
+                                    inb.bmi(),
+                                    inb.userCase(),
+                                    inb.armGrade(),
+                                    inb.bodyGrade(),
+                                    inb.legGrade()
+                            ))
+                            .toList();
+                    return new OthersRecommendDto(
+                            recommendUser.userId(),
+                            inbody
+                    );
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }).toList();
+
+            String myWallet = profileRepository.findProfileByUserId(myUserId)
+                    .orElseThrow(() -> new IllegalArgumentException("잘못된 프로필 정보입니다."))
+                    .getWalletAddress();
+
+            List<InbodyDto> myInbodys = contractDeployService.getInbody(myWallet);
+            InbodyDto myInbody = myInbodys.get(myInbodys.size() - 1);
+
+            OthersRecommendResponseDto dtos =  new OthersRecommendResponseDto(
+                    new InbodyRecommendDto(
+                            myInbody.gender(),
+                            myInbody.height(),
+                            myInbody.weight(),
+                            myInbody.muscle(),
+                            myInbody.fat(),
+                            myInbody.bmi(),
+                            myInbody.userCase(),
+                            myInbody.armGrade(),
+                            myInbody.bodyGrade(),
+                            myInbody.legGrade()
+                    ),
+                    recommendDtos
+            );
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> map = objectMapper.convertValue(dtos, new TypeReference<>() {});
+            geminiService.recommendSimilarUsersByTrajectory(myUserId, map);
+            return dtos;
+        }
+
+        @Transactional
+        public List<RecommendUserDto> recommendUserByGoal(Long userId) throws IOException {
             //1. 사용자 목표치 조회 및 인코딩
             GoalResponseDto goalDto = goalService.findGoalByUserId(userId);
             if (goalDto == null) {

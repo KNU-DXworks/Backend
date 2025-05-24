@@ -10,6 +10,8 @@ import project.DxWorks.common.ui.Response;
 import project.DxWorks.user.dto.response.mainpage.MainPageResponseDto;
 import project.DxWorks.user.service.MainPageService;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/main")
 @RequiredArgsConstructor
@@ -17,7 +19,7 @@ public class MainPageController {
     private final MainPageService mainPageService;
 
     @GetMapping
-    public Response<MainPageResponseDto> mainPage(@RequestAttribute Long userId){
+    public Response<MainPageResponseDto> mainPage(@RequestAttribute Long userId) throws IOException {
 
         return mainPageService.mainPage(userId);
     }

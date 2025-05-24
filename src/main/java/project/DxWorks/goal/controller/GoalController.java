@@ -11,6 +11,7 @@ import project.DxWorks.goal.entity.BodyTypeLevel;
 import project.DxWorks.goal.entity.Goal;
 import project.DxWorks.goal.service.GoalService;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,11 +26,12 @@ public class GoalController {
 
     //TODO : 카카오 로그인 해서 userID 받아오는 것 테스트 확인 해봐야함. desktop에서 client_id, client_secret 발급받아서 해봤지만 안됐음.
     @PutMapping("/goal")
-    public Response<GoalResponseDto> createGoal(@RequestAttribute Long userId, @RequestBody GoalRequestDto requestDto) {
+    public Response<String> createGoal(@RequestAttribute Long userId, @RequestBody GoalRequestDto requestDto) throws IOException {
 
-        GoalResponseDto created  = goalService.createGoal(userId,requestDto);
+        String result  = goalService.createGoal(userId,requestDto);
 
-        return Response.ok(created);
+
+        return Response.ok(result);
     }
 
 
