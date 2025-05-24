@@ -16,6 +16,8 @@
     import project.DxWorks.UserRecommend.dto.Others.OthersRecommendResponseDto;
     import project.DxWorks.UserRecommend.dto.SimilarUserDto;
     import project.DxWorks.goal.dto.GoalResponseDto;
+    import project.DxWorks.goal.entity.Goal;
+    import project.DxWorks.goal.repository.GoalRepository;
     import project.DxWorks.goal.service.GoalService;
     import project.DxWorks.inbody.dto.InbodyDto;
     import project.DxWorks.inbody.dto.InbodyRecommendDto;
@@ -42,7 +44,7 @@
     public class RecommendService {
 
         private final ContractDeployService contractDeployService;
-        private final GoalService goalService;
+        private final GoalRepository goalRepository;
         private final UserRepository userRepository;
         private final ProfileRepository profileRepository;
         private final GeminiService geminiService;
@@ -220,8 +222,17 @@
         @Transactional
         public List<RecommendUserDto> recommendUserByGoal(Long userId) throws IOException {
             //1. 사용자 목표치 조회 및 인코딩
-            GoalResponseDto goalDto = goalService.findGoalByUserId(userId);
-            if (goalDto == null) {
+            UserEntity user = userRepository.findById(userId)
+                    .orElseThrow(() -> new NoSuchElementException("해당 사용자의 목표치가 없습니다." + userId));
+
+            Goal goal = user.getGoal();
+            if(goal == null){
+                throw new NoSuchElementException("사용자 id에 해당하는 목표치가 없습니다." + userId);
+            }
+
+            GoalResponseDto goalDto = mapToResponseDto(goal);
+            if(goalDto == null){
+
                 throw new IllegalArgumentException("나의 목표치가 없습니다. " + userId);
             }
             List<Double> encoded = EncodingGoal(goalDto);
@@ -431,6 +442,19 @@
 
         }
 
+        private GoalResponseDto mapToResponseDto(Goal goal) {
+            GoalResponseDto dto = new GoalResponseDto();
+            dto.setWeight(goal.getWeight());
+            dto.setMuscle(goal.getMuscle());
+            dto.setFat(goal.getFat());
+            dto.setBmi(goal.getBmi());
+            dto.setArmGrade(String.valueOf(goal.getArmGrade()));
+            dto.setBodyGrade(String.valueOf(goal.getBodyGrade()));
+            dto.setLegGrade(String.valueOf(goal.getLegGrade()));
+            dto.setBodyType(String.valueOf(goal.getBodyType()));
+            return dto;
+        }
+      
         @Transactional
         //Flask 서버로  넘겨서  벡터디비에 내가 입력한 인바디 데이터 삽입
         public void sendToVector(EmbeddingRequestDto dto) {
