@@ -105,7 +105,7 @@ public class ScanController {
         } catch (IOException e) {
             return Response.error(ErrorCode.INTERNAL_ERROR);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(),e);
+            return Response.error(ErrorCode.INTERNAL_ERROR);
         }
     }
 
