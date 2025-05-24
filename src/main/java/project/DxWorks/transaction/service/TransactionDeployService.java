@@ -29,6 +29,7 @@ import project.DxWorks.user.service.UserSubscribeService;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Scanner;
@@ -67,25 +68,32 @@ public class TransactionDeployService {
     public String addTransaction(String privateKey, PostTransactionRequestDto dto) throws Exception {
         TransactionContract contract = loadContract(privateKey);
 
+        BigInteger wei = new BigInteger("1000000000000000000");  // 1 ETH in wei
+        BigInteger amount = dto.getAmount().multiply(new BigDecimal(wei)).toBigInteger();
+
         TransactionReceipt receipt = contract.createTransaction(
                 dto.getBuyerId(),
                 BigInteger.valueOf(dto.getTransactionPeriod()),
-                BigInteger.valueOf(dto.getAmount()),
+                amount,
                 dto.getInfo()
         ).send();
+
 
         contract.getCreatedTransactionId(receipt).ifPresent(id -> log.info("✅ emit된 거래 ID: {}", id));
         return receipt.getTransactionHash();
     }
 
     // ---------- 거래 송금 ----------
-    public String payForTransaction(String privateKey, Long transactionId, Long amount) throws Exception {
+    public String payForTransaction(String privateKey, Long transactionId, BigDecimal ethAmount) throws Exception {
         TransactionContract contract = loadContract(privateKey);
+
+        BigInteger wei = new BigInteger("1000000000000000000");  // 1 ETH in wei
+        BigInteger amount = ethAmount.multiply(new BigDecimal(wei)).toBigInteger();
 
         // 1. 송금 트랜잭션 실행
         TransactionReceipt receipt = contract.payForTransaction(
                 BigInteger.valueOf(transactionId),
-                BigInteger.valueOf(amount)
+                amount
         ).send();
 
         // 2. 거래 정보 조회
@@ -116,10 +124,13 @@ public class TransactionDeployService {
     // ---------- 거래 수정 ----------
     public String updateTransaction(String privateKey, Long transactionId, PostTransactionRequestDto dto) throws Exception {
         TransactionContract contract = loadContract(privateKey);
+        BigInteger wei = new BigInteger("1000000000000000000");  // 1 ETH in wei
+        BigInteger amount = dto.getAmount().multiply(new BigDecimal(wei)).toBigInteger();
+
         return contract.updateTransaction(
                 BigInteger.valueOf(transactionId),
                 BigInteger.valueOf(dto.getTransactionPeriod()),
-                BigInteger.valueOf(dto.getAmount()),
+                amount,
                 dto.getInfo()
         ).send().getTransactionHash();
     }
@@ -171,7 +182,7 @@ public class TransactionDeployService {
                             profile.getProfileUrl(),
                             profile.getWalletAddress(),
                             dto.getTransactionPeriod(),
-                            dto.getAmount(),
+                            dto.getAmount().divide(new BigDecimal("1000000000000000000")),
                             dto.isPaid(),
                             dto.getCreatedAt(),
                             expirationDate
@@ -202,7 +213,7 @@ public class TransactionDeployService {
                             profile.getProfileUrl(),
                             profile.getWalletAddress(),
                             dto.getTransactionPeriod(),
-                            dto.getAmount(),
+                            dto.getAmount().divide(new BigDecimal("1000000000000000000")),
                             dto.isPaid(),
                             dto.getCreatedAt(),
                             expirationDate
