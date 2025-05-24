@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import project.DxWorks.auth.domain.Entity.TelegramAuthEntity;
 import project.DxWorks.auth.domain.Entity.UserAuthEntity;
 import project.DxWorks.auth.interfacese.UserAuthInterface;
 import project.DxWorks.auth.repository.UserAuthRepository;
@@ -24,7 +25,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         // userId를 Long값으로 바꿔주고 인증 정보 조회 (UserDetailsService에서 String으로 오버라이드되게 돼있음)
-        UserAuthEntity userAuthEntity = userAuthInterface.findByUserId(Long.parseLong(userId))
+        TelegramAuthEntity userAuthEntity = userAuthInterface.findByUserId(Long.parseLong(userId))
                 .orElseThrow(() -> new UsernameNotFoundException("사용자 인증 정보를 찾을 수 없습니다: " + userId));
 
         // 권한이 필요 없으므로 빈 권한 목록 생성
