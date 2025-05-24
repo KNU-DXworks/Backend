@@ -10,7 +10,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/auth/gemini")
+@RequestMapping("/api/gemini")
 @RequiredArgsConstructor
 public class GeminiController {
 

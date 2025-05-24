@@ -261,19 +261,15 @@ import java.util.Map;
                 userRecommendRepository.deleteAllByUserId(userId);
             }
 
-            respon.recommand().stream().map(res -> {
-                UserRecommend userRecommend = new UserRecommend().builder()
+            for (RecommendationDto res : respon.recommand()){
+                new UserRecommend();
+                UserRecommend userRecommend = UserRecommend.builder()
                         .userId(userId)
                         .recommendUserId(res.userId())
                         .reason(res.reason())
                         .build();
-                return userRecommendRepository.save(userRecommend);
-            });
-
-
-//            if (textNode.isMissingNode()) {
-//                throw new RuntimeException("Gemini 응답에서 Text를 찾을 수 없습니다.");
-//            }
+                userRecommendRepository.save(userRecommend);
+            }
 
 
             return respon.recommand();
