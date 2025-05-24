@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import project.DxWorks.openai.service.OpenAiService;
 
 @RestController
-@RequestMapping("/body-type")
+@RequestMapping("/api/body-type")
 public class BodyTypeController {
 
     private final OpenAiService openAiService;

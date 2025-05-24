@@ -259,6 +259,13 @@ public class IntroduceService {
         return balanceEth.stripTrailingZeros().toPlainString();
     }
 
+    public UserEntity findUserByWalletAddress(String walletAddress) {
+        Profile profile = profileRepository.findByWalletAddress(walletAddress)
+                .orElseThrow(() -> new IllegalArgumentException("해당 지갑 주소를 가진 사용자를 찾을 수 없습니다."));
+
+        return profile.getUser();
+    }
+
 }
 
 

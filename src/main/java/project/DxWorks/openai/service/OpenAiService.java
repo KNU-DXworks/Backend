@@ -37,7 +37,6 @@ public class OpenAiService {
         HttpEntity<ChatCompletionRequest> entity = new HttpEntity<>(request, headers);
 
         ResponseEntity<ChatCompletionResponse> response = restTemplate.postForEntity("https://api.openai.com/v1/chat/completions", entity, ChatCompletionResponse.class);
-
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
 
             return response.getBody().getChoices().get(0).getMessage().getContent().trim();
