@@ -10,12 +10,17 @@
     import org.springframework.stereotype.Service;
     import org.springframework.web.client.RestTemplate;
     import project.DxWorks.UserRecommend.dto.EmbeddingRequestDto;
+    import project.DxWorks.UserRecommend.dto.Others.OthersRecommendDto;
+    import project.DxWorks.UserRecommend.dto.Others.OthersRecommendResponseDto;
     import project.DxWorks.UserRecommend.dto.RecommendUsersDto;
     import project.DxWorks.UserRecommend.dto.SimilarUserDto;
     import project.DxWorks.goal.dto.GoalResponseDto;
     import project.DxWorks.goal.service.GoalService;
     import project.DxWorks.inbody.dto.InbodyDto;
+    import project.DxWorks.inbody.dto.InbodyRecommendDto;
     import project.DxWorks.inbody.service.ContractDeployService;
+    import project.DxWorks.profile.entity.Profile;
+    import project.DxWorks.profile.repository.ProfileRepository;
     import project.DxWorks.user.domain.UserEntity;
     import project.DxWorks.user.dto.response.mainpage.RecommendUserDto;
     import project.DxWorks.user.repository.UserRepository;
@@ -24,10 +29,7 @@
     import java.time.LocalDateTime;
     import java.time.ZoneOffset;
     import java.time.format.DateTimeFormatter;
-    import java.util.ArrayList;
-    import java.util.HashMap;
-    import java.util.List;
-    import java.util.Map;
+    import java.util.*;
     import java.util.stream.Collectors;
 
     @Service
@@ -37,6 +39,7 @@
         private final ContractDeployService contractDeployService;
         private final GoalService goalService;
         private final UserRepository userRepository;
+        private final ProfileRepository profileRepository;
         GoalResponseDto goalResponseDto;
         RecommendUserDto recommandUserDto;
 
@@ -82,7 +85,7 @@
         }
         @Transactional
         //Flask 서버로 인코딩된 내 목표치 정보 넘겨서 벡터디비의 다른 인바디들과 유사도 계산.
-        public List<SimilarUserDto> sendToGoal(List<Double> encodedGoal) {
+        public OthersRecommendResponseDto sendToGoal(Long myUserId, List<Double> encodedGoal) throws IOException {
             RestTemplate restTemplate = new RestTemplate();
             String url = "http://localhost:5000/api/main/recommend";
 
@@ -114,7 +117,60 @@
             }catch (JsonProcessingException e){
                 e.printStackTrace();
             }
-            return recommendUsers;
+
+            List<OthersRecommendDto> recommendDtos = recommendUsers.stream().map(recommendUser -> {
+                Profile profile = profileRepository.findProfileByUserId(recommendUser.userId())
+                        .orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다"));
+                try {
+                    List<InbodyRecommendDto> inbody = contractDeployService.getInbody(profile.getWalletAddress())
+                            .stream()
+                            .map(inb -> new InbodyRecommendDto(
+                                    inb.gender(),
+                                    inb.height(),
+                                    inb.weight(),
+                                    inb.muscle(),
+                                    inb.fat(),
+                                    inb.bmi(),
+                                    inb.userCase(),
+                                    inb.armGrade(),
+                                    inb.bodyGrade(),
+                                    inb.legGrade()
+                            ))
+                            .toList();
+                    return new OthersRecommendDto(
+                            recommendUser.userId(),
+                            inbody
+                            );
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }).toList();
+
+            String myWallet = profileRepository.findProfileByUserId(myUserId)
+                    .orElseThrow(() -> new IllegalArgumentException("잘못된 프로필 정보입니다."))
+                    .getWalletAddress();
+
+            List<InbodyDto> myInbodys = contractDeployService.getInbody(myWallet);
+            InbodyDto myInbody = myInbodys.get(myInbodys.size() - 1);
+
+            return new OthersRecommendResponseDto(
+                    new InbodyRecommendDto(
+                            myInbody.gender(),
+                            myInbody.height(),
+                            myInbody.weight(),
+                            myInbody.muscle(),
+                            myInbody.fat(),
+                            myInbody.bmi(),
+                            myInbody.userCase(),
+                            myInbody.armGrade(),
+                            myInbody.bodyGrade(),
+                            myInbody.legGrade()
+                    ),
+                    recommendDtos
+            );
+
+
+
 
         }
 
@@ -129,7 +185,7 @@
             System.out.println("목표 벡터 : " + encoded); //디버깅용
 
             //2. Flask 서버로 유사 사용자 조회
-            List<SimilarUserDto> similarUserDtos = sendToGoal(encoded);
+            List<SimilarUserDto> similarUserDtos = sendToGoal(userId, encoded);
 
             //3. 각 사용자에 대해 인바디 및 정보 조회
             return similarUserDtos.stream()

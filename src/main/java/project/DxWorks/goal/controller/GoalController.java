@@ -29,6 +29,7 @@ public class GoalController {
 
         GoalResponseDto created  = goalService.createGoal(userId,requestDto);
 
+
         return Response.ok(created);
     }
 
