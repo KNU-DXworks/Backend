@@ -93,14 +93,12 @@ public class ScanController {
             );
 
             contractDeployService.addInbody(dto);
-            System.out.println("1");
-            //System.out.println(saved.getId()); // 0으로 받아옴.
+
             System.out.println(user.getId());
 
 //          //String 형태 -> double로 인코딩 한 후 dto 전달.
             EmbeddingRequestDto embeddingRequestDto = recommendService.toEmbeddingRequest(user.getId(),embeddingDto);
             //Flask 서버로 POST
-            //TODO : userId가 BigQuery에 들어가지 않음. saved.getId()가 0으로 고정됨.
             recommendService.storeEmbedding(embeddingRequestDto);
             return Response.ok(saved);
 
