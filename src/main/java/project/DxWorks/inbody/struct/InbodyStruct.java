@@ -8,6 +8,7 @@ import org.web3j.abi.datatypes.generated.Uint256;
 import java.util.List;
 
 public class InbodyStruct extends DynamicStruct {
+    //TODO : 등록일시가 아니라 , 인바디 종이에 나와있는 일자 받아오기??
     public final Utf8String createdAt;
     public final Utf8String gender;
     public final Uint256 height;

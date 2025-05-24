@@ -2,10 +2,12 @@ package project.DxWorks.UserRecommend.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import project.DxWorks.UserRecommend.dto.EmbeddingRequestDto;
 import project.DxWorks.UserRecommend.dto.RecommendUsersDto;
 import project.DxWorks.UserRecommend.service.RecommendService;
 import project.DxWorks.common.ui.Response;
 import project.DxWorks.goal.service.GoalService;
+import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.dto.response.mainpage.RecommendUserDto;
@@ -33,5 +35,25 @@ public class RecommendController {
         return Response.ok(result);
    }
 
+   @PostMapping("/put/inbodydata/{userId}")
+    public Response<EmbeddingRequestDto> putInBodyData(@PathVariable Long userId, @RequestBody InbodyDto data){
+
+       EmbeddingRequestDto dto = recommendService.toEmbeddingRequest(userId,data);
+       recommendService.sendToVector(dto);
+
+       return Response.ok(dto);
+   }
+
+
+   @PostMapping("/visualize")
+    public Response<String> visualize(@RequestAttribute Long userId){
+
+        try{
+            recommendService.visualize3dEmbedding(userId);
+            return Response.ok("유저 ID: " + userId + "의 3D 시각화 요청을 성공적으로 보냈습니다.");
+        }catch (RuntimeException e){
+            return Response.ok("3D 시각화 요청을 실패했습니다." + e.getMessage());
+        }
+    }
 
 }
