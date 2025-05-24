@@ -43,4 +43,9 @@ public class UserEntity extends TimeBaseEntity {
         this.goal = goal;
     }
 
+    public UserEntity(String userName, String email){
+        this.userName = userName;
+        this.email = email;
+    }
+
 }
