@@ -40,4 +40,8 @@ public class Profile {
         }
     }
 
+    public void setBodyType(CommunityCategory bodyType){
+        this.community = bodyType;
+    }
+
 }
