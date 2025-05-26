@@ -18,11 +18,15 @@ import project.DxWorks.UserRecommend.dto.RecommendResponseDto;
 import project.DxWorks.UserRecommend.service.RecommendService;
 import project.DxWorks.common.domain.exception.ErrorCode;
 import project.DxWorks.common.ui.Response;
+import project.DxWorks.community.entity.CommunityCategory;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.dto.PostInbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
+import project.DxWorks.profile.entity.Profile;
+import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.domain.UserEntity;
 import project.DxWorks.user.repository.UserRepository;
+import software.amazon.awssdk.profiles.internal.ProfileSection;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,6 +44,8 @@ public class ScanController {
 
     private final UserRepository userRepository;
 
+    private final ProfileRepository profileRepository;
+
 
     @Operation(
             summary = "인바디 이미지 업로드",
@@ -56,6 +62,9 @@ public class ScanController {
             //TODO : 로그인된 사용자의 id를 bigquery에 저장하기 위함.
             UserEntity user = userRepository.findById(userId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 Id가 없습니다." + userId));
+
+            Profile profile = profileRepository.findByUser(user)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 프로필이 존재하지 않습니다."));
             Inbody saved = inbodyService.analyzeAndSave(file);
 
 
@@ -93,7 +102,8 @@ public class ScanController {
 
             contractDeployService.addInbody(dto);
 
-            System.out.println(user.getId());
+            profile.setBodyType(CommunityCategory.valueOf(saved.getBodyType()));
+            profileRepository.save(profile);
 
 //          //String 형태 -> double로 인코딩 한 후 dto 전달.
             EmbeddingRequestDto embeddingRequestDto = recommendService.toEmbeddingRequest(user.getId(),embeddingDto);
