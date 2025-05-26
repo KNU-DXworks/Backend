@@ -9,9 +9,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import project.DxWorks.auth.domain.Entity.TelegramAuthEntity;
 import project.DxWorks.auth.domain.JwtTokenProvider;
+import project.DxWorks.auth.dto.TelegramUserAccessTokenDto;
 import project.DxWorks.auth.dto.UserAccessTokenResponseDto;
 import project.DxWorks.auth.interfacese.UserAuthInterface;
 import project.DxWorks.auth.repository.TelegramAuthRepository;
+import project.DxWorks.profile.entity.Profile;
+import project.DxWorks.profile.repository.ProfileRepository;
+import project.DxWorks.user.domain.UserEntity;
+import project.DxWorks.user.repository.UserRepository;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -35,8 +40,10 @@ public class TelegramAuthService {
     private final TelegramAuthRepository telegramAuthRepository;
     private final UserAuthInterface userAuthInterface;
     private final UserDetailsService userDetailsService;
+    private final ProfileRepository profileRepository;
+    private final UserRepository userRepository;
 
-    public UserAccessTokenResponseDto authenticateWithTelegram(String initData) throws JsonProcessingException {
+    public TelegramUserAccessTokenDto authenticateWithTelegram(String initData) throws JsonProcessingException {
         Map<String, String> data = parseInitData(initData);
 
         // 1. user 필드 복원
@@ -65,11 +72,6 @@ public class TelegramAuthService {
         byte[] secretKeyBytes = hashSha256Bytes("WebAppData"+ botToken);
         String myHash = hmacSha256(secretKeyBytes, dataCheckString);
 
-        System.out.println("🔍 [DEBUG] dataCheckString:\n" + dataCheckString);
-        System.out.println("🔐 [DEBUG] MyHash:   " + myHash);
-        System.out.println("🔐 [DEBUG] Telegram: " + hash);
-
-
         // 5. 사용자 등록 및 토큰 발급
         Long telegramId = Long.parseLong(data.get("user.id"));
         String firstName = data.getOrDefault("user.first_name", "");
@@ -88,7 +90,20 @@ public class TelegramAuthService {
         String accessToken = jwtTokenProvider.createAccessToken(userDetails, telegramAuthEntity.getUserId());
         String refreshToken = jwtTokenProvider.createRefreshToken(telegramAuthEntity.getUserId());
 
-        return new UserAccessTokenResponseDto(accessToken, refreshToken, jwtTokenProvider.getTokenValidTime());
+        UserEntity user = userRepository.findById(telegramAuthEntity.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 유저 정보입니다."));
+
+        Profile profile = profileRepository.findByUser(user)
+                .orElseThrow(()-> new IllegalArgumentException("프로필이 존재하지 않습니다."));
+
+
+        return new TelegramUserAccessTokenDto(
+                accessToken,
+                refreshToken,
+                jwtTokenProvider.getTokenValidTime(),
+                !profile.isWalletEmpty(),
+                profile.getWalletAddress()
+        );
     }
 
     private Map<String, String> parseInitData(String initData) {

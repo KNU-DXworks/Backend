@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import project.DxWorks.auth.dto.KakaoAuthRequestDto;
 import project.DxWorks.auth.dto.KakaoTokenResponseDto;
+import project.DxWorks.auth.dto.TelegramUserAccessTokenDto;
 import project.DxWorks.auth.dto.UserAccessTokenResponseDto;
 import project.DxWorks.auth.service.KakaoAuthService;
 import project.DxWorks.auth.service.TelegramAuthService;
@@ -35,9 +36,10 @@ public class AuthController {
     }
 
     @PostMapping("/telegram")
-    public Response<UserAccessTokenResponseDto> authenticateWithTelegram(@RequestBody Map<String, String> body) throws JsonProcessingException {
+    public Response<TelegramUserAccessTokenDto> authenticateWithTelegram(@RequestBody Map<String, String> body) throws JsonProcessingException {
         String initData = body.get("initData");
-        UserAccessTokenResponseDto response = telegramAuthService.authenticateWithTelegram(initData);
+        TelegramUserAccessTokenDto response = telegramAuthService.authenticateWithTelegram(initData);
+
         return Response.ok(response);
     }
 
