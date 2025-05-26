@@ -46,15 +46,15 @@ public class RecommendController {
    }
 
 
-   @PostMapping("/visualize")
-    public Response<String> visualize(@RequestAttribute Long userId){
-
-        try{
-            recommendService.visualize3dEmbedding(userId);
-            return Response.ok("유저 ID: " + userId + "의 3D 시각화 요청을 성공적으로 보냈습니다.");
-        }catch (RuntimeException e){
-            return Response.ok("3D 시각화 요청을 실패했습니다." + e.getMessage());
-        }
-    }
+//   @PostMapping("/visualize")
+//    public Response<String> visualize(@RequestAttribute Long userId){
+//
+//        try{
+//            recommendService.visualize3dEmbedding(userId);
+//            return Response.ok("유저 ID: " + userId + "의 3D 시각화 요청을 성공적으로 보냈습니다.");
+//        }catch (RuntimeException e){
+//            return Response.ok("3D 시각화 요청을 실패했습니다." + e.getMessage());
+//        }
+//    }
 
 }

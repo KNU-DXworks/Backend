@@ -274,40 +274,40 @@
 
 
         // flask 시각화 서버 포트번호 5001 사용.
-        @Transactional
-        public void visualize3dEmbedding(Long userId){
-            String url =  "http://localhost:5001/api/main/visualize";
-            //목표치 조회
-            GoalResponseDto goalDto = goalService.findGoalByUserId(userId);
-            if(goalDto == null){
-                throw new IllegalArgumentException("목표치가 없습니다.");
-            }
-            List<Double> goalEncoded = EncodingGoal(goalDto);
-            System.out.println("목표 벡터 : " + goalEncoded);
-
-            try{
-                RestTemplate restTemplate = new RestTemplate();
-                ObjectMapper mapper = new ObjectMapper();
-                String json = mapper.writeValueAsString(Map.of("goal_vector",goalEncoded));
-
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_JSON);
-
-                HttpEntity<String> request = new HttpEntity<>(json, headers);
-                ResponseEntity<byte[]> response = restTemplate.postForEntity(url, request, byte[].class);
-
-                if(response.getStatusCode().is2xxSuccessful()){
-                    byte[] images = response.getBody();
-                    Path outputPath = Paths.get("Inbody_3D_visualization.png");
-                    Files.write(outputPath, images);
-                    System.out.println("3D 시각화 저장 완료 : " +outputPath.toAbsolutePath());
-                }else{
-                    throw new RuntimeException("시각화 요청 실패 : " + response.getBody());
-                }
-            }catch(IOException e){
-                throw new RuntimeException("이미지 저장 실패 : " + e.getMessage());
-            }
-        }
+//        @Transactional
+//        public void visualize3dEmbedding(Long userId){
+//            String url =  "http://localhost:5001/api/main/visualize";
+//            //목표치 조회
+//            GoalResponseDto goalDto = goalService.findGoalByUserId(userId);
+//            if(goalDto == null){
+//                throw new IllegalArgumentException("목표치가 없습니다.");
+//            }
+//            List<Double> goalEncoded = EncodingGoal(goalDto);
+//            System.out.println("목표 벡터 : " + goalEncoded);
+//
+//            try{
+//                RestTemplate restTemplate = new RestTemplate();
+//                ObjectMapper mapper = new ObjectMapper();
+//                String json = mapper.writeValueAsString(Map.of("goal_vector",goalEncoded));
+//
+//                HttpHeaders headers = new HttpHeaders();
+//                headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//                HttpEntity<String> request = new HttpEntity<>(json, headers);
+//                ResponseEntity<byte[]> response = restTemplate.postForEntity(url, request, byte[].class);
+//
+//                if(response.getStatusCode().is2xxSuccessful()){
+//                    byte[] images = response.getBody();
+//                    Path outputPath = Paths.get("Inbody_3D_visualization.png");
+//                    Files.write(outputPath, images);
+//                    System.out.println("3D 시각화 저장 완료 : " +outputPath.toAbsolutePath());
+//                }else{
+//                    throw new RuntimeException("시각화 요청 실패 : " + response.getBody());
+//                }
+//            }catch(IOException e){
+//                throw new RuntimeException("이미지 저장 실패 : " + e.getMessage());
+//            }
+//        }
 
 
         @Transactional

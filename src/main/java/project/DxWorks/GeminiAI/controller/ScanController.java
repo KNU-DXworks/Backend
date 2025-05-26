@@ -49,7 +49,7 @@ public class ScanController {
             @ApiResponse(responseCode = "200", description = "업로드 및 분석 성공"),
             @ApiResponse(responseCode = "500", description = "서버 오류 발생")
     })
-    @PostMapping("/inbody")
+    @PostMapping
     public Response<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file, @RequestHeader("X-PRIVATE-KEY") String privateKey,
                                               @RequestAttribute Long userId) {
         try {
