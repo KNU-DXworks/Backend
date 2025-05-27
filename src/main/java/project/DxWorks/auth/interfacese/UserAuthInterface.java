@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface UserAuthInterface {
     UserAuthEntity registerUser(UserEntity userEntity, Long kakaoId, String profileImage);
 
-    Optional<UserAuthEntity> findByUserId(Long userId);
+    Optional<TelegramAuthEntity> findByUserId(Long userId);
 
     Optional<UserAuthEntity> findByKakaoId(Long kakaoId);
 
