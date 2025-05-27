@@ -112,10 +112,10 @@
             List<SimilarUserDto> recommendUsers = new ArrayList<>();
             try {
                 JsonNode root = mapper.readTree(response.getBody());
-                JsonNode top3 = root.get("top3");
+                JsonNode top10 = root.get("top10");
 
-                if (top3 != null && top3.isArray()) {
-                    for (JsonNode userNode : top3) {
+                if (top10 != null && top10.isArray()) {
+                    for (JsonNode userNode : top10) {
                         Long userId = userNode.get("userId").asLong();
                         Double similarity = userNode.get("similarity").asDouble();
                         recommendUsers.add(new SimilarUserDto(userId, similarity));
@@ -149,10 +149,10 @@
             List<SimilarUserDto> recommendUsers = new ArrayList<>();
             try {
                 JsonNode root = mapper.readTree(response.getBody());
-                JsonNode top3 = root.get("top3");
+                JsonNode top10 = root.get("top10");
 
-                if(top3 != null && top3.isArray()){
-                    for (JsonNode userNode : top3) {
+                if(top10 != null && top10.isArray()){
+                    for (JsonNode userNode : top10) {
                         Long userId = userNode.get("userId").asLong();
                         Double similarity = userNode.get("similarity").asDouble();
                         recommendUsers.add(new SimilarUserDto(userId, similarity));
@@ -244,7 +244,7 @@
             //3. 각 사용자에 대해 인바디 및 정보 조회
             return similarUserDtos.stream()
                     .distinct()
-                    .limit(3)
+                    .limit(10)
                     .map(dto -> {
                         Long recommendUserId = dto.userId();
                         UserEntity recommendUser = userRepository.findById(recommendUserId)
