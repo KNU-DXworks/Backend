@@ -1,5 +1,6 @@
 package project.DxWorks.GeminiAI.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,6 +23,8 @@ import project.DxWorks.community.entity.CommunityCategory;
 import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.inbody.dto.PostInbodyDto;
 import project.DxWorks.inbody.service.ContractDeployService;
+import project.DxWorks.openai.dto.InbodyJsonDto;
+import project.DxWorks.openai.service.OpenAiService;
 import project.DxWorks.profile.entity.Profile;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.domain.UserEntity;
@@ -46,6 +49,8 @@ public class ScanController {
 
     private final ProfileRepository profileRepository;
 
+    private final OpenAiService openAiService;
+
 
     @Operation(
             summary = "인바디 이미지 업로드",
@@ -59,14 +64,25 @@ public class ScanController {
     public Response<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file, @RequestHeader("X-PRIVATE-KEY") String privateKey,
                                               @RequestAttribute Long userId) {
         try {
+
             //TODO : 로그인된 사용자의 id를 bigquery에 저장하기 위함.
             UserEntity user = userRepository.findById(userId)
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 Id가 없습니다." + userId));
 
+
             Profile profile = profileRepository.findByUser(user)
                     .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 프로필이 존재하지 않습니다."));
-            Inbody saved = inbodyService.analyzeAndSave(file);
 
+            Inbody saved = inbodyService.analyzeAndSave(file);
+            // 필요한 필드만 추려서 DTO 생성
+            InbodyJsonDto jsonDto = new InbodyJsonDto(saved);
+
+
+            //ObjectMapper로 JSON 문자열로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonString = objectMapper.writeValueAsString(jsonDto);
+
+            saved.setBodyType(stringToBodyType(openAiService.classifyBodyType(jsonString)).toString());
 
             //임베딩을 위한 dto
             InbodyDto embeddingDto = new InbodyDto(
@@ -82,6 +98,8 @@ public class ScanController {
                     saved.getBodyGrade(),
                     saved.getLegGrade()
             );
+
+            System.out.println(embeddingDto);
 
             PostInbodyDto dto = new PostInbodyDto(
                     saved.getId(),
@@ -102,21 +120,36 @@ public class ScanController {
 
             contractDeployService.addInbody(dto);
 
+
             profile.setBodyType(CommunityCategory.valueOf(saved.getBodyType()));
             profileRepository.save(profile);
 
 //          //String 형태 -> double로 인코딩 한 후 dto 전달.
             EmbeddingRequestDto embeddingRequestDto = recommendService.toEmbeddingRequest(user.getId(),embeddingDto);
+
             //Flask 서버로 POST
             recommendService.storeEmbedding(embeddingRequestDto);
             return Response.ok(saved);
 
 
-        } catch (IOException e) {
-            return Response.error(ErrorCode.INTERNAL_ERROR);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return Response.error(ErrorCode.INTERNAL_ERROR);
         }
+    }
+
+    private CommunityCategory stringToBodyType(String input){
+        return switch (input) {
+            case "1" -> CommunityCategory.SKINNY;
+            case "2" -> CommunityCategory.SKINNY_MUSCLE;
+            case "3" -> CommunityCategory.STANDARD;
+            case "4" -> CommunityCategory.WEIGHT_LOSS;
+            case "5" -> CommunityCategory.MUSCLE;
+            case "6" -> CommunityCategory.OVERWEIGHT;
+            case "7" -> CommunityCategory.OBESITY;
+            case "8" -> CommunityCategory.MUSCULAR_OBESITY;
+            default -> CommunityCategory.NONE;
+        };
     }
 
 }
