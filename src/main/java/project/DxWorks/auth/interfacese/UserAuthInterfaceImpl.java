@@ -42,8 +42,8 @@ public class UserAuthInterfaceImpl implements UserAuthInterface {
     }
 
     @Override
-    public Optional<UserAuthEntity> findByUserId(Long userId){
-        return userAuthRepository.findById(userId);
+    public Optional<TelegramAuthEntity> findByUserId(Long userId){
+        return telegramAuthRepository.findById(userId);
     }
 
     @Override
