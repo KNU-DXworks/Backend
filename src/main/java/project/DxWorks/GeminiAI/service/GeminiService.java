@@ -3,6 +3,7 @@ package project.DxWorks.GeminiAI.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.tomcat.util.http.fileupload.MultipartStream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -163,7 +164,24 @@ import java.util.Map;
             String jsonText = extractJsonFromResponse(rawText);
 
             // 7. JSON 문자열을 Inbody 로 변환.
-            return mapper.readValue(jsonText, Inbody.class);
+            Inbody inbody = mapper.readValue(jsonText, Inbody.class);
+
+            // 인바디 값중 하나라도 null이면 예외 처리
+            if(inbody.getGender() == null ||
+                    inbody.getHeight() == 0.0 ||
+                    inbody.getWeight() == 0.0 ||
+                    inbody.getMuscle() == 0.0 ||
+                    inbody.getFat() == 0.0 ||
+                    inbody.getBmi() == 0.0 ||
+                    inbody.getBodyType() == null ||
+                    inbody.getArmGrade() == null ||
+                    inbody.getBodyGrade() == null ||
+                    inbody.getLegGrade() == null){
+                throw new IllegalArgumentException("inbody Data 중 null 값인 데이터가 존재합니다.");
+            }
+            return inbody;
+
+
     }
     // Gemini 응답은 전체 text를 포함하므로 json 부분만 추출하는 메서드
     private String extractJsonFromResponse(String content) throws IOException {
