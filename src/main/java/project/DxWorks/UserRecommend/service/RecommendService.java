@@ -219,58 +219,58 @@
             return dtos;
         }
 
-        @Transactional
-        public List<RecommendUserDto> recommendUserByGoal(Long userId) throws IOException {
-            //1. 사용자 목표치 조회 및 인코딩
-            UserEntity user = userRepository.findById(userId)
-                    .orElseThrow(() -> new NoSuchElementException("해당 사용자의 목표치가 없습니다." + userId));
-
-            Goal goal = user.getGoal();
-            if(goal == null){
-                throw new NoSuchElementException("사용자 id에 해당하는 목표치가 없습니다." + userId);
-            }
-
-            GoalResponseDto goalDto = mapToResponseDto(goal);
-            if(goalDto == null){
-
-                throw new IllegalArgumentException("나의 목표치가 없습니다. " + userId);
-            }
-            List<Double> encoded = EncodingGoal(goalDto);
-            System.out.println("목표 벡터 : " + encoded); //디버깅용
-
-            //2. Flask 서버로 유사 사용자 조회
-            List<SimilarUserDto> similarUserDtos = sendToGoal(encoded);
-
-            //3. 각 사용자에 대해 인바디 및 정보 조회
-            return similarUserDtos.stream()
-                    .distinct()
-                    .limit(10)
-                    .map(dto -> {
-                        Long recommendUserId = dto.userId();
-                        UserEntity recommendUser = userRepository.findById(recommendUserId)
-                                .orElseThrow(() -> new IllegalArgumentException("추천 유저 정보가 없습니다."));
-                        Profile profile = profileRepository.findByUser(recommendUser)
-                                .orElseThrow(() -> new IllegalArgumentException("추천 유저의 프로필이 없습니다"));
-                        String userName = recommendUser.getUserName();
-                        String profileImg = profile.getProfileUrl();
-                        String walletAddress = profile.getWalletAddress();
-
-                        List<InbodyDto> inbodys;
-                        try {
-                            inbodys = contractDeployService.getInbody(walletAddress);
-                        } catch (IOException e) {
-                            throw new RuntimeException("추천 유저 인바디 데이터를 가져오는 중 오류 발생");
-                        }
-                        if (inbodys.isEmpty()) {
-                            throw new IllegalArgumentException("추천 유저의 인바디 데이터가 없습니다.");
-                        }
-                        String prevType = inbodys.get(0).userCase();
-                        String bodyType = inbodys.get(inbodys.size() - 1).userCase();
-
-                        return new RecommendUserDto(recommendUserId, userName, profileImg, prevType, bodyType);
-                    }).collect(Collectors.toList());
-
-        }
+//        @Transactional
+//        public List<RecommendUserDto> recommendUserByGoal(Long userId) throws IOException {
+//            //1. 사용자 목표치 조회 및 인코딩
+//            UserEntity user = userRepository.findById(userId)
+//                    .orElseThrow(() -> new NoSuchElementException("해당 사용자의 목표치가 없습니다." + userId));
+//
+//            Goal goal = user.getGoal();
+//            if(goal == null){
+//                throw new NoSuchElementException("사용자 id에 해당하는 목표치가 없습니다." + userId);
+//            }
+//
+//            GoalResponseDto goalDto = mapToResponseDto(goal);
+//            if(goalDto == null){
+//
+//                throw new IllegalArgumentException("나의 목표치가 없습니다. " + userId);
+//            }
+//            List<Double> encoded = EncodingGoal(goalDto);
+//            System.out.println("목표 벡터 : " + encoded); //디버깅용
+//
+//            //2. Flask 서버로 유사 사용자 조회
+//            List<SimilarUserDto> similarUserDtos = sendToGoal(encoded);
+//
+//            //3. 각 사용자에 대해 인바디 및 정보 조회
+//            return similarUserDtos.stream()
+//                    .distinct()
+//                    .limit(10)
+//                    .map(dto -> {
+//                        Long recommendUserId = dto.userId();
+//                        UserEntity recommendUser = userRepository.findById(recommendUserId)
+//                                .orElseThrow(() -> new IllegalArgumentException("추천 유저 정보가 없습니다."));
+//                        Profile profile = profileRepository.findByUser(recommendUser)
+//                                .orElseThrow(() -> new IllegalArgumentException("추천 유저의 프로필이 없습니다"));
+//                        String userName = recommendUser.getUserName();
+//                        String profileImg = profile.getProfileUrl();
+//                        String walletAddress = profile.getWalletAddress();
+//
+//                        List<InbodyDto> inbodys;
+//                        try {
+//                            inbodys = contractDeployService.getInbody(walletAddress);
+//                        } catch (IOException e) {
+//                            throw new RuntimeException("추천 유저 인바디 데이터를 가져오는 중 오류 발생");
+//                        }
+//                        if (inbodys.isEmpty()) {
+//                            throw new IllegalArgumentException("추천 유저의 인바디 데이터가 없습니다.");
+//                        }
+//                        String prevType = inbodys.get(0).userCase();
+//                        String bodyType = inbodys.get(inbodys.size() - 1).userCase();
+//
+//                        return new RecommendUserDto(recommendUserId, userName, profileImg, prevType, bodyType);
+//                    }).collect(Collectors.toList());
+//
+//        }
 
 
         // flask 시각화 서버 포트번호 5001 사용.
