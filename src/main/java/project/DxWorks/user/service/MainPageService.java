@@ -11,8 +11,10 @@ import project.DxWorks.post.service.PostService;
 import project.DxWorks.profile.entity.Profile;
 import project.DxWorks.profile.repository.ProfileRepository;
 import project.DxWorks.user.domain.UserEntity;
+import project.DxWorks.user.domain.UserRecommend;
 import project.DxWorks.user.dto.response.mainpage.*;
 import project.DxWorks.user.repository.UserInterestRepository;
+import project.DxWorks.user.repository.UserRecommendRepository;
 import project.DxWorks.user.repository.UserRepository;
 import project.DxWorks.user.repository.UserSubscibeRepository;
 
@@ -29,9 +31,9 @@ public class MainPageService {
     private final ContractDeployService contractDeployService;
     private final PostRepository postRepository;
     private final PostService postService;
-    private final RecommendService recommendService;
+    private final UserRecommendRepository userRecommendRepository;
 
-    public Response<MainPageResponseDto> mainPage(long userId) throws IOException {
+    public Response<MainPageResponseDto> mainPage(long userId) {
 
         UserEntity myUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
@@ -75,7 +77,31 @@ public class MainPageService {
                 })
                 .toList();
 
-        List<RecommendUserDto> recomandUserDtos = recommendService.recommendUserByGoal(userId);
+        // 추천 사용자
+        List<UserRecommend> recomandUserDtos = userRecommendRepository.findAllByUserId(userId)
+                .orElseThrow(null);
+
+        List<RecommendUserDto> recommendUsers = null;
+        
+        if (!recomandUserDtos.isEmpty()){
+            recommendUsers = recomandUserDtos.stream()
+                    .map(dto -> {
+                        UserEntity recUser = userRepository.findById(dto.getRecommendUserId())
+                                .orElseThrow(() -> new IllegalArgumentException("추천사용자를 찾을 수 없습니다."));
+
+                        Profile recProfile = profileRepository.findByUser(recUser)
+                                .orElseThrow(() -> new IllegalArgumentException("사용자의 프로필이 존재하지 않습니다."));
+                        return new RecommendUserDto(
+                                recUser.getId(),
+                                recUser.getUserName(),
+                                recProfile.getProfileUrl(),
+                                recProfile.getCommunity().toString(),
+                                dto.getReason(),
+                                "https://t.me/"+recUser.getEmail()
+                        );
+                    })
+                    .toList();
+        }
 
 
 
@@ -107,7 +133,7 @@ public class MainPageService {
         return Response.ok(new MainPageResponseDto(
                 interestUserDtoList,
                 subscribeUserDtoList,
-                recomandUserDtos,
+                recommendUsers,
                 subscribePostsDtos
         ));
     }

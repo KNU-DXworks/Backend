@@ -12,7 +12,9 @@ public class RecommendUserDto {
 
     private String profileImg;
 
-    private String prevType;
-
     private String bodyType;
+
+    private String recommendReason;
+
+    private String telegramUrl;
 }
