@@ -17,8 +17,10 @@ import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.profile.entity.Profile;
 import project.DxWorks.transaction.contract.TransactionContract;
 import project.DxWorks.profile.repository.ProfileRepository;
+import project.DxWorks.transaction.dto.CreateTransactionRequestDto;
 import project.DxWorks.transaction.dto.PostTransactionRequestDto;
 import project.DxWorks.transaction.dto.TransactionDto;
+import project.DxWorks.transaction.dto.response.CreateTransactionResponseDto;
 import project.DxWorks.transaction.dto.response.TransactionObjectDto;
 import project.DxWorks.transaction.dto.response.TransactionResponseDto;
 import project.DxWorks.user.domain.UserEntity;
@@ -64,15 +66,39 @@ public class TransactionDeployService {
         return TransactionContract.load(contractAddress, web3j, credentials, gasProvider());
     }
 
+    // ---------- 거래자 확인 ----------
+    public CreateTransactionResponseDto checkTransaction(String privateKey, CreateTransactionRequestDto dto) throws Exception {
+        TransactionContract contract = loadContract(privateKey);
+
+        UserEntity userEntity = userRepository.findByEmail(dto.getUserName())
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
+
+        Profile profile = profileRepository.findByUser(userEntity)
+                .orElseThrow(() -> new IllegalArgumentException(("잘못된 프로필입니다.")));
+
+        return new CreateTransactionResponseDto(
+                userEntity.getUserName(),
+                profile.getWalletAddress(),
+                profile.getProfileUrl(),
+                profile.getCommunity()
+        );
+    }
+
     // ---------- 거래 생성 ----------
-    public String addTransaction(String privateKey, PostTransactionRequestDto dto) throws Exception {
+    public String addTransaction(String privateKey, CreateTransactionRequestDto dto) throws Exception {
         TransactionContract contract = loadContract(privateKey);
 
         BigInteger wei = new BigInteger("1000000000000000000");  // 1 ETH in wei
         BigInteger amount = dto.getAmount().multiply(new BigDecimal(wei)).toBigInteger();
 
+        UserEntity userEntity = userRepository.findByEmail(dto.getUserName())
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
+
+        Profile profile = profileRepository.findByUser(userEntity)
+                .orElseThrow(() -> new IllegalArgumentException(("잘못된 프로필입니다.")));
+
         TransactionReceipt receipt = contract.createTransaction(
-                dto.getBuyerId(),
+                profile.getWalletAddress(),
                 BigInteger.valueOf(dto.getTransactionPeriod()),
                 amount,
                 dto.getInfo()

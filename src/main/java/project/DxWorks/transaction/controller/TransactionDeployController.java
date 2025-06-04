@@ -2,13 +2,14 @@ package project.DxWorks.transaction.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import project.DxWorks.transaction.dto.CreateTransactionRequestDto;
 import project.DxWorks.transaction.dto.PostTransactionRequestDto;
 import project.DxWorks.transaction.dto.TransactionDto;
+import project.DxWorks.transaction.dto.response.CreateTransactionResponseDto;
 import project.DxWorks.transaction.dto.response.TransactionResponseDto;
 import project.DxWorks.transaction.service.TransactionDeployService;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,11 +27,20 @@ public class TransactionDeployController {
         }
     }
 
+    // ---------- 거래자 확인 ----------
+    @PostMapping("/checkUser")
+    public CreateTransactionResponseDto checkTransaction(
+            @RequestHeader("X-PRIVATE-KEY") String privateKey,
+            @RequestBody CreateTransactionRequestDto dto
+    ) throws Exception {
+        return transactionDeployService.checkTransaction(privateKey, dto);
+    }
+
     // ---------- 거래 생성 ----------
     @PostMapping
     public String addTransaction(
             @RequestHeader("X-PRIVATE-KEY") String privateKey,
-            @RequestBody PostTransactionRequestDto dto
+            @RequestBody CreateTransactionRequestDto dto
     ) throws Exception {
         return transactionDeployService.addTransaction(privateKey, dto);
     }
