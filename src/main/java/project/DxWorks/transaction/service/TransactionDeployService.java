@@ -17,6 +17,7 @@ import project.DxWorks.inbody.dto.InbodyDto;
 import project.DxWorks.profile.entity.Profile;
 import project.DxWorks.transaction.contract.TransactionContract;
 import project.DxWorks.profile.repository.ProfileRepository;
+import project.DxWorks.transaction.dto.CheckTransactionRequestDto;
 import project.DxWorks.transaction.dto.CreateTransactionRequestDto;
 import project.DxWorks.transaction.dto.PostTransactionRequestDto;
 import project.DxWorks.transaction.dto.TransactionDto;
@@ -67,8 +68,7 @@ public class TransactionDeployService {
     }
 
     // ---------- 거래자 확인 ----------
-    public CreateTransactionResponseDto checkTransaction(String privateKey, CreateTransactionRequestDto dto) throws Exception {
-        TransactionContract contract = loadContract(privateKey);
+    public CreateTransactionResponseDto checkTransaction(CheckTransactionRequestDto dto) {
 
         UserEntity userEntity = userRepository.findByEmail(dto.getUserName())
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));

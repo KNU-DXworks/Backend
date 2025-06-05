@@ -2,6 +2,7 @@ package project.DxWorks.transaction.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import project.DxWorks.transaction.dto.CheckTransactionRequestDto;
 import project.DxWorks.transaction.dto.CreateTransactionRequestDto;
 import project.DxWorks.transaction.dto.PostTransactionRequestDto;
 import project.DxWorks.transaction.dto.TransactionDto;
@@ -30,10 +31,9 @@ public class TransactionDeployController {
     // ---------- 거래자 확인 ----------
     @PostMapping("/checkUser")
     public CreateTransactionResponseDto checkTransaction(
-            @RequestHeader("X-PRIVATE-KEY") String privateKey,
-            @RequestBody CreateTransactionRequestDto dto
-    ) throws Exception {
-        return transactionDeployService.checkTransaction(privateKey, dto);
+            @RequestBody CheckTransactionRequestDto dto
+    ) {
+        return transactionDeployService.checkTransaction(dto);
     }
 
     // ---------- 거래 생성 ----------
