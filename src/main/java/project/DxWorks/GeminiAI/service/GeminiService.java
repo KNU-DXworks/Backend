@@ -177,7 +177,7 @@ import java.util.Map;
                     inbody.getArmGrade() == null ||
                     inbody.getBodyGrade() == null ||
                     inbody.getLegGrade() == null){
-                throw new IllegalArgumentException("inbody Data 중 null 값인 데이터가 존재합니다.");
+                throw new IllegalArgumentException("올바르지 않은 형식의 인바디 종이입니다.");
             }
             return inbody;
 
