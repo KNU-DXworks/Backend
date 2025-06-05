@@ -11,6 +11,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import project.DxWorks.GeminiAI.dto.DummyRequestDto;
 import project.DxWorks.GeminiAI.entity.Inbody;
 import project.DxWorks.GeminiAI.service.GeminiService;
 import project.DxWorks.GeminiAI.service.InbodyService;
@@ -32,6 +33,7 @@ import project.DxWorks.user.repository.UserRepository;
 import software.amazon.awssdk.profiles.internal.ProfileSection;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -151,5 +153,101 @@ public class ScanController {
             default -> CommunityCategory.NONE;
         };
     }
+
+    //------------------- 더미 유저의 인바디 정보 넣기 --------------------------------
+    //------------------- Test Case --------------------------
+    @PostMapping("/putDummy/{userId}")
+    public Response<Inbody> putDummyData(@RequestHeader("X-PRIVATE-KEY") String privateKey, @PathVariable Long userId, @RequestBody DummyRequestDto dummyDto) {
+        try {
+
+            //TODO : 로그인된 사용자의 id를 bigquery에 저장하기 위함.
+            UserEntity user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 Id가 없습니다." + userId));
+
+
+            Profile profile = profileRepository.findByUser(user)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 프로필이 존재하지 않습니다."));
+
+
+            Inbody saved = new Inbody();
+            saved.setCreatedAt(LocalDateTime.now());
+            saved.setGender(dummyDto.getGender());
+            saved.setWeight(dummyDto.getWeight());
+            saved.setHeight(dummyDto.getHeight());
+            saved.setMuscle(dummyDto.getMuscle());
+            saved.setFat(dummyDto.getFat());
+            saved.setBmi(dummyDto.getBmi());
+            saved.setMuscleMassType(dummyDto.getMuscleMassType());
+            saved.setFatMassType(dummyDto.getFatMassType());
+            saved.setArmGrade(dummyDto.getArmGrade());
+            saved.setBodyGrade(dummyDto.getBodyGrade());
+            saved.setLegGrade(dummyDto.getLegGrade());
+            saved.setInbodySheet(true);
+
+            // 필요한 필드만 추려서 DTO 생성
+            InbodyJsonDto jsonDto = new InbodyJsonDto(saved);
+
+
+            //ObjectMapper로 JSON 문자열로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonString = objectMapper.writeValueAsString(jsonDto);
+
+            saved.setBodyType(stringToBodyType(openAiService.classifyBodyType(jsonString)).toString());
+
+            //임베딩을 위한 dto
+            InbodyDto embeddingDto = new InbodyDto(
+                    saved.getCreatedAt().toString(),
+                    saved.getGender(),
+                    saved.getWeight(),
+                    saved.getHeight(),
+                    saved.getMuscle(),
+                    saved.getFat(),
+                    saved.getBmi(),
+                    saved.getBodyType(),
+                    saved.getArmGrade(),
+                    saved.getBodyGrade(),
+                    saved.getLegGrade()
+            );
+
+            System.out.println(embeddingDto);
+
+            PostInbodyDto dto = new PostInbodyDto(
+                    saved.getId(),
+                    saved.getCreatedAt(),
+                    saved.isInbodySheet(),
+                    saved.getGender(),
+                    saved.getWeight(),
+                    saved.getHeight(),
+                    saved.getMuscle(),
+                    saved.getFat(),
+                    saved.getBmi(),
+                    saved.getBodyType(),
+                    saved.getArmGrade(),
+                    saved.getBodyGrade(),
+                    saved.getLegGrade(),
+                    privateKey
+            );
+
+            contractDeployService.addInbody(dto);
+
+
+            profile.setBodyType(CommunityCategory.valueOf(saved.getBodyType()));
+            profileRepository.save(profile);
+
+//          //String 형태 -> double로 인코딩 한 후 dto 전달.
+            EmbeddingRequestDto embeddingRequestDto = recommendService.toEmbeddingRequest(user.getId(),embeddingDto);
+
+            //Flask 서버로 POST
+            recommendService.storeEmbedding(embeddingRequestDto);
+            return Response.ok(saved);
+
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Response.error(ErrorCode.INTERNAL_ERROR);
+        }
+    }
+
+
 
 }
