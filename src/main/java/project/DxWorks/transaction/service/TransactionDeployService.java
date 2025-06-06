@@ -69,19 +69,23 @@ public class TransactionDeployService {
 
     // ---------- 거래자 확인 ----------
     public CreateTransactionResponseDto checkTransaction(CheckTransactionRequestDto dto) {
+        if (userRepository.existsByEmail(dto.getUserName())){
+            UserEntity userEntity = userRepository.findByEmail(dto.getUserName())
+                    .orElseThrow(()-> new IllegalArgumentException("xx"));
 
-        UserEntity userEntity = userRepository.findByEmail(dto.getUserName())
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 유저가 존재하지 않습니다."));
+            Profile profile = profileRepository.findByUser(userEntity)
+                    .orElseThrow(() -> new IllegalArgumentException(("잘못된 프로필입니다.")));
 
-        Profile profile = profileRepository.findByUser(userEntity)
-                .orElseThrow(() -> new IllegalArgumentException(("잘못된 프로필입니다.")));
-
-        return new CreateTransactionResponseDto(
-                userEntity.getUserName(),
-                profile.getWalletAddress(),
-                profile.getProfileUrl(),
-                profile.getCommunity()
-        );
+            return new CreateTransactionResponseDto(
+                    userEntity.getUserName(),
+                    profile.getWalletAddress(),
+                    profile.getProfileUrl(),
+                    profile.getCommunity()
+            );
+        }
+        else{
+            return new CreateTransactionResponseDto(null, null, null, null);
+        }
     }
 
     // ---------- 거래 생성 ----------

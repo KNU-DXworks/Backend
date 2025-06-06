@@ -55,6 +55,8 @@ public class GoalService {
 
             goalRepository.save(goal);
             user.createGoal(goal);
+            userRepository.save(user);
+
         }else {
             //수정 로직
             if (requestDto.getWeight() != null)
@@ -77,7 +79,7 @@ public class GoalService {
                 goal.setBodyType(BodyType.valueOf(requestDto.getBodyType()));
         }
 
-        GoalResponseDto goalDto = findGoalByUserId(userId);
+        GoalResponseDto goalDto = mapToResponseDto(goal);
         if(goalDto == null){
             throw new IllegalArgumentException("나의 목표치가 없습니다. " + userId);
         }

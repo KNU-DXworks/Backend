@@ -48,4 +48,9 @@ public class UserEntity extends TimeBaseEntity {
         this.email = email;
     }
 
+    public boolean isGoalEmpty() {
+        if (goal == null) return true;
+        else return false;
+    }
+
 }
