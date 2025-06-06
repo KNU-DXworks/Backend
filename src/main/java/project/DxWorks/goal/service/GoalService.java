@@ -57,6 +57,12 @@ public class GoalService {
             user.createGoal(goal);
             userRepository.save(user);
 
+            System.out.println("" +
+                    "" +
+                    "" +
+                    "" +
+                    "goal: " + goal);
+
         }else {
             //수정 로직
             if (requestDto.getWeight() != null)
