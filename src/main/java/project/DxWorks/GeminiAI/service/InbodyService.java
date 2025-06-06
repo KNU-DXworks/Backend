@@ -16,7 +16,7 @@ public class InbodyService {
 
     private final GeminiService geminiService;
 
-    public Inbody analyzeAndSave(MultipartFile file) throws IOException {
+    public Inbody analyzeAndSave(MultipartFile file){
 
        try{
            //Gemini API 분석한 결과들을 DB 컬럼들에 저장해야함.
@@ -28,7 +28,7 @@ public class InbodyService {
 
        } catch (Exception e) {
            e.printStackTrace(); //전체 에러 출력
-           throw new IOException("Gemini 분석 중 오류 발생 , ",e);
+           throw new RuntimeException("GeminiService에서 분석 중 오류 발생 , " + e.getMessage(),e);
        }
     }
 
