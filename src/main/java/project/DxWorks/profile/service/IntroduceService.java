@@ -65,7 +65,7 @@ public class IntroduceService {
 
         UserEntity user = profile.getUser();
 
-        String telegramUrl = "tg://resolve?domain=" + user.getEmail();
+        String telegramUrl = "https://t.me/" + user.getEmail();
 
         // getInbody 인자에 지갑주소 들어갈 예정
        List<InbodyDto> inbodySet = contractDeployService.getInbody(profile.getWalletAddress());

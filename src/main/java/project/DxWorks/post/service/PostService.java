@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import project.DxWorks.common.ui.Response;
 import project.DxWorks.community.entity.CommunityCategory;
 import project.DxWorks.fileSystem.service.FileService;
+import project.DxWorks.post.domain.PostType;
 import project.DxWorks.post.dto.CreatePostRequestDto;
 import project.DxWorks.post.dto.PostAllResponseDto;
 import project.DxWorks.post.dto.PostRequestDto;
@@ -79,11 +80,11 @@ public class PostService {
     public CommunityPostAllRequestDto getCommunityPost(String community) {
         List<PostAllResponseDto> list =  postRepository.findAllByCommunityType(CommunityCategory.valueOf(community))
                 .stream()
+                .filter(post-> post.getPostType() == PostType.NORMAL)
                 .map(post -> {
                     UserEntity user = post.getUser();
                     Profile profile = profileRepository.findByUser(user)
                             .orElseThrow(() -> new IllegalArgumentException("잘못된 사용자입니다."));
-
                     return new PostAllResponseDto(
                         post.getId(),
                         user.getId(),

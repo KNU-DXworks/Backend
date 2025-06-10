@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
@@ -63,7 +64,7 @@ public class ScanController {
             @ApiResponse(responseCode = "500", description = "서버 오류 발생")
     })
     @PostMapping
-    public Response<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file, @RequestHeader("X-PRIVATE-KEY") String privateKey,
+    public ResponseEntity<Inbody> uploadInbodyImage(@RequestParam("file") MultipartFile file, @RequestHeader("X-PRIVATE-KEY") String privateKey,
                                               @RequestAttribute Long userId) {
         try {
 
@@ -131,12 +132,13 @@ public class ScanController {
 
             //Flask 서버로 POST
             recommendService.storeEmbedding(embeddingRequestDto);
-            return Response.ok(saved);
+            return ResponseEntity.ok(saved);
 
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return Response.error(ErrorCode.INTERNAL_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
         }
     }
 
